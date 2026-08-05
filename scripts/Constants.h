@@ -1,0 +1,8 @@
+#pragma once
+
+#define CELL_SIZE 16
+#define WIDTH_CELL 424
+#define HEIGHT_CELL 30
+#define WINDOW_WIDTH (32 * CELL_SIZE)
+#define WINDOW_HEIGHT (HEIGHT_CELL * CELL_SIZE)
+#define CONST (CELL_SIZE / 8)
