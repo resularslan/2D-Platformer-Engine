@@ -1,9 +1,19 @@
+#include <cmath>
+
 struct vector2
 {
     float x;
     float y;
     vector2 normalized()
     {
-        return { (float)(x > 0) - (x < 0), (float)(y > 0) - (y < 0) };
+        float magnitude = std::sqrt(x * x + y * y);
+        float normalizedX = 0;
+        float normalizedY = 0;
+        if (magnitude > 0)
+        {
+            normalizedX = x / magnitude;
+            normalizedY = y / magnitude;
+        }
+        return { normalizedX, normalizedY };
     }
 };
