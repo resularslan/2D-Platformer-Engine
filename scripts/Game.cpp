@@ -1,15 +1,16 @@
-#include <Game.h>
+#include "Game.h"
 
 void Game::init()
 {
+	isRunning = true;
     if (!SDL_Init(SDL_INIT_VIDEO)) {
-		std::cerr << "SDL Init Error: " << SDL_GetError() << endl;
+		std::cerr << "SDL Init Error: " << SDL_GetError() << std::endl;
 		isRunning = false;
 	}
 
 	if (!SDL_CreateWindowAndRenderer("Super Mario Bros", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &window, &renderer))
 	{
-		std::cerr << "SDL Init Error: " << SDL_GetError() << endl;
+		std::cerr << "SDL Init Error: " << SDL_GetError() << std::endl;
 		isRunning = false;
 	}
 }
@@ -28,7 +29,7 @@ void Game::handleEvents()
 	}
 }
 
-void Game::update()
+void Game::update(float deltaTime)
 {
 	return;
 }

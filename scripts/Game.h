@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <vector>
-#include <memory>
+//#include <memory>
 #include <algorithm>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_time.h>
@@ -15,19 +15,19 @@
 #define WINDOW_HEIGHT (HEIGHT_CELL * CELL_SIZE)
 #define CONST (CELL_SIZE / 8)
 
-class Entity;
+//class Entity;
 
 class Game
 {
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
-    bool isRunning = true;
-    std::vector<std::unique_ptr<Entity>> entities;
+    bool isRunning;
+    /*std::vector<std::unique_ptr<Entity>> entities;*/
 public:
     void init();
     void handleEvents();
-    void update();
+    void update(float deltaTime);
     void render();
     void clean();
     void quit();
