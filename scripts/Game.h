@@ -7,14 +7,14 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_time.h>
 #include <SDL3_image/SDL_image.h>
-
-class Entity;
+#include "Entity.h"
 
 class Game
 {
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
+    bool keys[SDL_SCANCODE_COUNT] = { false };
     bool isRunning;
     std::vector<std::unique_ptr<Entity>> entities;
 public:

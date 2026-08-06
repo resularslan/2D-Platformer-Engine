@@ -22,9 +22,15 @@ void Game::handleEvents()
 	{
 		switch (event.type)
 		{
-		case SDL_EVENT_QUIT:
-			isRunning = false;
-			break;
+			case SDL_EVENT_QUIT:
+				isRunning = false;
+				break;
+			case SDL_EVENT_KEY_DOWN:
+				keys[event.key.scancode] = true;
+				break;
+			case SDL_EVENT_KEY_UP:
+				keys[event.key.scancode] = false;
+				break;
 		}
 	}
 }

@@ -15,31 +15,28 @@ private:
 	SDL_Texture* playerBigSlideFrame;
 	SDL_Texture* playerBigFlag;
 	SDL_Texture* playerMiddleFrame;
-	SDL_FlipMode flip;
-	float oldvelocity_x;
-	int frameIndex = 0;
-	int animFrameDelay;
-	Uint32 lastFrameTime = 0;
+	float runAnimationSpeed;
+	float oldVelocityX;
 	bool grounded;
 	bool falling;
 	bool jumping;
 	bool sliding;
-	bool facingRight = true;
 	bool isDied = false;
 	bool canDie = true;
 	bool starMode = false;
 	float jumpTime = 0;
 	bool isBig = false;
 	int invisibleAnimation = 0;
-	int growAnimation = -1;
+	int growAnimation = 0;
 	float originalY;
 	int life = 3;
 protected:
 	void movement(float deltaTime) override;
 public:
+	Player();
 	void init() override;
 	void update(float deltaTime) override;
 	void restart() override;
-	void draw(SDL_Renderer* renderer) override;
+	void draw(SDL_Renderer* renderer, SDL_FRect* camera) override;
 	~Player();
 };

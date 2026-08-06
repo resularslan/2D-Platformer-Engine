@@ -16,4 +16,20 @@ struct vector2
         }
         return { normalizedX, normalizedY };
     }
+    vector2 right()
+    {
+        return { 1, 0 };
+    }
+    vector2 left()
+    {
+        return { -1, 0 };
+    }
+    vector2 up()
+    {
+        return { 0, 1 };
+    }
+    vector2 down()
+    {
+        return { 0, -1 };
+    }
 };
