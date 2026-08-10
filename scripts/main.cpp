@@ -1,8 +1,11 @@
 #include "Game.h"
+#include <cmath>
 
-const Uint32 FPS = 60;
-const Uint32 desiredFrameTime = 1000 / FPS;
-Uint32 previousFrameStart = SDL_GetTicks();
+const int FPS = 60;
+const Uint64 desiredFrameTime = SDL_GetPerformanceFrequency() / FPS;
+Uint64 previousFrameStart = SDL_GetPerformanceCounter();
+float maxDeltaTime = 0.1f;
+int safetyThreshold = 2;
 
 int main()
 {
@@ -10,16 +13,24 @@ int main()
 	game->init();
 	while (game->running())
 	{
-		Uint32 frameStart = SDL_GetTicks();
-		float deltaTime = (float) (frameStart - previousFrameStart) / 1000;
+		Uint64 frameStart = SDL_GetPerformanceCounter();
+		float deltaTime = std::fmin(maxDeltaTime, (float) (frameStart - previousFrameStart) / SDL_GetPerformanceFrequency());
 		previousFrameStart = frameStart;
 		game->handleEvents();
 		game->update(deltaTime);
 		game->render();
-		Uint32 frameTime = SDL_GetTicks() - frameStart;
-		if (desiredFrameTime > frameTime)
+		Uint64 frameTick = SDL_GetPerformanceCounter() - frameStart;
+		if (desiredFrameTime > frameTick)
 		{
-			SDL_Delay(desiredFrameTime - frameTime);
+			Uint32 remainingTime = ((desiredFrameTime - frameTick) * 1000) / SDL_GetPerformanceFrequency();
+			if (remainingTime > safetyThreshold)
+			{
+				SDL_Delay(remainingTime - safetyThreshold);
+			}
+		}
+		while ((SDL_GetPerformanceCounter() - frameStart) < desiredFrameTime)
+		{
+
 		}
 	}
 	game->clean();
