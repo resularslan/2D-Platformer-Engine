@@ -2,6 +2,15 @@
 
 class Player : public Entity
 {
+public:
+	Player();
+	~Player();
+	void init() override;
+	void update(float deltaTime) override;
+	void draw(SDL_Renderer* renderer, SDL_FRect* camera) override;
+	void restart() override;
+protected:
+	void movement(float deltaTime) override;
 private:
 	SDL_Texture* playerSmallRunFrames[3];
 	SDL_Texture* playerSmallIdleFrame;
@@ -30,13 +39,4 @@ private:
 	int growAnimation = 0;
 	float originalY;
 	int life = 3;
-protected:
-	void movement(float deltaTime) override;
-public:
-	Player();
-	void init() override;
-	void update(float deltaTime) override;
-	void restart() override;
-	void draw(SDL_Renderer* renderer, SDL_FRect* camera) override;
-	~Player();
 };

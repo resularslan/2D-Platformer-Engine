@@ -8,11 +8,16 @@ void Game::init()
 		isRunning = false;
 	}
 
-	if (!SDL_CreateWindowAndRenderer("Super Mario Bros", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &window, &renderer))
+	if (!SDL_CreateWindowAndRenderer("Super Mario Bros", WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer))
 	{
 		std::cerr << "SDL Init Error: " << SDL_GetError() << std::endl;
 		isRunning = false;
 	}
+	SDL_SetRenderVSync(renderer, 1);
+	camera = new Camera();
+	tileMap = new TileMap();
+	camera->init();
+	tileMap->init(renderer);
 }
 
 void Game::handleEvents()
@@ -44,6 +49,7 @@ void Game::render()
 {
 	SDL_SetRenderDrawColor(renderer, 92, 148, 252, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
+	tileMap->render(renderer, camera);
 	SDL_RenderPresent(renderer);
 }
 

@@ -11,7 +11,7 @@ int main()
 	while (game->running())
 	{
 		Uint32 frameStart = SDL_GetTicks();
-		float deltaTime = static_cast<float>(frameStart - previousFrameStart) / 1000;
+		float deltaTime = (float) (frameStart - previousFrameStart) / 1000;
 		previousFrameStart = frameStart;
 		game->handleEvents();
 		game->update(deltaTime);

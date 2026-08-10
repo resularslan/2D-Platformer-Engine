@@ -7,7 +7,16 @@
 
 class Entity
 {
+public:
+	virtual void init() = 0;
+	virtual void update(float deltaTime) = 0;
+	virtual void restart() = 0;
+	virtual void draw(SDL_Renderer* renderer, SDL_FRect* camera) = 0;
+	virtual ~Entity() = default;
 protected:
+	virtual void movement(float deltaTime) = 0;
+	void setOldPos();
+	void animation(int frameCount, float frameDelay);
 	SDL_FRect rect;
 	vector2 velocity;
 	vector2 oldPos;
@@ -16,13 +25,4 @@ protected:
 	Uint32 animTimer = 0;
 	Uint32 lastAnimTimer = 0;
 	SDL_FPoint center = { CELL_SIZE, CELL_SIZE };
-	void setOldPos();
-	void animation(int frameCount, float frameDelay);
-	virtual void movement(float deltaTime) = 0;
-public:
-	virtual void init() = 0;
-	virtual void update(float deltaTime) = 0;
-	virtual void restart() = 0;
-	virtual void draw(SDL_Renderer* renderer, SDL_FRect* camera) = 0;
-	virtual ~Entity() = default;
 };

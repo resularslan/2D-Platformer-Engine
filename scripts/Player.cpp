@@ -16,6 +16,43 @@ Player::Player()
 	playerMiddleFrame(nullptr)
 {}
 
+void Player::~Player()
+{
+	SDL_DestroyTexture(playerSmallIdleFrame);
+	for (int i = 0; i < 3; i++) {
+		SDL_DestroyTexture(playerSmallRunFrames[i]);
+	}
+	SDL_DestroyTexture(playerSmallJumpFrame);
+	SDL_DestroyTexture(playerSmallSlideFrame);
+	SDL_DestroyTexture(playerSmallDeathFrame);
+	for (int i = 0; i < 3; i++) {
+		SDL_DestroyTexture(playerBigRunFrames[i]);
+	}
+	SDL_DestroyTexture(playerBigJumpFrame);
+	SDL_DestroyTexture(playerBigSlideFrame);
+}
+
+void Player::init()
+{
+	rect = { CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE , CELL_SIZE * 2, CELL_SIZE * 2 };
+	playerSmallRunFrames[0] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run1.png");
+	playerSmallRunFrames[1] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run2.png");
+	playerSmallRunFrames[2] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run3.png");
+	playerSmallJumpFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Jump.png");
+	playerSmallIdleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Idle.png");
+	playerSmallSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Slide.png");
+	playerSmallDeathFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Death.png");
+	playerSmallFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Flag.png");
+	playerBigRunFrames[0] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run1.png");
+	playerBigRunFrames[1] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run2.png");
+	playerBigRunFrames[2] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run3.png");
+	playerBigIdleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Idle.png");
+	playerBigJumpFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Jump.png");
+	playerBigSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Slide.png");
+	playerBigFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Flag.png");
+	playerMiddleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Middle.png");
+}
+
 void Player::movement(float deltaTime)
 {
 	oldVelocityX = velocity.x;
@@ -75,41 +112,4 @@ void Player::restart()
 {
 	rect = { CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE , CELL_SIZE * 2, CELL_SIZE * 2 };
 	life--;
-}
-
-void Player::init()
-{
-	rect = { CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE , CELL_SIZE * 2, CELL_SIZE * 2 };
-	playerSmallRunFrames[0] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run1.png");
-	playerSmallRunFrames[1] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run2.png");
-	playerSmallRunFrames[2] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run3.png");
-	playerSmallJumpFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Jump.png");
-	playerSmallIdleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Idle.png");
-	playerSmallSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Slide.png");
-	playerSmallDeathFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Death.png");
-	playerSmallFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Flag.png");
-	playerBigRunFrames[0] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run1.png");
-	playerBigRunFrames[1] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run2.png");
-	playerBigRunFrames[2] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run3.png");
-	playerBigIdleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Idle.png");
-	playerBigJumpFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Jump.png");
-	playerBigSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Slide.png");
-	playerBigFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Flag.png");
-	playerMiddleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Middle.png");
-}
-
-void Player::~Player()
-{
-	SDL_DestroyTexture(playerSmallIdleFrame);
-	for (int i = 0; i < 3; i++) {
-		SDL_DestroyTexture(playerSmallRunFrames[i]);
-	}
-	SDL_DestroyTexture(playerSmallJumpFrame);
-	SDL_DestroyTexture(playerSmallSlideFrame);
-	SDL_DestroyTexture(playerSmallDeathFrame);
-	for (int i = 0; i < 3; i++) {
-		SDL_DestroyTexture(playerBigRunFrames[i]);
-	}
-	SDL_DestroyTexture(playerBigJumpFrame);
-	SDL_DestroyTexture(playerBigSlideFrame);
 }

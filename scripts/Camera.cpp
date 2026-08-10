@@ -1,5 +1,11 @@
 #include <Camera.h>
 
+void Camera::init()
+{
+	rect.x = 0;
+	rect.y = 0;
+}
+
 bool Camera::inCamera(SDL_FRect& other)
 {
 	if (other.x <= rect.x + rect.w && other.x + other.w >= rect.x &&
@@ -17,5 +23,10 @@ void Camera::update(SDL_FRect& player)
 		rect.x = player.x - (rect.w / 10 * 4);
 	}
 	if (rect.x < 0) rect.x = 0;
-	else if (rect.x + rect.w > WIDTH_CELL * CELL_SIZE) rect.x = WIDTH_CELL * CELL_SIZE - rect.w;
+	else if (rect.x + rect.w > MAP_WIDTH_TILE * CELL_SIZE) rect.x = MAP_WIDTH_TILE * CELL_SIZE - rect.w;
+}
+
+SDL_FRect Camera::getRect()
+{
+	return rect;
 }

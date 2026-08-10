@@ -6,9 +6,11 @@
 
 class Camera
 {
-private:
-	SDL_FRect rect;
 public:
+	void init();
 	bool inCamera(SDL_FRect& other);
 	void update(SDL_FRect& player);
+	SDL_FRect getRect();
+private:
+	SDL_FRect rect;
 };
