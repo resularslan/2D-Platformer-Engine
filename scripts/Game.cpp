@@ -13,7 +13,7 @@ void Game::init()
 		std::cerr << "SDL Init Error: " << SDL_GetError() << std::endl;
 		isRunning = false;
 	}
-	/*SDL_SetRenderVSync(renderer, 1);*/
+	SDL_SetRenderVSync(renderer, 1);
 	camera = new Camera();
 	tileMap = new TileMap();
 	camera->init();

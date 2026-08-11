@@ -4,6 +4,8 @@ void Camera::init()
 {
 	rect.x = 0;
 	rect.y = 0;
+	rect.w = WINDOW_WIDTH;
+	rect.h = WINDOW_HEIGHT;
 }
 
 bool Camera::inCamera(SDL_FRect& other)
@@ -18,13 +20,16 @@ bool Camera::inCamera(SDL_FRect& other)
 
 void Camera::update(/*SDL_FRect& player*/ float deltaTime)
 {
-	/*if (player.x > rect.x + (rect.w / 10 * 4))
+	///*if (player.x > rect.x + (rect.w / 10 * 4))
+	//{
+	//	rect.x = player.x - (rect.w / 10 * 4);
+	//}
+	if (rect.x >= 0 && rect.x + rect.w < MAP_WIDTH_TILE * CELL_SIZE)
 	{
-		rect.x = player.x - (rect.w / 10 * 4);
+		rect.x += 300 * deltaTime;
 	}
 	if (rect.x < 0) rect.x = 0;
-	else if (rect.x + rect.w > MAP_WIDTH_TILE * CELL_SIZE) rect.x = MAP_WIDTH_TILE * CELL_SIZE - rect.w;*/
-	rect.x += 150 * deltaTime;
+	else if (rect.x + rect.w > MAP_WIDTH_TILE * CELL_SIZE) rect.x = MAP_WIDTH_TILE * CELL_SIZE - rect.w;
 }
 
 SDL_FRect Camera::getRect()
