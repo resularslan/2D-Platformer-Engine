@@ -8,11 +8,13 @@
 class Entity
 {
 public:
+	virtual ~Entity() = default;
 	virtual void init() = 0;
 	virtual void update(float deltaTime) = 0;
 	virtual void restart() = 0;
 	virtual void draw(SDL_Renderer* renderer, SDL_FRect* camera) = 0;
-	virtual ~Entity() = default;
+	vector2 getOldPos();
+	vector2 getRect();
 protected:
 	virtual void movement(float deltaTime) = 0;
 	void setOldPos();
@@ -20,6 +22,7 @@ protected:
 	SDL_FRect rect;
 	vector2 velocity;
 	vector2 oldPos;
+	bool isGrounded;
 	SDL_FlipMode flip;
 	int frameIndex = 0;
 	Uint32 animTimer = 0;

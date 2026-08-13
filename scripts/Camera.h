@@ -9,7 +9,7 @@ class Camera
 public:
 	void init();
 	bool inCamera(SDL_FRect& other);
-	void update(/*SDL_FRect& player*/ float deltaTime);
+	void update(SDL_FRect& player);
 	SDL_FRect getRect();
 private:
 	SDL_FRect rect;

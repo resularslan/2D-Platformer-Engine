@@ -18,7 +18,6 @@ int main()
 		game->handleEvents();
 		game->update(deltaTime);
 		game->render();
-		/*game->delay(frameStart);*/
 	}
 	game->clean();
 	game->quit();

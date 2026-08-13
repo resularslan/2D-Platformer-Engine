@@ -18,15 +18,11 @@ bool Camera::inCamera(SDL_FRect& other)
 	return false;
 }
 
-void Camera::update(/*SDL_FRect& player*/ float deltaTime)
+void Camera::update(SDL_FRect& player)
 {
-	///*if (player.x > rect.x + (rect.w / 10 * 4))
-	//{
-	//	rect.x = player.x - (rect.w / 10 * 4);
-	//}
-	if (rect.x >= 0 && rect.x + rect.w < MAP_WIDTH_TILE * CELL_SIZE)
+	if (player.x > rect.x + (rect.w / 10 * 4))
 	{
-		rect.x += 300 * deltaTime;
+		rect.x = player.x - (rect.w / 10 * 4);
 	}
 	if (rect.x < 0) rect.x = 0;
 	else if (rect.x + rect.w > MAP_WIDTH_TILE * CELL_SIZE) rect.x = MAP_WIDTH_TILE * CELL_SIZE - rect.w;

@@ -42,7 +42,7 @@ void Game::handleEvents()
 
 void Game::update(float deltaTime)
 {
-	camera->update(deltaTime);
+	return;
 }
 
 void Game::render()
