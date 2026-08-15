@@ -16,8 +16,16 @@ void Game::init()
 	SDL_SetRenderVSync(renderer, 1);
 	camera = new Camera();
 	tileMap = new TileMap();
+	player = std::make_unique<Player>();
+	entities.push_back(std::move(player));
+	collisionManager = new CollisionManager(entities);
 	camera->init();
 	tileMap->init(renderer);
+	collisionManager->init();
+	for (const auto& entity : entities)
+	{
+		entity->init(renderer);
+	}
 }
 
 void Game::handleEvents()
@@ -42,7 +50,15 @@ void Game::handleEvents()
 
 void Game::update(float deltaTime)
 {
-	return;
+	for (const auto& entity : entities)
+	{
+		entity->update(deltaTime, *collisionManager);
+		if (entity->getType() == EntityType::PlayerType)
+		{
+			SDL_FRect playerRect = entity->getRect();
+			camera->update(playerRect);
+		}
+	}
 }
 
 void Game::render()
@@ -50,6 +66,10 @@ void Game::render()
 	SDL_SetRenderDrawColor(renderer, 92, 148, 252, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
 	tileMap->render(renderer, camera);
+	for (const auto& entity : entities)
+	{
+		entity->draw(renderer, camera);
+	}
 	SDL_RenderPresent(renderer);
 }
 

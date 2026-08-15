@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Entity.h"
-#include "Constants.h"
-#include "MathUtils.h"
 #include <vector>
 #include <memory>
 #include <iostream>
 #include <fstream>
+#include <SDL3/SDL.h>
+#include "Constants.h"
+#include "MathUtils.h"
 
 enum CollisionType
 {
@@ -25,12 +25,14 @@ struct TileCollisionInfo
 	CollisionType collisionType;
 };
 
+class Entity;
+
 class CollisionManager
 {
 public:
-	CollisionManager(std::vector<std::unique_ptr<Entity>>& entities)
+	CollisionManager(std::vector<std::unique_ptr<Entity>>& entities);
 	void init();
-	std::vector<TileCollisionInfo> tileCollision(Enity& entity);
+	std::vector<TileCollisionInfo> tileCollision(Entity& entity);
 	std::vector<EntityType> entityCollision(Entity& entity);
 
 private:

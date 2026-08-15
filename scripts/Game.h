@@ -8,8 +8,10 @@
 #include <SDL3/SDL_time.h>
 #include <SDL3_image/SDL_image.h>
 #include "Entity.h"
+#include "Player.h"
 #include "Camera.h"
 #include "TileMap.h"
+#include "CollisionManager.h"
 
 class Game
 {
@@ -29,4 +31,6 @@ private:
     std::vector<std::unique_ptr<Entity>> entities;
     Camera* camera;
     TileMap* tileMap;
+    std::unique_ptr<Player> player;
+    CollisionManager* collisionManager;
 };

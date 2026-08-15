@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include "Constants.h"
-#include "Camera.h"
 
 struct Tile
 {
@@ -15,6 +14,8 @@ struct Tile
 	float animTimer = 0;
 	float lastAnimTimer = 0;
 };
+
+class Camera;
 
 class TileMap
 {

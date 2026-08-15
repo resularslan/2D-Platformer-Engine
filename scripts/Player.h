@@ -5,12 +5,13 @@ class Player : public Entity
 public:
 	Player();
 	~Player();
-	void init() override;
-	void update(float deltaTime) override;
-	void draw(SDL_Renderer* renderer, SDL_FRect* camera) override;
+	void init(SDL_Renderer* renderer) override;
+	void update(float deltaTime, CollisionManager& collisionManager) override;
+	void draw(SDL_Renderer* renderer, Camera* camera) override;
 	void restart() override;
 protected:
 	void movement(float deltaTime) override;
+	void onCollisionWithEntity(EntityType type, Direction direction) override;
 private:
 	SDL_Texture* playerSmallRunFrames[3];
 	SDL_Texture* playerSmallIdleFrame;
@@ -24,12 +25,12 @@ private:
 	SDL_Texture* playerBigSlideFrame;
 	SDL_Texture* playerBigFlag;
 	SDL_Texture* playerMiddleFrame;
+	float runSpeed;
 	float runAnimationSpeed;
 	float oldVelocityX;
-	bool grounded;
-	bool falling;
-	bool jumping;
-	bool sliding;
+	bool isFalling = false;
+	bool isJumping = false;
+	bool isSliding = false;
 	bool isDied = false;
 	bool canDie = true;
 	bool starMode = false;

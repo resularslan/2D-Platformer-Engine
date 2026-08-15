@@ -1,4 +1,6 @@
 #include "Player.h"
+#include <iostream>
+#include "Camera.h"
 
 Player::Player()
 	:
@@ -16,7 +18,7 @@ Player::Player()
 	playerMiddleFrame(nullptr)
 {}
 
-void Player::~Player()
+Player::~Player()
 {
 	SDL_DestroyTexture(playerSmallIdleFrame);
 	for (int i = 0; i < 3; i++) {
@@ -32,7 +34,7 @@ void Player::~Player()
 	SDL_DestroyTexture(playerBigSlideFrame);
 }
 
-void Player::init()
+void Player::init(SDL_Renderer* renderer)
 {
 	rect = { CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE , CELL_SIZE * 2, CELL_SIZE * 2 };
 	playerSmallRunFrames[0] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run1.png");
@@ -51,59 +53,107 @@ void Player::init()
 	playerBigSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Slide.png");
 	playerBigFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Flag.png");
 	playerMiddleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Middle.png");
+	flip = SDL_FLIP_NONE;
+	type = EntityType::PlayerType;
+	runSpeed = 150;
+	velocity.x = 0;
+	velocity.y = 0;
 }
 
 void Player::movement(float deltaTime)
 {
-	oldVelocityX = velocity.x;
-	return;
+	velocity.x = runSpeed * deltaTime;
 }
 
-void Player::update(float deltaTime)
+void Player::update(float deltaTime, CollisionManager& collisionManager)
 {
-	return;
+	movement(deltaTime);
+	Entity::update(deltaTime, collisionManager);
+	if (isGrounded)
+	{
+		/*float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : 0;*/
+		float frameDelay = velocity.x != 0 ? 0.08f : 0;
+		animation(3, frameDelay);
+	}
+	
 }
 
-void Player::draw(SDL_Renderer* renderer, SDL_FRect* camera)
+void Player::onCollisionWithEntity(EntityType type, Direction direction)
+{
+	switch (type)
+	{
+		case EntityType::EnemyType:
+			if (direction == Direction::Right || direction == Direction::Left || direction == Direction::Up)
+			{
+				isDied = true;
+				// Die();
+			}
+			else
+			{
+				// jump
+			}
+			break;
+		case EntityType::GrowMushroomType:
+			isBig = true;
+			break;
+		case EntityType::HealthMushroomType:
+			life++;
+			break;
+		case EntityType::StarType:
+			starMode = true;
+			// Star()
+			break;
+	}
+}
+
+void Player::draw(SDL_Renderer* renderer, Camera* camera)
 {
 	SDL_FRect newRect = {
-		roundf(rect.x - camera->x),
-		roundf(rect.y - camera->y),
+		roundf(rect.x - camera->getRect().x),
+		roundf(rect.y - camera->getRect().y),
 		rect.w,
 		rect.h
 	};
+	if (!camera->inCamera(rect))
+	{
+		return;
+	}
 	if (isBig)
 	{
-		if (sliding)
+		if (isSliding)
 		{
-			SDL_RenderTextureRotated(renderer, playerBigSlideFrame, srcRect, &newRect, 0, center, flip);
+			SDL_RenderTextureRotated(renderer, playerBigSlideFrame, NULL, &newRect, 0, &center, flip);
 		}
-		else if (jumping)
+		else if (isJumping)
 		{
-			SDL_RenderTextureRotated(renderer, playerBigJumpFrame, srcRect, &newRect, 0, center, flip);
+			SDL_RenderTextureRotated(renderer, playerBigJumpFrame, NULL, &newRect, 0, &center, flip);
 		}
-		else if (grounded)
+		else if (isGrounded && velocity.x != 0)
 		{
-			float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : 0
-			animation(3, frameDelay);
-			SDL_RenderTextureRotated(renderer, playerBigRunFrames[frameIndex], srcRect, &newRect, 0, center, flip);
+			SDL_RenderTextureRotated(renderer, playerBigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+		}
+		else
+		{
+			SDL_RenderTextureRotated(renderer, playerBigIdleFrame, NULL, &newRect, 0, &center, flip);
 		}
 	}
 	else
 	{
-		if (sliding)
+		if (isSliding)
 		{
-			SDL_RenderTextureRotated(renderer, playerSmallSlideFrame, srcRect, &newRect, 0, center, flip);
+			SDL_RenderTextureRotated(renderer, playerSmallSlideFrame, NULL, &newRect, 0, &center, flip);
 		}
-		else if (jumping)
+		else if (isJumping)
 		{
-			SDL_RenderTextureRotated(renderer, playerSmallJumpFrame, srcRect, &newRect, 0, center, flip);
+			SDL_RenderTextureRotated(renderer, playerSmallJumpFrame, NULL, &newRect, 0, &center, flip);
 		}
-		else if (grounded)
+		else if (isGrounded && velocity.x != 0)
 		{
-			float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : 0
-			animation(3, frameDelay);
-			SDL_RenderTextureRotated(renderer, playerSmallRunFrames[frameIndex], srcRect, &newRect, 0, center, flip);
+			SDL_RenderTextureRotated(renderer, playerSmallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+		}
+		else
+		{
+			SDL_RenderTextureRotated(renderer, playerSmallIdleFrame, NULL, &newRect, 0, &center, flip);
 		}
 	}
 }

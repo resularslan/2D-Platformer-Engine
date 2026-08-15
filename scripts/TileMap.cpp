@@ -1,4 +1,5 @@
 #include "TileMap.h"
+#include "Camera.h"
 
 void TileMap::init(SDL_Renderer* renderer)
 {

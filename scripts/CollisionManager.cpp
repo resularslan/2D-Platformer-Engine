@@ -1,29 +1,31 @@
 #include "CollisionManager.h"
+#include "Entity.h"
 
-CollisionManager(std::vector<std::unique_ptr<Entity>>& entities)
-	: _entities(entites)
+CollisionManager::CollisionManager(std::vector<std::unique_ptr<Entity>>& entities)
+	: _entities(entities)
 { }
 
 void CollisionManager::init()
 {
-	loadCollisionTiles();
+	loadCollisionTypes();
 }
 
-std::vector<TileCollisionInfo> CollisionManager::tileCollision(Enity& entity)
+std::vector<TileCollisionInfo> CollisionManager::tileCollision(Entity& entity)
 {
 	std::vector<TileCollisionInfo> infos;
+	float errorMargin = 0.001f;
 	int minX = entity.getRect().x / (CELL_SIZE * 2);
-	int maxX = (entity.getRect().x + entity.getRect().w) / (CELL_SIZE * 2);
+	int maxX = (entity.getRect().x + entity.getRect().w - errorMargin) / (CELL_SIZE * 2);
 	int minY = entity.getRect().y / (CELL_SIZE * 2);
-	int maxY = (entity.getRect().y + entity.getRect().h) / (CELL_SIZE * 2);
+	int maxY = (entity.getRect().y + entity.getRect().h - errorMargin) / (CELL_SIZE * 2);
 	for (int i = minY; i <= maxY; i++)
 	{
 		for (int j = minX; j <= maxX; j++)
 		{
-			if (collisionTypes[i][j] != CollisionType.None)
+			if (collisionTypes[i][j] != CollisionType::None)
 			{
 				TileCollisionInfo info;
-				info.tilePos = { j * CELL_SIZE * 2, i * CELL_SIZE * 2, CELL_SIZE * 2, CELL_SIZE * 2 };
+				info.tilePos = { (float) j * CELL_SIZE * 2, (float) i * CELL_SIZE * 2, (float) CELL_SIZE * 2, (float) CELL_SIZE * 2 };
 				info.collisionType = collisionTypes[i][j];
 				infos.push_back(info);
 			}
@@ -35,7 +37,7 @@ std::vector<TileCollisionInfo> CollisionManager::tileCollision(Enity& entity)
 std::vector<EntityType> CollisionManager::entityCollision(Entity& entity)
 {
 	std::vector<EntityType> types;
-	for (const auto& otherEntity : entities)
+	for (const auto& otherEntity : _entities)
 	{
 		if (otherEntity->getID() == entity.getID()) continue;
 		if (entity.getRect().x + entity.getRect().w > otherEntity->getRect().x &&
@@ -65,7 +67,7 @@ void CollisionManager::loadCollisionTypes()
 			file >> collisionNumber;
 			if (collisionNumber >= 0 && collisionNumber <= 6)
 			{
-				collisionTypes[row][col] = (CollisionTile)collisionNumber;
+				collisionTypes[row][col] = (CollisionType)collisionNumber;
 			}
 		}
 	}
