@@ -9,58 +9,49 @@ void CollisionManager::init()
 	loadCollisionTiles();
 }
 
-bool CollisionManager::tileCollision(Enity& entity)
+std::vector<TileCollisionInfo> CollisionManager::tileCollision(Enity& entity)
 {
-	int minX = entity.getRect().x / COLLISION_TILE_SIZE;
-	int maxX = (entity.getRect().x + entity.getRect().w) / COLLISION_TILE_SIZE;
-	int minY = entity.getRect().y / COLLISION_TILE_SIZE;
-	int maxY = (entity.getRect().y + entity.getRect().h) / COLLISION_TILE_SIZE;
+	std::vector<TileCollisionInfo> infos;
+	int minX = entity.getRect().x / (CELL_SIZE * 2);
+	int maxX = (entity.getRect().x + entity.getRect().w) / (CELL_SIZE * 2);
+	int minY = entity.getRect().y / (CELL_SIZE * 2);
+	int maxY = (entity.getRect().y + entity.getRect().h) / (CELL_SIZE * 2);
 	for (int i = minY; i <= maxY; i++)
 	{
 		for (int j = minX; j <= maxX; j++)
 		{
-			if (collisionTiles[i][j] != CollisionTile.None)
+			if (collisionTypes[i][j] != CollisionType.None)
 			{
-				return true;
+				TileCollisionInfo info;
+				info.tilePos = { j * CELL_SIZE * 2, i * CELL_SIZE * 2, CELL_SIZE * 2, CELL_SIZE * 2 };
+				info.collisionType = collisionTypes[i][j];
+				infos.push_back(info);
 			}
 		}
 	}
-	return false;
+	return infos;
 }
 
-CollisionInfo CollisionManager::entityCollision(Entity& entity)
+std::vector<EntityType> CollisionManager::entityCollision(Entity& entity)
 {
-	CollisionInfo info;
+	std::vector<EntityType> types;
 	for (const auto& otherEntity : entities)
 	{
-		if (entity->getRect().x + entity->getRect().w > otherEntity->getRect().x &&
-			otherEntity->getRect().x + otherEntity->getRect().w > entity->getRect().x &&
-			entity->getRect().y + entity->getRect().h > otherEntity->getRect().y &&
-			otherEntity->getRect().y + otherEntity->getRect().h > entity->getRect().y)
+		if (otherEntity->getID() == entity.getID()) continue;
+		if (entity.getRect().x + entity.getRect().w > otherEntity->getRect().x &&
+			otherEntity->getRect().x + otherEntity->getRect().w > entity.getRect().x &&
+			entity.getRect().y + entity.getRect().h > otherEntity->getRect().y &&
+			otherEntity->getRect().y + otherEntity->getRect().h > entity.getRect().y)
 		{
-			info.isCollided = true;
-			if (entity->getOldPos()->y + entity->getRect().h <= otherEntity->getOldPos().y && entity->getRect().y + entity->getRect().h >= otherEntity->getRect().y)
-			{
-				info.direction = vector2.up();
-			}
-			else if (entity->getOldPos()->x >= otherEntity->getOldPos().x + entity->getRect().w && entity->getRect().x <= otherEntity->getRect().x + otherEntity->getRect().w)
-			{
-				info.direction = vector2.left();
-			}
-			else if (entity->getOldPos()->x + entity->getRect().w <= otherEntity->getOldPos().x && entity->getRect().x + entity->getRect().w >= otherEntity->getRect().x)
-			{
-				info.direction = vector2.right();
-			}
-			else if (entity->getOldPos()->y >= otherEntity->getOldPos().y + otherEntity->getRect().h && entity->getRect().y <= otherEntity->getRect().y + otherEntity->getRect().h)
-			{
-				info.direction = vector2.down();
-			}
+			EntityType type;
+			type = otherEntity->getType();
+			types.push_back(type);
 		}
 	}
-	return info;
+	return types;
 }
 
-void CollisionManager::loadCollisionTiles()
+void CollisionManager::loadCollisionTypes()
 {
 	std::ifstream file("assets/TileMap/collisions.map");
 	if (!file) {
@@ -72,7 +63,10 @@ void CollisionManager::loadCollisionTiles()
 		for (int col = 0; col < MAP_WIDTH_TILE / 2; col++) {
 			int collisionNumber;
 			file >> collisionNumber;
-			if (collisionNumber >= 0 && collisionNumber <= 6) collisionTiles[row][col] = (CollisionTile)collisionNumber;
+			if (collisionNumber >= 0 && collisionNumber <= 6)
+			{
+				collisionTypes[row][col] = (CollisionTile)collisionNumber;
+			}
 		}
 	}
 

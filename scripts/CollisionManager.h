@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Entity.h"
 #include "Constants.h"
 #include "MathUtils.h"
 #include <vector>
@@ -7,7 +8,7 @@
 #include <iostream>
 #include <fstream>
 
-enum CollisionTile
+enum CollisionType
 {
 	None,
 	Solid,
@@ -18,10 +19,10 @@ enum CollisionTile
 	NextLevel
 };
 
-struct CollisionInfo
+struct TileCollisionInfo
 {
-	bool isCollided;
-	vector2 direction;
+	SDL_FRect tilePos;
+	CollisionType collisionType;
 };
 
 class CollisionManager
@@ -29,11 +30,11 @@ class CollisionManager
 public:
 	CollisionManager(std::vector<std::unique_ptr<Entity>>& entities)
 	void init();
-	bool tileCollision(Enity& entity);
-	CollisionInfo entityCollision(Entity& entity);
+	std::vector<TileCollisionInfo> tileCollision(Enity& entity);
+	std::vector<EntityType> entityCollision(Entity& entity);
 
 private:
-	void loadCollisionTiles();
-	CollisionTile collisionTiles[MAP_HEIGHT_TILE][MAP_WIDTH_TILE];
+	void loadCollisionTypes();
+	CollisionType collisionTypes[MAP_HEIGHT_TILE][MAP_WIDTH_TILE];
 	std::vector<std::unique_ptr<Entity>>& _entities;
 };

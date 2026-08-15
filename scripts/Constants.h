@@ -10,3 +10,11 @@
 #define WINDOW_HEIGHT (MAP_HEIGHT_TILE * CELL_SIZE)
 
 float gravity = 0.2f;
+
+enum Direction
+{
+	Up,
+	Down,
+	Left,
+	Right
+};
