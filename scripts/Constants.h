@@ -10,6 +10,7 @@
 #define WINDOW_HEIGHT (MAP_HEIGHT_TILE * CELL_SIZE)
 
 const float gravity = 0.2f;
+const float friction = 4;
 
 enum Direction
 {

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <array>
 #include <memory>
 #include <algorithm>
 #include <SDL3/SDL.h>
@@ -26,7 +27,7 @@ public:
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
-    bool keys[SDL_SCANCODE_COUNT] = { false };
+    std::array<bool, SDL_SCANCODE_COUNT> keys = { false };
     bool isRunning;
     std::vector<std::unique_ptr<Entity>> entities;
     Camera* camera;

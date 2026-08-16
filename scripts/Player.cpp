@@ -1,8 +1,7 @@
 #include "Player.h"
-#include <iostream>
 #include "Camera.h"
 
-Player::Player()
+Player::Player(std::array<bool, SDL_SCANCODE_COUNT>& keys)
 	:
 	playerSmallRunFrames{ nullptr, nullptr, nullptr },
 	playerSmallIdleFrame(nullptr),
@@ -15,7 +14,8 @@ Player::Player()
 	playerBigJumpFrame(nullptr),
 	playerBigSlideFrame(nullptr),
 	playerBigFlag(nullptr),
-	playerMiddleFrame(nullptr)
+	playerMiddleFrame(nullptr),
+	_keys(keys)
 {}
 
 Player::~Player()
@@ -55,55 +55,22 @@ void Player::init(SDL_Renderer* renderer)
 	playerMiddleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Middle.png");
 	flip = SDL_FLIP_NONE;
 	type = EntityType::PlayerType;
-	runSpeed = 150;
 	velocity.x = 0;
 	velocity.y = 0;
-}
-
-void Player::movement(float deltaTime)
-{
-	velocity.x = runSpeed * deltaTime;
+	center = { rect.w / 2, rect.h / 2 };
 }
 
 void Player::update(float deltaTime, CollisionManager& collisionManager)
 {
 	movement(deltaTime);
+	flip = facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 	Entity::update(deltaTime, collisionManager);
 	if (isGrounded)
 	{
-		/*float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : 0;*/
-		float frameDelay = velocity.x != 0 ? 0.08f : 0;
+		float frameDelay = velocity.x != 0 ? 0.15f / abs(velocity.x) : 0;
 		animation(3, frameDelay);
 	}
 	
-}
-
-void Player::onCollisionWithEntity(EntityType type, Direction direction)
-{
-	switch (type)
-	{
-		case EntityType::EnemyType:
-			if (direction == Direction::Right || direction == Direction::Left || direction == Direction::Up)
-			{
-				isDied = true;
-				// Die();
-			}
-			else
-			{
-				// jump
-			}
-			break;
-		case EntityType::GrowMushroomType:
-			isBig = true;
-			break;
-		case EntityType::HealthMushroomType:
-			life++;
-			break;
-		case EntityType::StarType:
-			starMode = true;
-			// Star()
-			break;
-	}
 }
 
 void Player::draw(SDL_Renderer* renderer, Camera* camera)
@@ -162,4 +129,123 @@ void Player::restart()
 {
 	rect = { CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE , CELL_SIZE * 2, CELL_SIZE * 2 };
 	life--;
+}
+
+void Player::movement(float deltaTime)
+{
+	horizontalMovement(deltaTime);
+}
+
+void Player::onCollisionWithEntity(EntityType type, Direction direction)
+{
+	switch (type)
+	{
+	case EntityType::EnemyType:
+		if (direction == Direction::Right || direction == Direction::Left || direction == Direction::Up)
+		{
+			isDied = true;
+			// Die();
+		}
+		else
+		{
+			// jump
+		}
+		break;
+	case EntityType::GrowMushroomType:
+		isBig = true;
+		break;
+	case EntityType::HealthMushroomType:
+		life++;
+		break;
+	case EntityType::StarType:
+		starMode = true;
+		// Star()
+		break;
+	}
+}
+
+void Player::horizontalMovement(float deltaTime)
+{
+	isSliding = false;
+	maxRunSpeed = (_keys[SDL_SCANCODE_Z] && isGrounded) ? 300 : 150;
+	runAcceleration = (_keys[SDL_SCANCODE_Z] && isGrounded && velocity.x >= 200 * deltaTime) ? 20 : 10;
+	if (_keys[SDL_SCANCODE_RIGHT] && velocity.x < maxRunSpeed * deltaTime)
+	{
+		velocity.x += runAcceleration * deltaTime;
+		if (velocity.x > maxRunSpeed * deltaTime) velocity.x = maxRunSpeed * deltaTime;
+	}
+	if (_keys[SDL_SCANCODE_LEFT] && velocity.x > -maxRunSpeed * deltaTime)
+	{
+		velocity.x -= runAcceleration * deltaTime;
+		if (velocity.x < -maxRunSpeed * deltaTime) velocity.x = -maxRunSpeed * deltaTime;
+	}
+	if (isGrounded)
+	{
+		if (_keys[SDL_SCANCODE_LEFT])
+		{
+			facingRight = false;
+		}
+		if (_keys[SDL_SCANCODE_RIGHT])
+		{
+			facingRight = true;
+		}
+		if (velocity.x > 0 && _keys[SDL_SCANCODE_LEFT])
+		{
+			isSliding = true;
+			velocity.x -= friction * deltaTime;
+			if (velocity.x < 0)
+			{
+				velocity.x = 0;
+			}
+		}
+		if (_keys[SDL_SCANCODE_RIGHT] && velocity.x > maxRunSpeed * deltaTime)
+		{
+			velocity.x -= friction * deltaTime;
+			if (velocity.x < maxRunSpeed * deltaTime)
+			{
+				velocity.x = maxRunSpeed * deltaTime;
+			}
+		}
+		if (_keys[SDL_SCANCODE_LEFT] && velocity.x < -maxRunSpeed * deltaTime)
+		{
+			velocity.x += friction * deltaTime;
+			if (velocity.x > -maxRunSpeed * deltaTime)
+			{
+				velocity.x = -maxRunSpeed * deltaTime;
+			}
+		}
+		if (velocity.x < 0 && _keys[SDL_SCANCODE_RIGHT])
+		{
+			isSliding = true;
+			velocity.x += friction * deltaTime;
+			if (velocity.x > 0)
+			{
+				velocity.x = 0;
+			}
+		}
+		if (!_keys[SDL_SCANCODE_RIGHT] && !_keys[SDL_SCANCODE_LEFT])
+		{
+			if (velocity.x > 0)
+			{
+				velocity.x -= friction * deltaTime;
+				if (velocity.x < 0)
+				{
+					velocity.x = 0;
+				}
+			}
+			if (velocity.x < 0)
+			{
+				velocity.x += friction * deltaTime;
+				if (velocity.x > 0)
+				{
+					velocity.x = 0;
+				}
+			}
+		}
+	}
+}
+
+void Player::verticalMovement(float deltaTime)
+{
+	return;
 }

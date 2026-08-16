@@ -37,5 +37,5 @@ protected:
 	int frameIndex = 0;
 	float animTimer = 0;
 	float lastAnimTimer = 0;
-	SDL_FPoint center = { rect.w / 2, rect.h / 2 };
+	SDL_FPoint center;
 };
