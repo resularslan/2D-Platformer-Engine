@@ -23,12 +23,14 @@ public:
 	int getID();
 	void setID(int newID);
 protected:
-	virtual void movement(float deltaTime) = 0;
-	virtual void onCollisionWithEntity(EntityType type, Direction direction) = 0;
+	virtual void verticalMovement(float deltaTime) = 0;
+	virtual void horizontalMovement(float deltaTime) = 0;
+	virtual void onCollisionWithEntity(Entity* entity, Direction direction) {};
+	virtual void onCollisionWithTile(Direction direction) = 0;
 	/*void setOldPos();*/
 	void animation(int frameCount, float frameDelay);
 	SDL_FRect rect;
-	vector2 velocity;
+	vector2 velocity = vector2::zero;
 	/*vector2 oldPos;*/
 	bool isGrounded;
 	EntityType type;

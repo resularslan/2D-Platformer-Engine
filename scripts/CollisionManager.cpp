@@ -34,10 +34,10 @@ std::vector<TileCollisionInfo> CollisionManager::tileCollision(Entity& entity)
 	return infos;
 }
 
-std::vector<EntityType> CollisionManager::entityCollision(Entity& entity)
+std::vector<Entity*> CollisionManager::entityCollision(Entity& entity)
 {
-	std::vector<EntityType> types;
-	for (const auto& otherEntity : _entities)
+	std::vector<Entity*> entityList;
+	for (auto& otherEntity : _entities)
 	{
 		if (otherEntity->getID() == entity.getID()) continue;
 		if (entity.getRect().x + entity.getRect().w > otherEntity->getRect().x &&
@@ -45,12 +45,10 @@ std::vector<EntityType> CollisionManager::entityCollision(Entity& entity)
 			entity.getRect().y + entity.getRect().h > otherEntity->getRect().y &&
 			otherEntity->getRect().y + otherEntity->getRect().h > entity.getRect().y)
 		{
-			EntityType type;
-			type = otherEntity->getType();
-			types.push_back(type);
+			entityList.push_back(otherEntity.get());
 		}
 	}
-	return types;
+	return entityList;
 }
 
 void CollisionManager::loadCollisionTypes()

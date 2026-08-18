@@ -4,37 +4,39 @@
 void Entity::update(float deltaTime, CollisionManager& collisionManager)
 {
 	/*setOldPos();*/
-	animTimer += deltaTime;
+	horizontalMovement(deltaTime);
+	verticalMovement(deltaTime);
 	isGrounded = false;
 	velocity.y += gravity * deltaTime;
+	animTimer += deltaTime;
 	rect.x += velocity.x;
 	std::vector<TileCollisionInfo> xTileCollisions = collisionManager.tileCollision(*this);
-	std::vector<EntityType> xEntityCollisions = collisionManager.entityCollision(*this);
+	std::vector<Entity*> xEntityCollisions = collisionManager.entityCollision(*this);
 	if (xTileCollisions.size() > 0)
 	{
 		if (velocity.x > 0)
 		{
 			rect.x = xTileCollisions[0].tilePos.x - rect.w;
-			velocity.x = 0;
+			onCollisionWithTile(Direction::Right);
 		}
 		else if (velocity.x < 0)
 		{
 			rect.x = xTileCollisions[0].tilePos.x + xTileCollisions[0].tilePos.w;
-			velocity.x = 0;
+			onCollisionWithTile(Direction::Left);
 		}
 	}
 	if (xEntityCollisions.size() > 0)
 	{
 		if (velocity.x > 0)
 		{
-			for (EntityType entity : xEntityCollisions)
+			for (auto& entity : xEntityCollisions)
 			{
 				onCollisionWithEntity(entity, Direction::Right);
 			}
 		}
 		else if (velocity.x < 0)
 		{
-			for (EntityType entity : xEntityCollisions)
+			for (auto& entity : xEntityCollisions)
 			{
 				onCollisionWithEntity(entity, Direction::Left);
 			}
@@ -42,33 +44,32 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 	}
 	rect.y += velocity.y;
 	std::vector<TileCollisionInfo> yTileCollisions = collisionManager.tileCollision(*this);
-	std::vector<EntityType> yEntityCollisions = collisionManager.entityCollision(*this);
+	std::vector<Entity*> yEntityCollisions = collisionManager.entityCollision(*this);
 	if (yTileCollisions.size() > 0)
 	{
 		if (velocity.y > 0)
 		{
 			rect.y = yTileCollisions[0].tilePos.y - rect.h;
-			isGrounded = true;
-			velocity.y = 0;
+			onCollisionWithTile(Direction::Down);
 		}
 		else if (velocity.y < 0)
 		{
 			rect.y = yTileCollisions[0].tilePos.y + yTileCollisions[0].tilePos.h;
-			velocity.y = 0;
+			onCollisionWithTile(Direction::Up);
 		}
 	}
 	if (yEntityCollisions.size() > 0)
 	{
 		if (velocity.y > 0)
 		{
-			for (EntityType entity : yEntityCollisions)
+			for (auto& entity : yEntityCollisions)
 			{
 				onCollisionWithEntity(entity, Direction::Down);
 			}
 		}
 		else if (velocity.y < 0)
 		{
-			for (EntityType entity : yEntityCollisions)
+			for (auto& entity : yEntityCollisions)
 			{
 				onCollisionWithEntity(entity, Direction::Up);
 			}
@@ -101,6 +102,26 @@ void Entity::setID(int newID)
 //	oldPos.x = rect.x;
 //	oldPos.y = rect.y;
 //}
+
+void Entity::onCollisionWithTile(Direction direction)
+{
+	switch (direction)
+	{
+	case Up:
+		velocity.y = 0;
+		break;
+	case Down:
+		isGrounded = true;
+		velocity.y = 0;
+		break;
+	case Left:
+		break;
+	case Right:
+		break;
+	default:
+		break;
+	}
+}
 
 void Entity::animation(int frameCount, float frameDelay)
 {

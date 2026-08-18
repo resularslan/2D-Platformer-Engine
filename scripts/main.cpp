@@ -4,7 +4,6 @@
 Uint64 previousFrameStart;
 float maxDeltaTime = 0.05f;
 
-
 int main()
 {
 	Game* game = new Game();

@@ -33,7 +33,7 @@ public:
 	CollisionManager(std::vector<std::unique_ptr<Entity>>& entities);
 	void init();
 	std::vector<TileCollisionInfo> tileCollision(Entity& entity);
-	std::vector<EntityType> entityCollision(Entity& entity);
+	std::vector<Entity*> entityCollision(Entity& entity);
 
 private:
 	void loadCollisionTypes();

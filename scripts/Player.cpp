@@ -1,7 +1,8 @@
 #include "Player.h"
 #include "Camera.h"
+#include <iostream>
 
-Player::Player(std::array<bool, SDL_SCANCODE_COUNT>& keys)
+Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys)
 	:
 	playerSmallRunFrames{ nullptr, nullptr, nullptr },
 	playerSmallIdleFrame(nullptr),
@@ -62,15 +63,13 @@ void Player::init(SDL_Renderer* renderer)
 
 void Player::update(float deltaTime, CollisionManager& collisionManager)
 {
-	movement(deltaTime);
-	flip = facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 	Entity::update(deltaTime, collisionManager);
 	if (isGrounded)
 	{
-		float frameDelay = velocity.x != 0 ? 0.15f / abs(velocity.x) : 0;
+		float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : 0;
 		animation(3, frameDelay);
 	}
-	
+	previousJumpKeyState = _keys[SDL_SCANCODE_Z];
 }
 
 void Player::draw(SDL_Renderer* renderer, Camera* camera)
@@ -95,7 +94,7 @@ void Player::draw(SDL_Renderer* renderer, Camera* camera)
 		{
 			SDL_RenderTextureRotated(renderer, playerBigJumpFrame, NULL, &newRect, 0, &center, flip);
 		}
-		else if (isGrounded && velocity.x != 0)
+		else if (velocity.x != 0)
 		{
 			SDL_RenderTextureRotated(renderer, playerBigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 		}
@@ -114,7 +113,7 @@ void Player::draw(SDL_Renderer* renderer, Camera* camera)
 		{
 			SDL_RenderTextureRotated(renderer, playerSmallJumpFrame, NULL, &newRect, 0, &center, flip);
 		}
-		else if (isGrounded && velocity.x != 0)
+		else if (velocity.x != 0)
 		{
 			SDL_RenderTextureRotated(renderer, playerSmallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 		}
@@ -131,35 +130,28 @@ void Player::restart()
 	life--;
 }
 
-void Player::movement(float deltaTime)
-{
-	horizontalMovement(deltaTime);
-}
+//void Player::movement(float deltaTime)
+//{
+//	horizontalMovement(deltaTime);
+//}
 
-void Player::onCollisionWithEntity(EntityType type, Direction direction)
+void Player::onCollisionWithTile(Direction direction)
 {
-	switch (type)
+	Entity::onCollisionWithTile(direction);
+	switch (direction)
 	{
-	case EntityType::EnemyType:
-		if (direction == Direction::Right || direction == Direction::Left || direction == Direction::Up)
-		{
-			isDied = true;
-			// Die();
-		}
-		else
-		{
-			// jump
-		}
+	case Up:
 		break;
-	case EntityType::GrowMushroomType:
-		isBig = true;
+	case Down:
+		isJumping = false;
 		break;
-	case EntityType::HealthMushroomType:
-		life++;
+	case Left:
+		velocity.x = 0;
 		break;
-	case EntityType::StarType:
-		starMode = true;
-		// Star()
+	case Right:
+		velocity.x = 0;
+		break;
+	default:
 		break;
 	}
 }
@@ -167,8 +159,8 @@ void Player::onCollisionWithEntity(EntityType type, Direction direction)
 void Player::horizontalMovement(float deltaTime)
 {
 	isSliding = false;
-	maxRunSpeed = (_keys[SDL_SCANCODE_Z] && isGrounded) ? 300 : 150;
-	runAcceleration = (_keys[SDL_SCANCODE_Z] && isGrounded && velocity.x >= 200 * deltaTime) ? 20 : 10;
+	maxRunSpeed = (_keys[SDL_SCANCODE_X] && isGrounded) ? 300 : 150;
+	runAcceleration = (_keys[SDL_SCANCODE_X] && isGrounded && velocity.x >= 200 * deltaTime) ? 20 : 10;
 	if (_keys[SDL_SCANCODE_RIGHT] && velocity.x < maxRunSpeed * deltaTime)
 	{
 		velocity.x += runAcceleration * deltaTime;
@@ -243,9 +235,26 @@ void Player::horizontalMovement(float deltaTime)
 			}
 		}
 	}
+	flip = facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 }
 
 void Player::verticalMovement(float deltaTime)
 {
-	return;
+	isFalling = velocity.y > 0;
+	if (!previousJumpKeyState && _keys[SDL_SCANCODE_Z] && isGrounded)
+	{	
+		velocity.y = -jumpForce;
+		isJumping = true;
+		canSustainJump = true;
+		jumpTimer = 0;
+	}
+	if (!_keys[SDL_SCANCODE_Z] || isFalling || jumpTimer >= 0.2f)
+	{
+		canSustainJump = false;
+	}
+	if (_keys[SDL_SCANCODE_Z] && canSustainJump && !isGrounded)
+	{
+		jumpTimer += deltaTime;
+		velocity.y -= jumpHoldForce * deltaTime;
+	}
 }

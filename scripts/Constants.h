@@ -9,7 +9,7 @@
 #define WINDOW_WIDTH (WINDOW_WIDTH_TILE * CELL_SIZE)
 #define WINDOW_HEIGHT (MAP_HEIGHT_TILE * CELL_SIZE)
 
-const float gravity = 0.2f;
+const float gravity = 20;
 const float friction = 4;
 
 enum Direction
@@ -24,7 +24,5 @@ enum EntityType
 {
 	PlayerType,
 	EnemyType,
-	GrowMushroomType,
-	HealthMushroomType,
-	StarType
+	InteractableType
 };
