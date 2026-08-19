@@ -31,8 +31,9 @@ protected:
 	void animation(int frameCount, float frameDelay);
 	SDL_FRect rect;
 	vector2 velocity = vector2::zero;
-	/*vector2 oldPos;*/
-	bool isGrounded;
+	vector2 oldPos;
+	bool isActive = true;
+	bool isGrounded = false;
 	EntityType type;
 	int id;
 	SDL_FlipMode flip;

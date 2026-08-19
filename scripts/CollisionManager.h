@@ -12,11 +12,7 @@ enum CollisionType
 {
 	None,
 	Solid,
-	Brick,
-	QuestionBlock,
-	PipeTop,
-	FlagPole,
-	NextLevel
+	SolidFromBottom
 };
 
 struct TileCollisionInfo

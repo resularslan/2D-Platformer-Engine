@@ -16,7 +16,7 @@ void Game::init()
 	SDL_SetRenderVSync(renderer, 1);
 	camera = new Camera();
 	tileMap = new TileMap();
-	player = std::make_unique<Player>(keys);
+	player = std::make_unique<Player>(keys, *camera);
 	entities.push_back(std::move(player));
 	collisionManager = new CollisionManager(entities);
 	camera->init();

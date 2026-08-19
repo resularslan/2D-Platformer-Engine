@@ -1,14 +1,13 @@
 #include "Player.h"
 #include "Camera.h"
-#include <iostream>
 
-Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys)
+Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, Camera& camera)
 	:
 	playerSmallRunFrames{ nullptr, nullptr, nullptr },
 	playerSmallIdleFrame(nullptr),
 	playerSmallJumpFrame(nullptr),
 	playerSmallSlideFrame(nullptr),
-	playerSmallDeathFrame(nullptr),
+	playerDeathFrame(nullptr),
 	playerSmallFlag(nullptr),
 	playerBigRunFrames{ nullptr, nullptr, nullptr },
 	playerBigIdleFrame(nullptr),
@@ -16,7 +15,8 @@ Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys)
 	playerBigSlideFrame(nullptr),
 	playerBigFlag(nullptr),
 	playerMiddleFrame(nullptr),
-	_keys(keys)
+	_keys(keys),
+	_camera(camera)
 {}
 
 Player::~Player()
@@ -27,7 +27,7 @@ Player::~Player()
 	}
 	SDL_DestroyTexture(playerSmallJumpFrame);
 	SDL_DestroyTexture(playerSmallSlideFrame);
-	SDL_DestroyTexture(playerSmallDeathFrame);
+	SDL_DestroyTexture(playerDeathFrame);
 	for (int i = 0; i < 3; i++) {
 		SDL_DestroyTexture(playerBigRunFrames[i]);
 	}
@@ -44,7 +44,7 @@ void Player::init(SDL_Renderer* renderer)
 	playerSmallJumpFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Jump.png");
 	playerSmallIdleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Idle.png");
 	playerSmallSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Slide.png");
-	playerSmallDeathFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Death.png");
+	playerDeathFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Death.png");
 	playerSmallFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Flag.png");
 	playerBigRunFrames[0] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run1.png");
 	playerBigRunFrames[1] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run2.png");
@@ -56,20 +56,57 @@ void Player::init(SDL_Renderer* renderer)
 	playerMiddleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Middle.png");
 	flip = SDL_FLIP_NONE;
 	type = EntityType::PlayerType;
-	velocity.x = 0;
-	velocity.y = 0;
 	center = { rect.w / 2, rect.h / 2 };
+	oldPos = { rect.x, rect.y };
+	currentState = Alive;
 }
 
 void Player::update(float deltaTime, CollisionManager& collisionManager)
 {
-	Entity::update(deltaTime, collisionManager);
-	if (isGrounded)
+	switch (currentState)
 	{
-		float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : 0;
-		animation(3, frameDelay);
+	case Alive:
+		if (_keys[SDL_SCANCODE_D])
+		{
+			die();
+		}
+		Entity::update(deltaTime, collisionManager);
+		if (rect.x < _camera.getRect().x)
+		{
+			rect.x = _camera.getRect().x;
+			velocity.x = 0;
+		}
+		else if (rect.x > _camera.getRect().x + _camera.getRect().w)
+		{
+			rect.x = (_camera.getRect().x + _camera.getRect().w) - rect.w;
+			velocity.x = 0;
+		}
+		if (isGrounded)
+		{
+			float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : runAnimationSpeed / (80 * deltaTime);
+			animation(3, frameDelay);
+		}
+		previousJumpKeyState = _keys[SDL_SCANCODE_Z];
+		if (!_camera.inCamera(rect))
+		{
+			die();
+		}
+		break;
+	case Dying:
+		deathWaitTimer += deltaTime;
+		if (deathWaitTimer > 0.4f)
+		{
+			if(_camera.inCamera(rect))
+			{
+				velocity.y += gravity * deltaTime;
+			}
+			rect.y += velocity.y;
+		}
+		break;
+	default:
+		break;
 	}
-	previousJumpKeyState = _keys[SDL_SCANCODE_Z];
+	
 }
 
 void Player::draw(SDL_Renderer* renderer, Camera* camera)
@@ -84,43 +121,65 @@ void Player::draw(SDL_Renderer* renderer, Camera* camera)
 	{
 		return;
 	}
-	if (isBig)
+	switch (currentState)
 	{
-		if (isSliding)
+	case Alive:
+		if (isBig)
 		{
-			SDL_RenderTextureRotated(renderer, playerBigSlideFrame, NULL, &newRect, 0, &center, flip);
-		}
-		else if (isJumping)
-		{
-			SDL_RenderTextureRotated(renderer, playerBigJumpFrame, NULL, &newRect, 0, &center, flip);
-		}
-		else if (velocity.x != 0)
-		{
-			SDL_RenderTextureRotated(renderer, playerBigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+			if (isSliding)
+			{
+				SDL_RenderTextureRotated(renderer, playerBigSlideFrame, NULL, &newRect, 0, &center, flip);
+			}
+			else if (isJumping)
+			{
+				SDL_RenderTextureRotated(renderer, playerBigJumpFrame, NULL, &newRect, 0, &center, flip);
+			}
+			else if (_keys[SDL_SCANCODE_RIGHT] || _keys[SDL_SCANCODE_LEFT])
+			{
+				SDL_RenderTextureRotated(renderer, playerBigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+			}
+			else
+			{
+				SDL_RenderTextureRotated(renderer, playerBigIdleFrame, NULL, &newRect, 0, &center, flip);
+			}
 		}
 		else
 		{
-			SDL_RenderTextureRotated(renderer, playerBigIdleFrame, NULL, &newRect, 0, &center, flip);
+			if (isSliding)
+			{
+				SDL_RenderTextureRotated(renderer, playerSmallSlideFrame, NULL, &newRect, 0, &center, flip);
+			}
+			else if (isJumping)
+			{
+				SDL_RenderTextureRotated(renderer, playerSmallJumpFrame, NULL, &newRect, 0, &center, flip);
+			}
+			else if (_keys[SDL_SCANCODE_RIGHT] || _keys[SDL_SCANCODE_LEFT] || velocity.x != 0)
+			{
+				SDL_RenderTextureRotated(renderer, playerSmallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+			}
+			else
+			{
+				SDL_RenderTextureRotated(renderer, playerSmallIdleFrame, NULL, &newRect, 0, &center, flip);
+			}
 		}
+		break;
+	case Dying:
+		SDL_RenderTextureRotated(renderer, playerDeathFrame, NULL, &newRect, 0, &center, flip);
+		break;
+	default:
+		break;
 	}
-	else
+}
+
+void Player::die()
+{
+	if (canDie)
 	{
-		if (isSliding)
-		{
-			SDL_RenderTextureRotated(renderer, playerSmallSlideFrame, NULL, &newRect, 0, &center, flip);
-		}
-		else if (isJumping)
-		{
-			SDL_RenderTextureRotated(renderer, playerSmallJumpFrame, NULL, &newRect, 0, &center, flip);
-		}
-		else if (velocity.x != 0)
-		{
-			SDL_RenderTextureRotated(renderer, playerSmallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
-		}
-		else
-		{
-			SDL_RenderTextureRotated(renderer, playerSmallIdleFrame, NULL, &newRect, 0, &center, flip);
-		}
+		rect.y += 8;
+		deathWaitTimer = 0;
+		currentState = Dying;
+		velocity.x = 0;
+		velocity.y = -8;
 	}
 }
 
