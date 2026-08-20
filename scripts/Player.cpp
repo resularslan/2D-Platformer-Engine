@@ -221,6 +221,15 @@ void Player::die()
 {
 	if (canDie)
 	{
+		if (isBig)
+		{
+			rect.h = CELL_SIZE * 2;
+			rect.y += CELL_SIZE * 3;
+		}
+		else
+		{
+			rect.y += CELL_SIZE / 2;
+		}
 		deathWaitTimer = 0;
 		currentState = Dying;
 		velocity.x = 0;
