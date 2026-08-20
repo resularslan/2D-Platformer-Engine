@@ -54,6 +54,14 @@ void Player::init(SDL_Renderer* renderer)
 	playerBigSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Slide.png");
 	playerBigFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Flag.png");
 	playerMiddleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Middle.png");
+	growInfos[0] = { 0.1f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
+	growInfos[1] = { 0.2f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
+	growInfos[2] = { 0.3f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
+	growInfos[3] = { 0.4f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
+	growInfos[4] = { 0.5f, CELL_SIZE * 4, CELL_SIZE * 2, playerBigIdleFrame };
+	growInfos[5] = { 0.6f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
+	growInfos[6] = { 0.7f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
+	growInfos[7] = { 1, CELL_SIZE * 4, CELL_SIZE * 2, playerBigIdleFrame };
 	flip = SDL_FLIP_NONE;
 	type = EntityType::PlayerType;
 	center = { rect.w / 2, rect.h / 2 };
@@ -70,6 +78,10 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		{
 			die();
 		}
+		if (_keys[SDL_SCANCODE_G])
+		{
+			grow();
+		}
 		Entity::update(deltaTime, collisionManager);
 		if (rect.x < _camera.getRect().x)
 		{
@@ -84,12 +96,30 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		if (isGrounded)
 		{
 			float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : runAnimationSpeed / (80 * deltaTime);
-			animation(3, frameDelay);
+			animation(3, frameDelay, deltaTime);
 		}
 		previousJumpKeyState = _keys[SDL_SCANCODE_Z];
-		if (!_camera.inCamera(rect))
+		if (rect.y > _camera.getRect().y + _camera.getRect().h)
 		{
 			die();
+		}
+		break;
+	case Growing:
+		growTimer += deltaTime;
+		for (auto& info : growInfos)
+		{
+			if (growTimer < info.timeThreshold)
+			{
+				rect.y = originalY - info.offset;
+				rect.h = info.height;
+				break;
+			}
+		}
+		if (growTimer >= 1)
+		{
+			currentState = Alive;
+			oldPos.y = originalY - CELL_SIZE * 2;
+			isBig = true;
 		}
 		break;
 	case Dying:
@@ -134,7 +164,7 @@ void Player::draw(SDL_Renderer* renderer, Camera* camera)
 			{
 				SDL_RenderTextureRotated(renderer, playerBigJumpFrame, NULL, &newRect, 0, &center, flip);
 			}
-			else if (_keys[SDL_SCANCODE_RIGHT] || _keys[SDL_SCANCODE_LEFT])
+			else if (_keys[SDL_SCANCODE_RIGHT] || _keys[SDL_SCANCODE_LEFT] || velocity.x != 0)
 			{
 				SDL_RenderTextureRotated(renderer, playerBigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 			}
@@ -163,23 +193,21 @@ void Player::draw(SDL_Renderer* renderer, Camera* camera)
 			}
 		}
 		break;
+	case Growing:
+		for (auto& info : growInfos)
+		{
+			if (growTimer < info.timeThreshold)
+			{
+				SDL_RenderTextureRotated(renderer, info.texture, NULL, &newRect, 0, &center, flip);
+				break;
+			}
+		}
+		break;
 	case Dying:
 		SDL_RenderTextureRotated(renderer, playerDeathFrame, NULL, &newRect, 0, &center, flip);
 		break;
 	default:
 		break;
-	}
-}
-
-void Player::die()
-{
-	if (canDie)
-	{
-		rect.y += 8;
-		deathWaitTimer = 0;
-		currentState = Dying;
-		velocity.x = 0;
-		velocity.y = -8;
 	}
 }
 
@@ -189,10 +217,24 @@ void Player::restart()
 	life--;
 }
 
-//void Player::movement(float deltaTime)
-//{
-//	horizontalMovement(deltaTime);
-//}
+void Player::die()
+{
+	if (canDie)
+	{
+		deathWaitTimer = 0;
+		currentState = Dying;
+		velocity.x = 0;
+		velocity.y = -8;
+	}
+}
+
+void Player::grow()
+{
+	growTimer = 0;
+	currentState = Growing;
+	frameIndex = 0;
+	originalY = rect.y;
+}
 
 void Player::onCollisionWithTile(Direction direction)
 {

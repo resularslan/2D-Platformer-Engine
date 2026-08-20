@@ -17,7 +17,6 @@ public:
 	virtual void update(float deltaTime, CollisionManager& collisionManager) = 0;
 	virtual void restart() = 0;
 	virtual void draw(SDL_Renderer* renderer, Camera* camera) = 0;
-	/*vector2 getOldPos();*/
 	SDL_FRect getRect();
 	EntityType getType();
 	int getID();
@@ -27,8 +26,7 @@ protected:
 	virtual void horizontalMovement(float deltaTime) = 0;
 	virtual void onCollisionWithEntity(Entity* entity, Direction direction) {};
 	virtual void onCollisionWithTile(Direction direction) = 0;
-	/*void setOldPos();*/
-	void animation(int frameCount, float frameDelay);
+	void animation(int frameCount, float frameDelay, float deltaTime);
 	SDL_FRect rect;
 	vector2 velocity = vector2::zero;
 	vector2 oldPos;

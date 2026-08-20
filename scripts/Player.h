@@ -4,7 +4,16 @@
 enum PlayerState
 {
 	Alive,
+	Growing,
 	Dying,
+};
+
+struct TransformationAnimationInfo
+{
+	float timeThreshold;
+	float height;
+	float offset;
+	SDL_Texture* texture;
 };
 
 class Player : public Entity
@@ -17,6 +26,7 @@ public:
 	void draw(SDL_Renderer* renderer, Camera* camera) override;
 	void restart() override;
 	void die();
+	void grow();
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void verticalMovement(float deltaTime) override;
@@ -54,7 +64,8 @@ private:
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	int invisibleAnimation = 0;
-	int growAnimation = 0;
+	float growTimer = 0;
+	TransformationAnimationInfo growInfos[8];
 	float originalY = 0;
 	int life = 3;
 };

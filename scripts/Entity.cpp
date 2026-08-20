@@ -7,7 +7,6 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 	verticalMovement(deltaTime);
 	isGrounded = false;
 	velocity.y += gravity * deltaTime;
-	animTimer += deltaTime;
 	rect.x += velocity.x;
 	std::vector<TileCollisionInfo> xTileCollisions = collisionManager.tileCollision(*this);
 	std::vector<Entity*> xEntityCollisions = collisionManager.entityCollision(*this);
@@ -150,12 +149,6 @@ void Entity::setID(int newID)
 	id = newID;
 }
 
-//void Entity::setOldPos()
-//{
-//	oldPos.x = rect.x;
-//	oldPos.y = rect.y;
-//}
-
 void Entity::onCollisionWithTile(Direction direction)
 {
 	switch (direction)
@@ -176,8 +169,9 @@ void Entity::onCollisionWithTile(Direction direction)
 	}
 }
 
-void Entity::animation(int frameCount, float frameDelay)
+void Entity::animation(int frameCount, float frameDelay, float deltaTime)
 {
+	animTimer += deltaTime;
 	if (animTimer > lastAnimTimer + frameDelay)
 	{
 		lastAnimTimer =  animTimer;
