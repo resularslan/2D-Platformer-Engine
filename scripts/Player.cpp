@@ -224,7 +224,14 @@ void Player::die()
 		deathWaitTimer = 0;
 		currentState = Dying;
 		velocity.x = 0;
-		velocity.y = -8;
+		if (_camera.inCamera(rect))
+		{
+			velocity.y = -8;
+		}
+		else
+		{
+			velocity.y = 0;
+		}
 	}
 }
 
