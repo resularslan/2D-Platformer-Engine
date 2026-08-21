@@ -10,7 +10,8 @@ enum PlayerState
 
 struct TransformationAnimationInfo
 {
-	float timeThreshold;
+	float startTime;
+	float endTime;
 	float height;
 	float offset;
 	SDL_Texture* texture;
@@ -38,11 +39,13 @@ private:
 	SDL_Texture* playerSmallSlideFrame;
 	SDL_Texture* playerDeathFrame;
 	SDL_Texture* playerSmallFlag;
+	SDL_Texture* playerSmallShrink;
 	SDL_Texture* playerBigRunFrames[3];
 	SDL_Texture* playerBigIdleFrame;
 	SDL_Texture* playerBigJumpFrame;
 	SDL_Texture* playerBigSlideFrame;
 	SDL_Texture* playerBigFlag;
+	SDL_Texture* playerBigShrink;
 	SDL_Texture* playerMiddleFrame;
 	const std::array<bool, SDL_SCANCODE_COUNT>& _keys;
 	Camera& _camera;
@@ -66,6 +69,7 @@ private:
 	int invisibleAnimation = 0;
 	float growTimer = 0;
 	TransformationAnimationInfo growInfos[8];
+	TransformationAnimationInfo shrinkInfos[27];
 	float originalY = 0;
 	int life = 3;
 };

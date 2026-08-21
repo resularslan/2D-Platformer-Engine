@@ -9,11 +9,13 @@ Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, Camera& camera)
 	playerSmallSlideFrame(nullptr),
 	playerDeathFrame(nullptr),
 	playerSmallFlag(nullptr),
+	playerSmallShrink(nullptr),
 	playerBigRunFrames{ nullptr, nullptr, nullptr },
 	playerBigIdleFrame(nullptr),
 	playerBigJumpFrame(nullptr),
 	playerBigSlideFrame(nullptr),
 	playerBigFlag(nullptr),
+	playerBigShrink(nullptr),
 	playerMiddleFrame(nullptr),
 	_keys(keys),
 	_camera(camera)
@@ -26,6 +28,8 @@ Player::~Player()
 		SDL_DestroyTexture(playerSmallRunFrames[i]);
 	}
 	SDL_DestroyTexture(playerSmallJumpFrame);
+	SDL_DestroyTexture(playerSmallFlag);
+	SDL_DestroyTexture(playerSmallShrink);
 	SDL_DestroyTexture(playerSmallSlideFrame);
 	SDL_DestroyTexture(playerDeathFrame);
 	for (int i = 0; i < 3; i++) {
@@ -33,6 +37,9 @@ Player::~Player()
 	}
 	SDL_DestroyTexture(playerBigJumpFrame);
 	SDL_DestroyTexture(playerBigSlideFrame);
+	SDL_DestroyTexture(playerBigFlag);
+	SDL_DestroyTexture(playerBigShrink);
+	SDL_DestroyTexture(playerMiddleFrame);
 }
 
 void Player::init(SDL_Renderer* renderer)
@@ -46,6 +53,7 @@ void Player::init(SDL_Renderer* renderer)
 	playerSmallSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Slide.png");
 	playerDeathFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Death.png");
 	playerSmallFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Flag.png");
+	playerSmallShrink = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Shrink.png");
 	playerBigRunFrames[0] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run1.png");
 	playerBigRunFrames[1] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run2.png");
 	playerBigRunFrames[2] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run3.png");
@@ -53,15 +61,16 @@ void Player::init(SDL_Renderer* renderer)
 	playerBigJumpFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Jump.png");
 	playerBigSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Slide.png");
 	playerBigFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Flag.png");
+	playerBigShrink = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Shrink.png");
 	playerMiddleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Middle.png");
-	growInfos[0] = { 0.1f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
-	growInfos[1] = { 0.2f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
-	growInfos[2] = { 0.3f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
-	growInfos[3] = { 0.4f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
-	growInfos[4] = { 0.5f, CELL_SIZE * 4, CELL_SIZE * 2, playerBigIdleFrame };
-	growInfos[5] = { 0.6f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
-	growInfos[6] = { 0.7f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
-	growInfos[7] = { 1, CELL_SIZE * 4, CELL_SIZE * 2, playerBigIdleFrame };
+	growInfos[0] = { 0 , 0.1f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
+	growInfos[1] = { 0.1f, 0.2f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
+	growInfos[2] = { 0.2f, 0.3f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
+	growInfos[3] = { 0.3f, 0.4f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
+	growInfos[4] = { 0.4f, 0.5f, CELL_SIZE * 4, CELL_SIZE * 2, playerBigIdleFrame };
+	growInfos[5] = { 0.5f, 0.6f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
+	growInfos[6] = { 0.6f, 0.7f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
+	growInfos[7] = { 0.7f, 1, CELL_SIZE * 4, CELL_SIZE * 2, playerBigIdleFrame };
 	flip = SDL_FLIP_NONE;
 	type = EntityType::PlayerType;
 	center = { rect.w / 2, rect.h / 2 };
@@ -108,7 +117,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		growTimer += deltaTime;
 		for (auto& info : growInfos)
 		{
-			if (growTimer < info.timeThreshold)
+			if (growTimer >= info.startTime && growTimer < info.endTime)
 			{
 				rect.y = originalY - info.offset;
 				rect.h = info.height;
@@ -196,7 +205,7 @@ void Player::draw(SDL_Renderer* renderer, Camera* camera)
 	case Growing:
 		for (auto& info : growInfos)
 		{
-			if (growTimer < info.timeThreshold)
+			if (growTimer >= info.startTime && growTimer < info.endTime)
 			{
 				SDL_RenderTextureRotated(renderer, info.texture, NULL, &newRect, 0, &center, flip);
 				break;
