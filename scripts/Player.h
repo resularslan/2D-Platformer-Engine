@@ -5,6 +5,7 @@ enum PlayerState
 {
 	Alive,
 	Growing,
+	Shrinking,
 	Dying,
 };
 
@@ -28,6 +29,7 @@ public:
 	void restart() override;
 	void die();
 	void grow();
+	void shrink();
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void verticalMovement(float deltaTime) override;
@@ -66,10 +68,14 @@ private:
 	float jumpHoldForce = 35;
 	bool isBig = false;
 	float deathWaitTimer = 0;
-	int invisibleAnimation = 0;
+	float invincibleTimer = 0;
+	float invincibleSeconds = 0;
+	int invincibleAnimation = 0;
 	float growTimer = 0;
 	TransformationAnimationInfo growInfos[8];
 	TransformationAnimationInfo shrinkInfos[27];
+	const float shrinkAnimationFrameSeconds = 0.016f;
+	float shrinkTimer = 0;
 	float originalY = 0;
 	int life = 3;
 };

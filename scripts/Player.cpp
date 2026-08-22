@@ -64,13 +64,40 @@ void Player::init(SDL_Renderer* renderer)
 	playerBigShrink = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Shrink.png");
 	playerMiddleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Middle.png");
 	growInfos[0] = { 0 , 0.1f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
-	growInfos[1] = { 0.1f, 0.2f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
+	growInfos[1] = { 0.1f, 0.2f, CELL_SIZE * 3, -CELL_SIZE, playerMiddleFrame };
 	growInfos[2] = { 0.2f, 0.3f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
-	growInfos[3] = { 0.3f, 0.4f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
-	growInfos[4] = { 0.4f, 0.5f, CELL_SIZE * 4, CELL_SIZE * 2, playerBigIdleFrame };
+	growInfos[3] = { 0.3f, 0.4f, CELL_SIZE * 3, -CELL_SIZE, playerMiddleFrame };
+	growInfos[4] = { 0.4f, 0.5f, CELL_SIZE * 4, -CELL_SIZE * 2, playerBigIdleFrame };
 	growInfos[5] = { 0.5f, 0.6f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
-	growInfos[6] = { 0.6f, 0.7f, CELL_SIZE * 3, CELL_SIZE, playerMiddleFrame };
-	growInfos[7] = { 0.7f, 1, CELL_SIZE * 4, CELL_SIZE * 2, playerBigIdleFrame };
+	growInfos[6] = { 0.6f, 0.7f, CELL_SIZE * 3, -CELL_SIZE, playerMiddleFrame };
+	growInfos[7] = { 0.7f, 1, CELL_SIZE * 4, -CELL_SIZE * 2, playerBigIdleFrame };
+	shrinkInfos[0] = { 0 , 1 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
+	shrinkInfos[1] = { 2 * shrinkAnimationFrameSeconds , 3 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
+	shrinkInfos[2] = { 4 * shrinkAnimationFrameSeconds , 5 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
+	shrinkInfos[3] = { 6 * shrinkAnimationFrameSeconds , 7 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
+	shrinkInfos[4] = { 8 * shrinkAnimationFrameSeconds , 9 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
+	shrinkInfos[5] = { 10 * shrinkAnimationFrameSeconds , 11 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
+	shrinkInfos[6] = { 12 * shrinkAnimationFrameSeconds , 13 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
+	shrinkInfos[7] = { 14 * shrinkAnimationFrameSeconds , 15 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
+	shrinkInfos[8] = { 16 * shrinkAnimationFrameSeconds , 17 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[9] = { 18 * shrinkAnimationFrameSeconds , 19 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[10] = { 20 * shrinkAnimationFrameSeconds , 21 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
+	shrinkInfos[11] = { 22 * shrinkAnimationFrameSeconds , 23 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
+	shrinkInfos[12] = { 24 * shrinkAnimationFrameSeconds , 25 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[13] = { 26 * shrinkAnimationFrameSeconds , 27 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[14] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
+	shrinkInfos[15] = { 29 * shrinkAnimationFrameSeconds , 30 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
+	shrinkInfos[16] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[17] = { 33 * shrinkAnimationFrameSeconds , 34 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[18] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
+	shrinkInfos[19] = { 29 * shrinkAnimationFrameSeconds , 30 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
+	shrinkInfos[20] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[21] = { 33 * shrinkAnimationFrameSeconds , 34 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[22] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
+	shrinkInfos[23] = { 29 * shrinkAnimationFrameSeconds , 30 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
+	shrinkInfos[24] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[25] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
+	shrinkInfos[26] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
 	flip = SDL_FLIP_NONE;
 	type = EntityType::PlayerType;
 	center = { rect.w / 2, rect.h / 2 };
@@ -90,6 +117,10 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		if (_keys[SDL_SCANCODE_G])
 		{
 			grow();
+		}
+		if (_keys[SDL_SCANCODE_S])
+		{
+			shrink();
 		}
 		Entity::update(deltaTime, collisionManager);
 		if (rect.x < _camera.getRect().x)
@@ -119,7 +150,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		{
 			if (growTimer >= info.startTime && growTimer < info.endTime)
 			{
-				rect.y = originalY - info.offset;
+				rect.y = originalY + info.offset;
 				rect.h = info.height;
 				break;
 			}
@@ -127,8 +158,26 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		if (growTimer >= 1)
 		{
 			currentState = Alive;
-			oldPos.y = originalY - CELL_SIZE * 2;
+			oldPos.y = rect.y;
 			isBig = true;
+		}
+		break;
+	case Shrinking:
+		shrinkTimer += deltaTime;
+		for (auto& info : shrinkInfos)
+		{
+			if (shrinkTimer >= info.startTime && shrinkTimer < info.endTime)
+			{
+				rect.y = originalY + info.offset;
+				rect.h = info.height;
+				break;
+			}
+		}
+		if (shrinkTimer >= 29 * shrinkAnimationFrameSeconds)
+		{
+			currentState = Alive;
+			oldPos.y = rect.y;
+			isBig = false;
 		}
 		break;
 	case Dying:
@@ -212,6 +261,16 @@ void Player::draw(SDL_Renderer* renderer, Camera* camera)
 			}
 		}
 		break;
+	case Shrinking:
+		for (auto& info : shrinkInfos)
+		{
+			if (shrinkTimer >= info.startTime && shrinkTimer < info.endTime)
+			{
+				SDL_RenderTextureRotated(renderer, info.texture, NULL, &newRect, 0, &center, flip);
+				break;
+			}
+		}
+		break;
 	case Dying:
 		SDL_RenderTextureRotated(renderer, playerDeathFrame, NULL, &newRect, 0, &center, flip);
 		break;
@@ -257,7 +316,13 @@ void Player::grow()
 {
 	growTimer = 0;
 	currentState = Growing;
-	frameIndex = 0;
+	originalY = rect.y;
+}
+
+void Player::shrink()
+{
+	shrinkTimer = 0;
+	currentState = Shrinking;
 	originalY = rect.y;
 }
 
