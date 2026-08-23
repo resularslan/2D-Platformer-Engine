@@ -101,7 +101,7 @@ void Player::init(SDL_Renderer* renderer)
 	flip = SDL_FLIP_NONE;
 	type = EntityType::PlayerType;
 	center = { rect.w / 2, rect.h / 2 };
-	oldPos = { rect.x, rect.y };
+	oldCollisionPos = { collisionRect.x, collisionRect.y };
 	currentState = Alive;
 }
 
@@ -173,7 +173,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		if (growTimer >= 1)
 		{
 			currentState = Alive;
-			oldPos.y = rect.y;
+			oldCollisionPos.y = collisionRect.y;
 			isBig = true;
 		}
 		break;
@@ -191,7 +191,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		if (shrinkTimer >= 29 * shrinkAnimationFrameSeconds)
 		{
 			currentState = Alive;
-			oldPos.y = rect.y;
+			oldCollisionPos.y = collisionRect.y;
 			isBig = false;
 			canDie = false;
 			invincibleFinishSeconds = 4;

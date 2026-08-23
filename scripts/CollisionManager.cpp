@@ -14,10 +14,10 @@ std::vector<TileCollisionInfo> CollisionManager::tileCollision(Entity& entity)
 {
 	std::vector<TileCollisionInfo> infos;
 	float errorMargin = 0.001f;
-	int minX = entity.getRect().x / (CELL_SIZE * 2);
-	int maxX = (entity.getRect().x + entity.getRect().w - errorMargin) / (CELL_SIZE * 2);
-	int minY = entity.getRect().y / (CELL_SIZE * 2);
-	int maxY = (entity.getRect().y + entity.getRect().h - errorMargin) / (CELL_SIZE * 2);
+	int minX = entity.getCollisionRect().x / (CELL_SIZE * 2);
+	int maxX = (entity.getCollisionRect().x + entity.getCollisionRect().w - errorMargin) / (CELL_SIZE * 2);
+	int minY = entity.getCollisionRect().y / (CELL_SIZE * 2);
+	int maxY = (entity.getCollisionRect().y + entity.getCollisionRect().h - errorMargin) / (CELL_SIZE * 2);
 	for (int i = minY; i <= maxY; i++)
 	{
 		for (int j = minX; j <= maxX; j++)
@@ -40,10 +40,10 @@ std::vector<Entity*> CollisionManager::entityCollision(Entity& entity)
 	for (auto& otherEntity : _entities)
 	{
 		if (otherEntity->getID() == entity.getID()) continue;
-		if (entity.getRect().x + entity.getRect().w > otherEntity->getRect().x &&
-			otherEntity->getRect().x + otherEntity->getRect().w > entity.getRect().x &&
-			entity.getRect().y + entity.getRect().h > otherEntity->getRect().y &&
-			otherEntity->getRect().y + otherEntity->getRect().h > entity.getRect().y)
+		if (entity.getCollisionRect().x + entity.getCollisionRect().w > otherEntity->getCollisionRect().x &&
+			otherEntity->getCollisionRect().x + otherEntity->getCollisionRect().w > entity.getCollisionRect().x &&
+			entity.getCollisionRect().y + entity.getCollisionRect().h > otherEntity->getCollisionRect().y &&
+			otherEntity->getCollisionRect().y + otherEntity->getCollisionRect().h > entity.getCollisionRect().y)
 		{
 			entityList.push_back(otherEntity.get());
 		}

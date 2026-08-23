@@ -18,6 +18,7 @@ public:
 	virtual void restart() = 0;
 	virtual void draw(SDL_Renderer* renderer, Camera* camera) = 0;
 	SDL_FRect getRect();
+	SDL_FRect getCollisionRect();
 	EntityType getType();
 	int getID();
 	void setID(int newID);
@@ -28,8 +29,10 @@ protected:
 	virtual void onCollisionWithTile(Direction direction) = 0;
 	void animation(int frameCount, float frameDelay, float deltaTime);
 	SDL_FRect rect;
+	SDL_FRect collisionRect;
+	vector2 collisionMargin = { 16, 4 };
 	vector2 velocity = vector2::zero;
-	vector2 oldPos;
+	vector2 oldCollisionPos;
 	bool isActive = true;
 	bool isGrounded = false;
 	EntityType type;
