@@ -143,6 +143,21 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		{
 			die();
 		}
+		if (invincibleTimer < invincibleFinishSeconds)
+		{
+			invincibleTimer += deltaTime;
+		}
+		else
+		{
+			invincibleSlowingSeconds = 0;
+			invincibleFinishSeconds = 0;
+			invincibleTimer = 0;
+			canDie = true;
+		}
+		if (invincibleTimer > invincibleSlowingSeconds)
+		{
+			invincibleFrameSeconds += 0.4f * deltaTime;
+		}
 		break;
 	case Growing:
 		growTimer += deltaTime;
@@ -178,6 +193,11 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			currentState = Alive;
 			oldPos.y = rect.y;
 			isBig = false;
+			canDie = false;
+			invincibleFinishSeconds = 4;
+			invincibleTimer = 0;
+			invincibleSlowingSeconds = 3;
+			invincibleFrameSeconds = 0.024f;
 		}
 		break;
 	case Dying:
@@ -212,6 +232,7 @@ void Player::draw(SDL_Renderer* renderer, Camera* camera)
 	switch (currentState)
 	{
 	case Alive:
+		if (static_cast<int>(invincibleTimer / invincibleFrameSeconds) % 2 == 1) return;
 		if (isBig)
 		{
 			if (isSliding)

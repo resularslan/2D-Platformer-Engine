@@ -69,12 +69,13 @@ private:
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	float invincibleTimer = 0;
-	float invincibleSeconds = 0;
-	int invincibleAnimation = 0;
-	float growTimer = 0;
+	float invincibleFinishSeconds = 0;
+	float invincibleSlowingSeconds = 0;
+	float invincibleFrameSeconds = 0;
 	TransformationAnimationInfo growInfos[8];
+	float growTimer = 0;
 	TransformationAnimationInfo shrinkInfos[27];
-	const float shrinkAnimationFrameSeconds = 0.016f;
+	const float shrinkAnimationFrameSeconds = 0.024f;
 	float shrinkTimer = 0;
 	float originalY = 0;
 	int life = 3;
