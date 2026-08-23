@@ -65,7 +65,7 @@ private:
 	bool facingRight = true;
 	float jumpTimer = 0;
 	float jumpForce = 4;
-	float jumpHoldForce = 35;
+	float jumpHoldForce = 50;
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	float invincibleTimer = 0;
