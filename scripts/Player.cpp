@@ -173,8 +173,8 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		if (growTimer >= 1)
 		{
 			currentState = Alive;
-			oldCollisionPos.y = collisionRect.y;
 			isBig = true;
+			updateCollisionRect();
 		}
 		break;
 	case Shrinking:
@@ -191,13 +191,13 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		if (shrinkTimer >= 29 * shrinkAnimationFrameSeconds)
 		{
 			currentState = Alive;
-			oldCollisionPos.y = collisionRect.y;
 			isBig = false;
 			canDie = false;
 			invincibleFinishSeconds = 4;
 			invincibleTimer = 0;
 			invincibleSlowingSeconds = 3;
-			invincibleFrameSeconds = 0.024f;
+			invincibleFrameSeconds = 0.016f;
+			updateCollisionRect();
 		}
 		break;
 	case Dying:
@@ -452,21 +452,18 @@ void Player::horizontalMovement(float deltaTime)
 
 void Player::verticalMovement(float deltaTime)
 {
+	initialJumpForce = velocity.x > 200 * deltaTime ? 8 : 7.4f;
 	isFalling = velocity.y > 0;
 	if (!previousJumpKeyState && _keys[SDL_SCANCODE_Z] && isGrounded)
 	{	
-		velocity.y = -jumpForce;
+		gravity = 12;
+		velocity.y = -initialJumpForce;
 		isJumping = true;
 		canSustainJump = true;
-		jumpTimer = 0;
 	}
-	if (!_keys[SDL_SCANCODE_Z] || isFalling || jumpTimer >= 0.2f)
+	if ((!_keys[SDL_SCANCODE_Z] || isFalling) && canSustainJump)
 	{
+		gravity = 36;
 		canSustainJump = false;
-	}
-	if (_keys[SDL_SCANCODE_Z] && canSustainJump && !isGrounded)
-	{
-		jumpTimer += deltaTime;
-		velocity.y -= jumpHoldForce * deltaTime;
 	}
 }

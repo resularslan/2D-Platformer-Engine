@@ -8,7 +8,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 	isGrounded = false;
 	velocity.y += gravity * deltaTime;
 	rect.x += velocity.x;
-	collisionRect = { rect.x + (collisionMargin.x / 2), rect.y + (collisionMargin.y / 2), rect.w - collisionMargin.x, rect.h - collisionMargin.y };
+	updateCollisionRect();
 	std::vector<TileCollisionInfo> xTileCollisions = collisionManager.tileCollision(*this);
 	std::vector<Entity*> xEntityCollisions = collisionManager.entityCollision(*this);
 	if (xTileCollisions.size() > 0)
@@ -68,7 +68,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 		}
 	}
 	rect.y += velocity.y;
-	collisionRect = { rect.x + (collisionMargin.x / 2), rect.y + (collisionMargin.y / 2), rect.w - collisionMargin.x, rect.h - collisionMargin.y };
+	updateCollisionRect();
 	std::vector<TileCollisionInfo> yTileCollisions = collisionManager.tileCollision(*this);
 	std::vector<Entity*> yEntityCollisions = collisionManager.entityCollision(*this);
 	if (yTileCollisions.size() > 0)
@@ -127,7 +127,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 			}
 		}
 	}
-	collisionRect = { rect.x + (collisionMargin.x / 2), rect.y + (collisionMargin.y / 2), rect.w - collisionMargin.x, rect.h - collisionMargin.y };
+	updateCollisionRect();
 	oldCollisionPos = { collisionRect.x , collisionRect.y };
 }
 
@@ -184,4 +184,9 @@ void Entity::animation(int frameCount, float frameDelay, float deltaTime)
 		lastAnimTimer =  animTimer;
 		frameIndex = (frameIndex + 1) % frameCount;
 	}
+}
+
+void Entity::updateCollisionRect()
+{
+	collisionRect = { rect.x + (collisionMargin.x / 2), rect.y + (collisionMargin.y / 2), rect.w - collisionMargin.x, rect.h - collisionMargin.y };
 }

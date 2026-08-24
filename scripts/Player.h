@@ -63,9 +63,7 @@ private:
 	bool canDie = true;
 	bool starMode = false;
 	bool facingRight = true;
-	float jumpTimer = 0;
-	float jumpForce = 4;
-	float jumpHoldForce = 50;
+	float initialJumpForce = 7.4f;
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	float invincibleTimer = 0;
@@ -75,7 +73,7 @@ private:
 	TransformationAnimationInfo growInfos[8];
 	float growTimer = 0;
 	TransformationAnimationInfo shrinkInfos[27];
-	const float shrinkAnimationFrameSeconds = 0.024f;
+	const float shrinkAnimationFrameSeconds = 0.016f;
 	float shrinkTimer = 0;
 	float originalY = 0;
 	int life = 3;
