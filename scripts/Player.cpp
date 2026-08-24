@@ -128,7 +128,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			rect.x = _camera.getRect().x;
 			velocity.x = 0;
 		}
-		else if (rect.x > _camera.getRect().x + _camera.getRect().w)
+		else if (rect.x + rect.w > _camera.getRect().x + _camera.getRect().w)
 		{
 			rect.x = (_camera.getRect().x + _camera.getRect().w) - rect.w;
 			velocity.x = 0;
@@ -175,6 +175,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			currentState = Alive;
 			isBig = true;
 			updateCollisionRect();
+			oldCollisionPos = { collisionRect.x, collisionRect.y };
 		}
 		break;
 	case Shrinking:
@@ -198,6 +199,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			invincibleSlowingSeconds = 3;
 			invincibleFrameSeconds = 0.016f;
 			updateCollisionRect();
+			oldCollisionPos = { collisionRect.x, collisionRect.y };
 		}
 		break;
 	case Dying:
@@ -352,15 +354,15 @@ void Player::onCollisionWithTile(Direction direction)
 	Entity::onCollisionWithTile(direction);
 	switch (direction)
 	{
-	case Up:
+	case Direction::Up:
 		break;
-	case Down:
+	case Direction::Down:
 		isJumping = false;
 		break;
-	case Left:
+	case Direction::Left:
 		velocity.x = 0;
 		break;
-	case Right:
+	case Direction::Right:
 		velocity.x = 0;
 		break;
 	default:
@@ -372,6 +374,7 @@ void Player::horizontalMovement(float deltaTime)
 {
 	isSliding = false;
 	maxRunSpeed = (_keys[SDL_SCANCODE_X] && isGrounded) ? maxRunSpeedThreshold : minRunSpeedThreshold;
+	runAcceleration = (_keys[SDL_SCANCODE_X] && isGrounded) ? maxRunAccelerationThreshold : minRunAccelerationThreshold;
 	if (_keys[SDL_SCANCODE_RIGHT] && velocity.x < maxRunSpeed)
 	{
 		velocity.x += runAcceleration * deltaTime;
@@ -451,18 +454,19 @@ void Player::horizontalMovement(float deltaTime)
 
 void Player::verticalMovement(float deltaTime)
 {
-	initialJumpForce = velocity.x > minRunSpeedThreshold ? maxJumpForce : minJumpForce;
+	bool isFast = abs(velocity.x) > minRunSpeedThreshold;
+	initialJumpForce = isFast ? maxJumpForce : minJumpForce;
 	isFalling = velocity.y > 0;
 	if (!previousJumpKeyState && _keys[SDL_SCANCODE_Z] && isGrounded)
-	{	
-		gravity = jumpGravity;
+	{
+		gravity = isFast ? fastJumpGravity : slowJumpGravity;
 		velocity.y = -initialJumpForce;
 		isJumping = true;
 		canSustainJump = true;
 	}
 	if ((!_keys[SDL_SCANCODE_Z] || isFalling) && canSustainJump)
 	{
-		gravity = fallGravity;
+		gravity = isFast ? fastFallGravity : slowFallGravity;
 		canSustainJump = false;
 	}
 }
