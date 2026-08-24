@@ -371,17 +371,16 @@ void Player::onCollisionWithTile(Direction direction)
 void Player::horizontalMovement(float deltaTime)
 {
 	isSliding = false;
-	maxRunSpeed = (_keys[SDL_SCANCODE_X] && isGrounded) ? 300 : 150;
-	runAcceleration = (_keys[SDL_SCANCODE_X] && isGrounded && velocity.x >= 200 * deltaTime) ? 20 : 10;
-	if (_keys[SDL_SCANCODE_RIGHT] && velocity.x < maxRunSpeed * deltaTime)
+	maxRunSpeed = (_keys[SDL_SCANCODE_X] && isGrounded) ? 5 : 2.5;
+	if (_keys[SDL_SCANCODE_RIGHT] && velocity.x < maxRunSpeed)
 	{
 		velocity.x += runAcceleration * deltaTime;
-		if (velocity.x > maxRunSpeed * deltaTime) velocity.x = maxRunSpeed * deltaTime;
+		if (velocity.x > maxRunSpeed) velocity.x = maxRunSpeed;
 	}
-	if (_keys[SDL_SCANCODE_LEFT] && velocity.x > -maxRunSpeed * deltaTime)
+	if (_keys[SDL_SCANCODE_LEFT] && velocity.x > -maxRunSpeed)
 	{
 		velocity.x -= runAcceleration * deltaTime;
-		if (velocity.x < -maxRunSpeed * deltaTime) velocity.x = -maxRunSpeed * deltaTime;
+		if (velocity.x < -maxRunSpeed) velocity.x = -maxRunSpeed;
 	}
 	if (isGrounded)
 	{
@@ -396,32 +395,32 @@ void Player::horizontalMovement(float deltaTime)
 		if (velocity.x > 0 && _keys[SDL_SCANCODE_LEFT])
 		{
 			isSliding = true;
-			velocity.x -= friction * deltaTime;
+			velocity.x -= slideFriction * deltaTime;
 			if (velocity.x < 0)
 			{
 				velocity.x = 0;
 			}
 		}
-		if (_keys[SDL_SCANCODE_RIGHT] && velocity.x > maxRunSpeed * deltaTime)
+		if (_keys[SDL_SCANCODE_RIGHT] && velocity.x > maxRunSpeed)
 		{
 			velocity.x -= friction * deltaTime;
-			if (velocity.x < maxRunSpeed * deltaTime)
+			if (velocity.x < maxRunSpeed)
 			{
-				velocity.x = maxRunSpeed * deltaTime;
+				velocity.x = maxRunSpeed;
 			}
 		}
-		if (_keys[SDL_SCANCODE_LEFT] && velocity.x < -maxRunSpeed * deltaTime)
+		if (_keys[SDL_SCANCODE_LEFT] && velocity.x < -maxRunSpeed)
 		{
 			velocity.x += friction * deltaTime;
-			if (velocity.x > -maxRunSpeed * deltaTime)
+			if (velocity.x > -maxRunSpeed)
 			{
-				velocity.x = -maxRunSpeed * deltaTime;
+				velocity.x = -maxRunSpeed;
 			}
 		}
 		if (velocity.x < 0 && _keys[SDL_SCANCODE_RIGHT])
 		{
 			isSliding = true;
-			velocity.x += friction * deltaTime;
+			velocity.x += slideFriction * deltaTime;
 			if (velocity.x > 0)
 			{
 				velocity.x = 0;
@@ -452,7 +451,7 @@ void Player::horizontalMovement(float deltaTime)
 
 void Player::verticalMovement(float deltaTime)
 {
-	initialJumpForce = velocity.x > 200 * deltaTime ? 8 : 7.4f;
+	initialJumpForce = velocity.x > 2.5 ? 8 : 7.4f;
 	isFalling = velocity.y > 0;
 	if (!previousJumpKeyState && _keys[SDL_SCANCODE_Z] && isGrounded)
 	{	
