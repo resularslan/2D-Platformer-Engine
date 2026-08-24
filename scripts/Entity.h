@@ -31,12 +31,12 @@ protected:
 	void updateCollisionRect();
 	SDL_FRect rect;
 	SDL_FRect collisionRect;
-	vector2 collisionMargin = { 16, 4 };
+	vector2 collisionMargin = { 12, 4 };
 	vector2 velocity = vector2::zero;
 	vector2 oldCollisionPos;
 	bool isActive = true;
 	bool isGrounded = false;
-	float gravity = 600;
+	float gravity = 1500;
 	EntityType type;
 	int id;
 	SDL_FlipMode flip;

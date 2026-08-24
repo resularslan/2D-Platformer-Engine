@@ -135,7 +135,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		}
 		if (isGrounded)
 		{
-			float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : runAnimationSpeed / 80;
+			float frameDelay = velocity.x != 0 ? runAnimationSpeed / abs(velocity.x) : runAnimationSpeed / minAnimationRunSpeed;
 			animation(3, frameDelay, deltaTime);
 		}
 		previousJumpKeyState = _keys[SDL_SCANCODE_Z];
@@ -371,7 +371,7 @@ void Player::onCollisionWithTile(Direction direction)
 void Player::horizontalMovement(float deltaTime)
 {
 	isSliding = false;
-	maxRunSpeed = (_keys[SDL_SCANCODE_X] && isGrounded) ? 300 : 150;
+	maxRunSpeed = (_keys[SDL_SCANCODE_X] && isGrounded) ? maxRunSpeedThreshold : minRunSpeedThreshold;
 	if (_keys[SDL_SCANCODE_RIGHT] && velocity.x < maxRunSpeed)
 	{
 		velocity.x += runAcceleration * deltaTime;
@@ -451,18 +451,18 @@ void Player::horizontalMovement(float deltaTime)
 
 void Player::verticalMovement(float deltaTime)
 {
-	initialJumpForce = velocity.x > 200 ? 390 : 370;
+	initialJumpForce = velocity.x > minRunSpeedThreshold ? maxJumpForce : minJumpForce;
 	isFalling = velocity.y > 0;
 	if (!previousJumpKeyState && _keys[SDL_SCANCODE_Z] && isGrounded)
 	{	
-		gravity = 500;
+		gravity = jumpGravity;
 		velocity.y = -initialJumpForce;
 		isJumping = true;
 		canSustainJump = true;
 	}
 	if ((!_keys[SDL_SCANCODE_Z] || isFalling) && canSustainJump)
 	{
-		gravity = 1500;
+		gravity = fallGravity;
 		canSustainJump = false;
 	}
 }
