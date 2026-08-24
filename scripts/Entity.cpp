@@ -6,7 +6,10 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 	horizontalMovement(deltaTime);
 	verticalMovement(deltaTime);
 	isGrounded = false;
-	velocity.y += gravity * deltaTime;
+	if (velocity.y < maxVelocityY)
+	{
+		velocity.y += gravity * deltaTime;
+	}
 	rect.x += velocity.x * deltaTime;
 	updateCollisionRect();
 	std::vector<TileCollisionInfo> xTileCollisions = collisionManager.tileCollision(*this);
@@ -21,7 +24,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 				{
 					if (oldCollisionPos.x + collisionRect.w <= tile.tilePos.x)
 					{
-						rect.x = tile.tilePos.x - rect.w + (collisionMargin.x / 2);
+						alignRect(tile.tilePos, Direction::Left);
 						onCollisionWithTile(Direction::Right);
 						break;
 					}
@@ -36,7 +39,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 				{
 					if (oldCollisionPos.x >= tile.tilePos.x + tile.tilePos.w)
 					{
-						rect.x = tile.tilePos.x + tile.tilePos.w - (collisionMargin.x / 2);
+						alignRect(tile.tilePos, Direction::Right);
 						onCollisionWithTile(Direction::Left);
 						break;
 					}
@@ -52,7 +55,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 			{
 				if (oldCollisionPos.x + collisionRect.w <= entity->getCollisionRect().x)
 				{
-					onCollisionWithEntity(entity, Direction::Right);
+					onCollisionWithEntity(entity, Right);
 				}
 			}
 		}
@@ -81,7 +84,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 				{
 					if (oldCollisionPos.y + collisionRect.h <= tile.tilePos.y)
 					{
-						rect.y = tile.tilePos.y - rect.h + (collisionMargin.y / 2);
+						alignRect(tile.tilePos, Direction::Up);
 						onCollisionWithTile(Direction::Down);
 						break;
 					}
@@ -96,7 +99,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 				{
 					if (oldCollisionPos.y >= tile.tilePos.y + tile.tilePos.h)
 					{
-						rect.y = tile.tilePos.y + tile.tilePos.h - (collisionMargin.y / 2);
+						alignRect(tile.tilePos, Direction::Down);
 						onCollisionWithTile(Direction::Up);
 						break;
 					}
@@ -160,16 +163,16 @@ void Entity::onCollisionWithTile(Direction direction)
 {
 	switch (direction)
 	{
-	case Up:
+	case Direction::Up:
 		velocity.y = 0;
 		break;
-	case Down:
+	case Direction::Down:
 		isGrounded = true;
 		velocity.y = 0;
 		break;
-	case Left:
+	case Direction::Left:
 		break;
-	case Right:
+	case Direction::Right:
 		break;
 	default:
 		break;
@@ -189,4 +192,25 @@ void Entity::animation(int frameCount, float frameDelay, float deltaTime)
 void Entity::updateCollisionRect()
 {
 	collisionRect = { rect.x + (collisionMargin.x / 2), rect.y + (collisionMargin.y / 2), rect.w - collisionMargin.x, rect.h - collisionMargin.y };
+}
+
+void Entity::alignRect(SDL_FRect other, Direction direction)
+{
+	switch (direction)
+	{
+	case Direction::Down:
+		rect.y = other.y + other.h - (collisionMargin.y / 2);
+		break;
+	case Direction::Up:
+		rect.y = other.y - rect.h + (collisionMargin.y / 2);
+		break;
+	case Direction::Right:
+		rect.x = other.x + other.w - (collisionMargin.x / 2);
+		break;
+	case Direction::Left:
+		rect.x = other.x - rect.w + (collisionMargin.x / 2);
+		break;
+	default:
+		break;
+	}
 }

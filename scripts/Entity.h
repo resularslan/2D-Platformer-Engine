@@ -29,6 +29,7 @@ protected:
 	virtual void onCollisionWithTile(Direction direction) = 0;
 	void animation(int frameCount, float frameDelay, float deltaTime);
 	void updateCollisionRect();
+	void alignRect(SDL_FRect other, Direction direction);
 	SDL_FRect rect;
 	SDL_FRect collisionRect;
 	vector2 collisionMargin = { 12, 4 };
@@ -37,6 +38,7 @@ protected:
 	bool isActive = true;
 	bool isGrounded = false;
 	float gravity = 1500;
+	float maxVelocityY = 500;
 	EntityType type;
 	int id;
 	SDL_FlipMode flip;
