@@ -208,9 +208,9 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		{
 			if(_camera.inCamera(rect))
 			{
-				velocity.y += gravity * deltaTime;
+				velocity.y += deathGravity * deltaTime;
 			}
-			rect.y += velocity.y;
+			rect.y += velocity.y * deltaTime;
 		}
 		break;
 	default:
@@ -326,7 +326,7 @@ void Player::die()
 		velocity.x = 0;
 		if (_camera.inCamera(rect))
 		{
-			velocity.y = -8;
+			velocity.y = -dieForce;
 		}
 		else
 		{

@@ -76,6 +76,8 @@ private:
 	float initialJumpForce = 365;
 	const float minJumpForce = 390;
 	const float maxJumpForce = 487;
+	const float dieForce = 390;
+	const float deathGravity = 900;
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	float invincibleTimer = 0;
