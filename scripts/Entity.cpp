@@ -7,7 +7,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 	verticalMovement(deltaTime);
 	isGrounded = false;
 	velocity.y += gravity * deltaTime;
-	rect.x += velocity.x;
+	rect.x += velocity.x * deltaTime;
 	updateCollisionRect();
 	std::vector<TileCollisionInfo> xTileCollisions = collisionManager.tileCollision(*this);
 	std::vector<Entity*> xEntityCollisions = collisionManager.entityCollision(*this);
@@ -67,7 +67,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 			}
 		}
 	}
-	rect.y += velocity.y;
+	rect.y += velocity.y * deltaTime;
 	updateCollisionRect();
 	std::vector<TileCollisionInfo> yTileCollisions = collisionManager.tileCollision(*this);
 	std::vector<Entity*> yEntityCollisions = collisionManager.entityCollision(*this);

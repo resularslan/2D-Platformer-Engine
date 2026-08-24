@@ -53,9 +53,9 @@ private:
 	Camera& _camera;
 	PlayerState currentState = Alive;
 	float maxRunSpeed = 150;
-	const float runAcceleration = 10;
-	const float slideFriction = 8;
-	const float runAnimationSpeed = 0.15f;
+	const float runAcceleration = 500;
+	const float slideFriction = 320;
+	const float runAnimationSpeed = 10;
 	bool previousJumpKeyState = false;
 	bool isFalling = false;
 	bool isJumping = false;
@@ -64,7 +64,7 @@ private:
 	bool canDie = true;
 	bool starMode = false;
 	bool facingRight = true;
-	float initialJumpForce = 7.4f;
+	float initialJumpForce = 600;
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	float invincibleTimer = 0;

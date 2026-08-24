@@ -36,7 +36,7 @@ protected:
 	vector2 oldCollisionPos;
 	bool isActive = true;
 	bool isGrounded = false;
-	float gravity = 30;
+	float gravity = 600;
 	EntityType type;
 	int id;
 	SDL_FlipMode flip;
