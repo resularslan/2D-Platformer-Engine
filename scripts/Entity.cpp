@@ -105,20 +105,18 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 					{
 						if (collisionRect.x + (collisionRect.w / 2) < tile.tilePos.x)
 						{
-							rect.x -= 250 * deltaTime;
-							updateCollisionRect();
+							alignRect(tile.tilePos, Direction::Left);
 						}
 						else if (collisionRect.x + (collisionRect.w / 2) > tile.tilePos.x + tile.tilePos.w)
 						{
-							rect.x += 250 * deltaTime;
-							updateCollisionRect();
+							alignRect(tile.tilePos, Direction::Right);
 						}
 						else
 						{
 							velocity.y = 0;
 							alignRect(tile.tilePos, Direction::Down);
+							onCollisionWithTile(Direction::Up);
 						}
-						onCollisionWithTile(Direction::Up);
 						break;
 					}
 				}
