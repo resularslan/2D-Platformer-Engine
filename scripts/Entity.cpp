@@ -103,7 +103,21 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 				{
 					if (oldCollisionPos.y >= tile.tilePos.y + tile.tilePos.h)
 					{
-						alignRect(tile.tilePos, Direction::Down);
+						if (collisionRect.x + (collisionRect.w / 2) < tile.tilePos.x)
+						{
+							rect.x -= 250 * deltaTime;
+							updateCollisionRect();
+						}
+						else if (collisionRect.x + (collisionRect.w / 2) > tile.tilePos.x + tile.tilePos.w)
+						{
+							rect.x += 250 * deltaTime;
+							updateCollisionRect();
+						}
+						else
+						{
+							velocity.y = 0;
+							alignRect(tile.tilePos, Direction::Down);
+						}
 						onCollisionWithTile(Direction::Up);
 						break;
 					}
@@ -168,7 +182,6 @@ void Entity::onCollisionWithTile(Direction direction)
 	switch (direction)
 	{
 	case Direction::Up:
-		velocity.y = 0;
 		break;
 	case Direction::Down:
 		isGrounded = true;

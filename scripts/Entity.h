@@ -32,7 +32,7 @@ protected:
 	void alignRect(SDL_FRect other, Direction direction);
 	SDL_FRect rect;
 	SDL_FRect collisionRect;
-	vector2 collisionMargin = { 12, 4 };
+	vector2 collisionMargin = { 8, 2 };
 	vector2 velocity = vector2::zero;
 	vector2 oldCollisionPos;
 	bool isActive = true;
