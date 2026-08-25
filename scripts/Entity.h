@@ -38,7 +38,7 @@ protected:
 	bool isActive = true;
 	bool isGrounded = false;
 	float gravity = 1500;
-	float maxVelocityY = 500;
+	float maxVelocityY = 800;
 	EntityType type;
 	int id;
 	SDL_FlipMode flip;

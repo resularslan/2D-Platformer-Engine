@@ -8,8 +8,6 @@
 #define WINDOW_WIDTH (WINDOW_WIDTH_TILE * CELL_SIZE)
 #define WINDOW_HEIGHT (MAP_HEIGHT_TILE * CELL_SIZE)
 
-const float friction = 160;
-
 enum Direction
 {
 	Up,

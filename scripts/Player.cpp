@@ -372,16 +372,28 @@ void Player::onCollisionWithTile(Direction direction)
 
 void Player::horizontalMovement(float deltaTime)
 {
-	isSliding = false;
-	maxRunSpeed = (_keys[SDL_SCANCODE_X] && isGrounded) ? maxRunSpeedThreshold : minRunSpeedThreshold;
-	runAcceleration = (_keys[SDL_SCANCODE_X] && isGrounded) ? maxRunAccelerationThreshold : minRunAccelerationThreshold;
+	maxRunSpeed = _keys[SDL_SCANCODE_X] ? maxRunSpeedThreshold : minRunSpeedThreshold;
+	if (isGrounded)
+	{
+		runAcceleration = (_keys[SDL_SCANCODE_X]) ? maxRunAccelerationThreshold : minRunAccelerationThreshold;
+	}
+	else
+	{
+		runAcceleration = airAcceleration;
+	}
+	if (velocity.x == 0)
+	{
+		isSliding = false;
+	}
 	if (_keys[SDL_SCANCODE_RIGHT] && velocity.x < maxRunSpeed)
 	{
+		isSliding = false;
 		velocity.x += runAcceleration * deltaTime;
 		if (velocity.x > maxRunSpeed) velocity.x = maxRunSpeed;
 	}
 	if (_keys[SDL_SCANCODE_LEFT] && velocity.x > -maxRunSpeed)
 	{
+		isSliding = false;
 		velocity.x -= runAcceleration * deltaTime;
 		if (velocity.x < -maxRunSpeed) velocity.x = -maxRunSpeed;
 	}
@@ -395,7 +407,7 @@ void Player::horizontalMovement(float deltaTime)
 		{
 			facingRight = true;
 		}
-		if (velocity.x > 0 && _keys[SDL_SCANCODE_LEFT])
+		if (velocity.x > 0 && !facingRight)
 		{
 			isSliding = true;
 			velocity.x -= slideFriction * deltaTime;
@@ -404,23 +416,7 @@ void Player::horizontalMovement(float deltaTime)
 				velocity.x = 0;
 			}
 		}
-		if (_keys[SDL_SCANCODE_RIGHT] && velocity.x > maxRunSpeed)
-		{
-			velocity.x -= friction * deltaTime;
-			if (velocity.x < maxRunSpeed)
-			{
-				velocity.x = maxRunSpeed;
-			}
-		}
-		if (_keys[SDL_SCANCODE_LEFT] && velocity.x < -maxRunSpeed)
-		{
-			velocity.x += friction * deltaTime;
-			if (velocity.x > -maxRunSpeed)
-			{
-				velocity.x = -maxRunSpeed;
-			}
-		}
-		if (velocity.x < 0 && _keys[SDL_SCANCODE_RIGHT])
+		else if (velocity.x < 0 && facingRight)
 		{
 			isSliding = true;
 			velocity.x += slideFriction * deltaTime;
@@ -429,19 +425,51 @@ void Player::horizontalMovement(float deltaTime)
 				velocity.x = 0;
 			}
 		}
-		if (!_keys[SDL_SCANCODE_RIGHT] && !_keys[SDL_SCANCODE_LEFT])
+		else if (velocity.x > 0 && isSliding)
+		{
+			velocity.x -= slideFriction * deltaTime;
+			if (velocity.x < 0)
+			{
+				velocity.x = 0;
+			}
+		}
+		else if (velocity.x < 0 && isSliding)
+		{
+			velocity.x += slideFriction * deltaTime;
+			if (velocity.x > 0)
+			{
+				velocity.x = 0;
+			}
+		}
+		else if (_keys[SDL_SCANCODE_RIGHT] && velocity.x > maxRunSpeed)
+		{
+			velocity.x -= normalFriction * deltaTime;
+			if (velocity.x < maxRunSpeed)
+			{
+				velocity.x = maxRunSpeed;
+			}
+		}
+		else if (_keys[SDL_SCANCODE_LEFT] && velocity.x < -maxRunSpeed)
+		{
+			velocity.x += normalFriction * deltaTime;
+			if (velocity.x > -maxRunSpeed)
+			{
+				velocity.x = -maxRunSpeed;
+			}
+		}
+		else if (!_keys[SDL_SCANCODE_RIGHT] && !_keys[SDL_SCANCODE_LEFT])
 		{
 			if (velocity.x > 0)
 			{
-				velocity.x -= friction * deltaTime;
+				velocity.x -= normalFriction * deltaTime;
 				if (velocity.x < 0)
 				{
 					velocity.x = 0;
 				}
 			}
-			if (velocity.x < 0)
+			else if (velocity.x < 0)
 			{
-				velocity.x += friction * deltaTime;
+				velocity.x += normalFriction * deltaTime;
 				if (velocity.x > 0)
 				{
 					velocity.x = 0;

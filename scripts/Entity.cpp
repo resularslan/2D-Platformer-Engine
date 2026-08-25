@@ -9,6 +9,10 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 	if (velocity.y < maxVelocityY)
 	{
 		velocity.y += gravity * deltaTime;
+		if (velocity.y > maxVelocityY)
+		{
+			velocity.y = maxVelocityY;
+		}
 	}
 	rect.x += velocity.x * deltaTime;
 	updateCollisionRect();
