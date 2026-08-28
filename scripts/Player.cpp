@@ -1,115 +1,114 @@
 #include "Player.h"
-#include "Camera.h"
 
-Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, Camera& camera)
+Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
 	:
-	playerSmallRunFrames{ nullptr, nullptr, nullptr },
-	playerSmallIdleFrame(nullptr),
-	playerSmallJumpFrame(nullptr),
-	playerSmallSlideFrame(nullptr),
-	playerDeathFrame(nullptr),
-	playerSmallFlag(nullptr),
-	playerSmallShrink(nullptr),
-	playerBigRunFrames{ nullptr, nullptr, nullptr },
-	playerBigIdleFrame(nullptr),
-	playerBigJumpFrame(nullptr),
-	playerBigSlideFrame(nullptr),
-	playerBigFlag(nullptr),
-	playerBigShrink(nullptr),
-	playerMiddleFrame(nullptr),
+	Entity(xPos, yPos, renderer, camera, id),
 	_keys(keys),
-	_camera(camera)
+	smallRunFrames{ nullptr, nullptr, nullptr },
+	smallIdleFrame(nullptr),
+	smallJumpFrame(nullptr),
+	smallSlideFrame(nullptr),
+	deathFrame(nullptr),
+	smallFlag(nullptr),
+	smallShrink(nullptr),
+	bigRunFrames{ nullptr, nullptr, nullptr },
+	bigIdleFrame(nullptr),
+	bigJumpFrame(nullptr),
+	bigSlideFrame(nullptr),
+	bigFlag(nullptr),
+	bigShrink(nullptr),
+	middleFrame(nullptr)
 {}
 
 Player::~Player()
 {
-	SDL_DestroyTexture(playerSmallIdleFrame);
+	SDL_DestroyTexture(smallIdleFrame);
 	for (int i = 0; i < 3; i++) {
-		SDL_DestroyTexture(playerSmallRunFrames[i]);
+		SDL_DestroyTexture(smallRunFrames[i]);
 	}
-	SDL_DestroyTexture(playerSmallJumpFrame);
-	SDL_DestroyTexture(playerSmallFlag);
-	SDL_DestroyTexture(playerSmallShrink);
-	SDL_DestroyTexture(playerSmallSlideFrame);
-	SDL_DestroyTexture(playerDeathFrame);
+	SDL_DestroyTexture(smallJumpFrame);
+	SDL_DestroyTexture(smallFlag);
+	SDL_DestroyTexture(smallShrink);
+	SDL_DestroyTexture(smallSlideFrame);
+	SDL_DestroyTexture(deathFrame);
 	for (int i = 0; i < 3; i++) {
-		SDL_DestroyTexture(playerBigRunFrames[i]);
+		SDL_DestroyTexture(bigRunFrames[i]);
 	}
-	SDL_DestroyTexture(playerBigJumpFrame);
-	SDL_DestroyTexture(playerBigSlideFrame);
-	SDL_DestroyTexture(playerBigFlag);
-	SDL_DestroyTexture(playerBigShrink);
-	SDL_DestroyTexture(playerMiddleFrame);
+	SDL_DestroyTexture(bigJumpFrame);
+	SDL_DestroyTexture(bigSlideFrame);
+	SDL_DestroyTexture(bigFlag);
+	SDL_DestroyTexture(bigShrink);
+	SDL_DestroyTexture(middleFrame);
 }
 
-void Player::init(SDL_Renderer* renderer)
+void Player::init()
 {
-	rect = { CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE , CELL_SIZE * 2, CELL_SIZE * 2 };
-	playerSmallRunFrames[0] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run1.png");
-	playerSmallRunFrames[1] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run2.png");
-	playerSmallRunFrames[2] = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Run3.png");
-	playerSmallJumpFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Jump.png");
-	playerSmallIdleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Idle.png");
-	playerSmallSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Slide.png");
-	playerDeathFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Death.png");
-	playerSmallFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Flag.png");
-	playerSmallShrink = IMG_LoadTexture(renderer, "assets/Player/Player_Small_Shrink.png");
-	playerBigRunFrames[0] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run1.png");
-	playerBigRunFrames[1] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run2.png");
-	playerBigRunFrames[2] = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Run3.png");
-	playerBigIdleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Idle.png");
-	playerBigJumpFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Jump.png");
-	playerBigSlideFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Slide.png");
-	playerBigFlag = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Flag.png");
-	playerBigShrink = IMG_LoadTexture(renderer, "assets/Player/Player_Big_Shrink.png");
-	playerMiddleFrame = IMG_LoadTexture(renderer, "assets/Player/Player_Middle.png");
-	growInfos[0] = { 0 , 0.1f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
-	growInfos[1] = { 0.1f, 0.2f, CELL_SIZE * 3, -CELL_SIZE, playerMiddleFrame };
-	growInfos[2] = { 0.2f, 0.3f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
-	growInfos[3] = { 0.3f, 0.4f, CELL_SIZE * 3, -CELL_SIZE, playerMiddleFrame };
-	growInfos[4] = { 0.4f, 0.5f, CELL_SIZE * 4, -CELL_SIZE * 2, playerBigIdleFrame };
-	growInfos[5] = { 0.5f, 0.6f, CELL_SIZE * 2, 0, playerSmallIdleFrame };
-	growInfos[6] = { 0.6f, 0.7f, CELL_SIZE * 3, -CELL_SIZE, playerMiddleFrame };
-	growInfos[7] = { 0.7f, 1, CELL_SIZE * 4, -CELL_SIZE * 2, playerBigIdleFrame };
-	shrinkInfos[0] = { 0 , 1 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
-	shrinkInfos[1] = { 2 * shrinkAnimationFrameSeconds , 3 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
-	shrinkInfos[2] = { 4 * shrinkAnimationFrameSeconds , 5 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
-	shrinkInfos[3] = { 6 * shrinkAnimationFrameSeconds , 7 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
-	shrinkInfos[4] = { 8 * shrinkAnimationFrameSeconds , 9 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
-	shrinkInfos[5] = { 10 * shrinkAnimationFrameSeconds , 11 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
-	shrinkInfos[6] = { 12 * shrinkAnimationFrameSeconds , 13 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
-	shrinkInfos[7] = { 14 * shrinkAnimationFrameSeconds , 15 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigJumpFrame };
-	shrinkInfos[8] = { 16 * shrinkAnimationFrameSeconds , 17 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[9] = { 18 * shrinkAnimationFrameSeconds , 19 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[10] = { 20 * shrinkAnimationFrameSeconds , 21 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
-	shrinkInfos[11] = { 22 * shrinkAnimationFrameSeconds , 23 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
-	shrinkInfos[12] = { 24 * shrinkAnimationFrameSeconds , 25 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[13] = { 26 * shrinkAnimationFrameSeconds , 27 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[14] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
-	shrinkInfos[15] = { 29 * shrinkAnimationFrameSeconds , 30 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
-	shrinkInfos[16] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[17] = { 33 * shrinkAnimationFrameSeconds , 34 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[18] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
-	shrinkInfos[19] = { 29 * shrinkAnimationFrameSeconds , 30 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
-	shrinkInfos[20] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[21] = { 33 * shrinkAnimationFrameSeconds , 34 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[22] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
-	shrinkInfos[23] = { 29 * shrinkAnimationFrameSeconds , 30 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
-	shrinkInfos[24] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[25] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, playerBigShrink };
-	shrinkInfos[26] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, playerSmallShrink };
+	rect = { _xPos, _yPos , CELL_SIZE * 2, CELL_SIZE * 2 };
+	smallRunFrames[0] = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Run1.png");
+	smallRunFrames[1] = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Run2.png");
+	smallRunFrames[2] = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Run3.png");
+	smallJumpFrame = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Jump.png");
+	smallIdleFrame = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Idle.png");
+	smallSlideFrame = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Slide.png");
+	deathFrame = IMG_LoadTexture(_renderer, "assets/Player/Player_Death.png");
+	smallFlag = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Flag.png");
+	smallShrink = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Shrink.png");
+	bigRunFrames[0] = IMG_LoadTexture(_renderer, "assets/Player/Player_Big_Run1.png");
+	bigRunFrames[1] = IMG_LoadTexture(_renderer, "assets/Player/Player_Big_Run2.png");
+	bigRunFrames[2] = IMG_LoadTexture(_renderer, "assets/Player/Player_Big_Run3.png");
+	bigIdleFrame = IMG_LoadTexture(_renderer, "assets/Player/Player_Big_Idle.png");
+	bigJumpFrame = IMG_LoadTexture(_renderer, "assets/Player/Player_Big_Jump.png");
+	bigSlideFrame = IMG_LoadTexture(_renderer, "assets/Player/Player_Big_Slide.png");
+	bigFlag = IMG_LoadTexture(_renderer, "assets/Player/Player_Big_Flag.png");
+	bigShrink = IMG_LoadTexture(_renderer, "assets/Player/Player_Big_Shrink.png");
+	middleFrame = IMG_LoadTexture(_renderer, "assets/Player/Player_Middle.png");
+	growInfos[0] = { 0 , 0.1f, CELL_SIZE * 2, 0, smallIdleFrame };
+	growInfos[1] = { 0.1f, 0.2f, CELL_SIZE * 3, -CELL_SIZE, middleFrame };
+	growInfos[2] = { 0.2f, 0.3f, CELL_SIZE * 2, 0, smallIdleFrame };
+	growInfos[3] = { 0.3f, 0.4f, CELL_SIZE * 3, -CELL_SIZE, middleFrame };
+	growInfos[4] = { 0.4f, 0.5f, CELL_SIZE * 4, -CELL_SIZE * 2, bigIdleFrame };
+	growInfos[5] = { 0.5f, 0.6f, CELL_SIZE * 2, 0, smallIdleFrame };
+	growInfos[6] = { 0.6f, 0.7f, CELL_SIZE * 3, -CELL_SIZE, middleFrame };
+	growInfos[7] = { 0.7f, 1, CELL_SIZE * 4, -CELL_SIZE * 2, bigIdleFrame };
+	shrinkInfos[0] = { 0 , 1 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigJumpFrame };
+	shrinkInfos[1] = { 2 * shrinkAnimationFrameSeconds , 3 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigJumpFrame };
+	shrinkInfos[2] = { 4 * shrinkAnimationFrameSeconds , 5 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigJumpFrame };
+	shrinkInfos[3] = { 6 * shrinkAnimationFrameSeconds , 7 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigJumpFrame };
+	shrinkInfos[4] = { 8 * shrinkAnimationFrameSeconds , 9 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigJumpFrame };
+	shrinkInfos[5] = { 10 * shrinkAnimationFrameSeconds , 11 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigJumpFrame };
+	shrinkInfos[6] = { 12 * shrinkAnimationFrameSeconds , 13 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigJumpFrame };
+	shrinkInfos[7] = { 14 * shrinkAnimationFrameSeconds , 15 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigJumpFrame };
+	shrinkInfos[8] = { 16 * shrinkAnimationFrameSeconds , 17 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[9] = { 18 * shrinkAnimationFrameSeconds , 19 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[10] = { 20 * shrinkAnimationFrameSeconds , 21 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
+	shrinkInfos[11] = { 22 * shrinkAnimationFrameSeconds , 23 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
+	shrinkInfos[12] = { 24 * shrinkAnimationFrameSeconds , 25 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[13] = { 26 * shrinkAnimationFrameSeconds , 27 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[14] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
+	shrinkInfos[15] = { 29 * shrinkAnimationFrameSeconds , 30 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
+	shrinkInfos[16] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[17] = { 33 * shrinkAnimationFrameSeconds , 34 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[18] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
+	shrinkInfos[19] = { 29 * shrinkAnimationFrameSeconds , 30 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
+	shrinkInfos[20] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[21] = { 33 * shrinkAnimationFrameSeconds , 34 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[22] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
+	shrinkInfos[23] = { 29 * shrinkAnimationFrameSeconds , 30 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
+	shrinkInfos[24] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[25] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
+	shrinkInfos[26] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
 	flip = SDL_FLIP_NONE;
 	type = EntityType::PlayerType;
 	center = { rect.w / 2, rect.h / 2 };
 	oldCollisionPos = { collisionRect.x, collisionRect.y };
-	currentState = Alive;
+	currentState = PlayerState::Alive;
 }
 
 void Player::update(float deltaTime, CollisionManager& collisionManager)
 {
 	switch (currentState)
 	{
-	case Alive:
+	case PlayerState::Alive:
 		if (_keys[SDL_SCANCODE_D])
 		{
 			die();
@@ -159,7 +158,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			invincibleFrameSeconds += 0.4f * deltaTime;
 		}
 		break;
-	case Growing:
+	case PlayerState::Growing:
 		growTimer += deltaTime;
 		for (auto& info : growInfos)
 		{
@@ -172,13 +171,13 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		}
 		if (growTimer >= 1)
 		{
-			currentState = Alive;
+			currentState = PlayerState::Alive;
 			isBig = true;
 			updateCollisionRect();
 			oldCollisionPos = { collisionRect.x, collisionRect.y };
 		}
 		break;
-	case Shrinking:
+	case PlayerState::Shrinking:
 		shrinkTimer += deltaTime;
 		for (auto& info : shrinkInfos)
 		{
@@ -191,7 +190,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		}
 		if (shrinkTimer >= 29 * shrinkAnimationFrameSeconds)
 		{
-			currentState = Alive;
+			currentState = PlayerState::Alive;
 			isBig = false;
 			canDie = false;
 			invincibleFinishSeconds = 4;
@@ -202,7 +201,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			oldCollisionPos = { collisionRect.x, collisionRect.y };
 		}
 		break;
-	case Dying:
+	case PlayerState::Dying:
 		deathWaitTimer += deltaTime;
 		if (deathWaitTimer > 0.4f)
 		{
@@ -216,86 +215,98 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 	default:
 		break;
 	}
-	
 }
 
-void Player::draw(SDL_Renderer* renderer, Camera* camera)
+void Player::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 {
-	SDL_FRect newRect = {
-		roundf(rect.x - camera->getRect().x),
-		roundf(rect.y - camera->getRect().y),
-		rect.w,
-		rect.h
-	};
-	if (!camera->inCamera(rect))
+	switch (currentState)
+	{
+	case PlayerState::Alive:
+		Entity::lateUpdate(deltaTime, collisionManager);
+		break;
+	case PlayerState::Growing:
+		break;
+	case PlayerState::Shrinking:
+		break;
+	case PlayerState::Dying:
+		break;
+	default:
+		break;
+	}
+}
+
+void Player::draw()
+{
+	if (!_camera.inCamera(rect))
 	{
 		return;
 	}
+	SDL_FRect newRect = _camera.adjustToCamera(rect);
 	switch (currentState)
 	{
-	case Alive:
+	case PlayerState::Alive:
 		if (static_cast<int>(invincibleTimer / invincibleFrameSeconds) % 2 == 1) return;
 		if (isBig)
 		{
 			if (isSliding)
 			{
-				SDL_RenderTextureRotated(renderer, playerBigSlideFrame, NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, bigSlideFrame, NULL, &newRect, 0, &center, flip);
 			}
 			else if (isJumping)
 			{
-				SDL_RenderTextureRotated(renderer, playerBigJumpFrame, NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, bigJumpFrame, NULL, &newRect, 0, &center, flip);
 			}
 			else if (_keys[SDL_SCANCODE_RIGHT] || _keys[SDL_SCANCODE_LEFT] || velocity.x != 0)
 			{
-				SDL_RenderTextureRotated(renderer, playerBigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, bigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 			}
 			else
 			{
-				SDL_RenderTextureRotated(renderer, playerBigIdleFrame, NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, bigIdleFrame, NULL, &newRect, 0, &center, flip);
 			}
 		}
 		else
 		{
 			if (isSliding)
 			{
-				SDL_RenderTextureRotated(renderer, playerSmallSlideFrame, NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, smallSlideFrame, NULL, &newRect, 0, &center, flip);
 			}
 			else if (isJumping)
 			{
-				SDL_RenderTextureRotated(renderer, playerSmallJumpFrame, NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, smallJumpFrame, NULL, &newRect, 0, &center, flip);
 			}
 			else if (_keys[SDL_SCANCODE_RIGHT] || _keys[SDL_SCANCODE_LEFT] || velocity.x != 0)
 			{
-				SDL_RenderTextureRotated(renderer, playerSmallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, smallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 			}
 			else
 			{
-				SDL_RenderTextureRotated(renderer, playerSmallIdleFrame, NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, smallIdleFrame, NULL, &newRect, 0, &center, flip);
 			}
 		}
 		break;
-	case Growing:
+	case PlayerState::Growing:
 		for (auto& info : growInfos)
 		{
 			if (growTimer >= info.startTime && growTimer < info.endTime)
 			{
-				SDL_RenderTextureRotated(renderer, info.texture, NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, info.texture, NULL, &newRect, 0, &center, flip);
 				break;
 			}
 		}
 		break;
-	case Shrinking:
+	case PlayerState::Shrinking:
 		for (auto& info : shrinkInfos)
 		{
 			if (shrinkTimer >= info.startTime && shrinkTimer < info.endTime)
 			{
-				SDL_RenderTextureRotated(renderer, info.texture, NULL, &newRect, 0, &center, flip);
+				SDL_RenderTextureRotated(_renderer, info.texture, NULL, &newRect, 0, &center, flip);
 				break;
 			}
 		}
 		break;
-	case Dying:
-		SDL_RenderTextureRotated(renderer, playerDeathFrame, NULL, &newRect, 0, &center, flip);
+	case PlayerState::Dying:
+		SDL_RenderTextureRotated(_renderer, deathFrame, NULL, &newRect, 0, &center, flip);
 		break;
 	default:
 		break;
@@ -322,7 +333,7 @@ void Player::die()
 			rect.y += CELL_SIZE / 2;
 		}
 		deathWaitTimer = 0;
-		currentState = Dying;
+		currentState = PlayerState::Dying;
 		velocity.x = 0;
 		if (_camera.inCamera(rect))
 		{
@@ -332,21 +343,28 @@ void Player::die()
 		{
 			velocity.y = 0;
 		}
+		canDie = false;
 	}
 }
 
 void Player::grow()
 {
 	growTimer = 0;
-	currentState = Growing;
+	currentState = PlayerState::Growing;
 	originalY = rect.y;
 }
 
 void Player::shrink()
 {
 	shrinkTimer = 0;
-	currentState = Shrinking;
+	currentState = PlayerState::Shrinking;
 	originalY = rect.y;
+}
+
+void Player::jump(float force)
+{
+	velocity.y = -force;
+	isJumping = true;
 }
 
 void Player::onCollisionWithTile(Direction direction)
@@ -484,17 +502,22 @@ void Player::verticalMovement(float deltaTime)
 {
 	bool isFast = abs(velocity.x) > minRunSpeedThreshold;
 	initialJumpForce = isFast ? maxJumpForce : minJumpForce;
-	isFalling = velocity.y > 0;
-	if (!previousJumpKeyState && _keys[SDL_SCANCODE_Z] && isGrounded)
+	isFalling = velocity.y > 0 || !_keys[SDL_SCANCODE_Z];
+	if (velocity.y < 0)
 	{
 		gravity = isFast ? fastJumpGravity : slowJumpGravity;
-		velocity.y = -initialJumpForce;
-		isJumping = true;
-		canSustainJump = true;
 	}
-	if ((!_keys[SDL_SCANCODE_Z] || isFalling) && canSustainJump)
+	if (isFalling)
 	{
 		gravity = isFast ? fastFallGravity : slowFallGravity;
+	}
+	if (!previousJumpKeyState && _keys[SDL_SCANCODE_Z] && isGrounded)
+	{
+		jump(initialJumpForce);
+		canSustainJump = true;
+	}
+	if (isFalling && canSustainJump)
+	{
 		canSustainJump = false;
 	}
 }

@@ -1,7 +1,9 @@
+#pragma once
+
 #include "Entity.h"
 #include <array>
 
-enum PlayerState
+enum class PlayerState
 {
 	Alive,
 	Growing,
@@ -21,37 +23,38 @@ struct TransformationAnimationInfo
 class Player : public Entity
 {
 public:
-	Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, Camera& camera);
+	Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
 	~Player();
-	void init(SDL_Renderer* renderer) override;
+	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
-	void draw(SDL_Renderer* renderer, Camera* camera) override;
+	void lateUpdate(float deltaTime, CollisionManager& collisionManager) override;
+	void draw() override;
 	void restart() override;
 	void die();
 	void grow();
 	void shrink();
+	void jump(float force);
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void verticalMovement(float deltaTime) override;
 	void onCollisionWithTile(Direction direction) override;
 private:
-	SDL_Texture* playerSmallRunFrames[3];
-	SDL_Texture* playerSmallIdleFrame;
-	SDL_Texture* playerSmallJumpFrame;
-	SDL_Texture* playerSmallSlideFrame;
-	SDL_Texture* playerDeathFrame;
-	SDL_Texture* playerSmallFlag;
-	SDL_Texture* playerSmallShrink;
-	SDL_Texture* playerBigRunFrames[3];
-	SDL_Texture* playerBigIdleFrame;
-	SDL_Texture* playerBigJumpFrame;
-	SDL_Texture* playerBigSlideFrame;
-	SDL_Texture* playerBigFlag;
-	SDL_Texture* playerBigShrink;
-	SDL_Texture* playerMiddleFrame;
+	SDL_Texture* smallRunFrames[3];
+	SDL_Texture* smallIdleFrame;
+	SDL_Texture* smallJumpFrame;
+	SDL_Texture* smallSlideFrame;
+	SDL_Texture* deathFrame;
+	SDL_Texture* smallFlag;
+	SDL_Texture* smallShrink;
+	SDL_Texture* bigRunFrames[3];
+	SDL_Texture* bigIdleFrame;
+	SDL_Texture* bigJumpFrame;
+	SDL_Texture* bigSlideFrame;
+	SDL_Texture* bigFlag;
+	SDL_Texture* bigShrink;
+	SDL_Texture* middleFrame;
 	const std::array<bool, SDL_SCANCODE_COUNT>& _keys;
-	Camera& _camera;
-	PlayerState currentState = Alive;
+	PlayerState currentState = PlayerState::Alive;
 	float maxRunSpeed = 150;
 	const float minRunSpeedThreshold = 180;
 	const float maxRunSpeedThreshold = 300;
@@ -75,8 +78,8 @@ private:
 	const float fastJumpGravity = 873;
 	const float slowFallGravity = 2456;
 	const float fastFallGravity = 3063;
-	float initialJumpForce = 365;
-	const float minJumpForce = 450;
+	float initialJumpForce = 470;
+	const float minJumpForce = 470;
 	const float maxJumpForce = 560;
 	const float dieForce = 390;
 	const float deathGravity = 900;
