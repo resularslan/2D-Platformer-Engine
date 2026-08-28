@@ -10,9 +10,16 @@
 #include <SDL3_image/SDL_image.h>
 #include "Entity.h"
 #include "Player.h"
+#include "Insect.h"
 #include "Camera.h"
 #include "TileMap.h"
 #include "CollisionManager.h"
+
+struct entityInfo
+{
+    float xPos;
+    float yPos;
+};
 
 class Game
 {
@@ -32,6 +39,9 @@ private:
     std::vector<std::unique_ptr<Entity>> entities;
     Camera* camera;
     TileMap* tileMap;
+    entityInfo insectInfos[16];
+    int entityCount = 0;
     std::unique_ptr<Player> player;
+    std::unique_ptr<Insect> insects[16];
     CollisionManager* collisionManager;
 };
