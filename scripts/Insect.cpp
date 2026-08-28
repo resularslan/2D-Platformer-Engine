@@ -1,0 +1,171 @@
+#include "Insect.h"
+#include "Player.h"
+
+Insect::Insect(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
+	:
+	Entity(xPos, yPos, renderer, camera, id),
+	walkFrames{ nullptr, nullptr },
+	crushedFrame(nullptr),
+	reversedFrame(nullptr)
+{}
+
+Insect::~Insect()
+{
+	SDL_DestroyTexture(crushedFrame);
+	SDL_DestroyTexture(reversedFrame);
+	for (int i = 0; i < 2; i++) {
+		SDL_DestroyTexture(walkFrames[i]);
+	}
+}
+
+void Insect::init()
+{
+	rect = { _xPos, _yPos, CELL_SIZE * 2, CELL_SIZE * 2 };
+	walkFrames[0] = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Walk1.png");
+	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Walk2.png");
+	crushedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Death.png");
+	reversedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Reverse.png");
+	type = EntityType::EnemyType;
+	center = { rect.w / 2, rect.h / 2 };
+	oldCollisionPos = { collisionRect.x, collisionRect.y };
+	currentState = InsectState::Alive;
+}
+
+void Insect::update(float deltaTime, CollisionManager& collisionManager)
+{
+	if (!_camera.inCamera(rect))
+	{
+		return;
+	}
+	switch (currentState)
+	{
+	case InsectState::Alive:
+		Entity::update(deltaTime, collisionManager);
+		animation(2, walkAnimationFrameDelay, deltaTime);
+		break;
+	case InsectState::Crushed:
+		destroyTimer += deltaTime;
+		if (destroyTimer >= destroyTime)
+		{
+			isActive = false;
+		}
+		break;
+	case InsectState::Reversed:
+		break;
+	default:
+		break;
+	}
+}
+
+void Insect::lateUpdate(float deltaTime, CollisionManager& collisionManager)
+{
+	if (!_camera.inCamera(rect))
+	{
+		return;
+	}
+	switch (currentState)
+	{
+	case InsectState::Alive:
+		Entity::lateUpdate(deltaTime, collisionManager);
+		break;
+	case InsectState::Crushed:
+		break;
+	case InsectState::Reversed:
+		break;
+	default:
+		break;
+	}
+}
+
+void Insect::draw()
+{
+	if (!_camera.inCamera(rect))
+	{
+		return;
+	}
+	SDL_FRect newRect = _camera.adjustToCamera(rect);
+	switch (currentState)
+	{
+	case InsectState::Alive:
+		SDL_RenderTextureRotated(_renderer, walkFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+		break;
+	case InsectState::Crushed:
+		SDL_RenderTextureRotated(_renderer, crushedFrame, NULL, &newRect, 0, &center, flip);
+		break;
+	case InsectState::Reversed:
+		SDL_RenderTextureRotated(_renderer, reversedFrame, NULL, &newRect, 0, &center, flip);
+		break;
+	default:
+		break;
+	}
+}
+
+void Insect::restart()
+{
+	return;
+}
+
+void Insect::onCollisionWithTile(Direction direction)
+{
+	Entity::onCollisionWithTile(direction);
+	switch (direction)
+	{
+	case Direction::Up:
+		break;
+	case Direction::Down:
+		break;
+	case Direction::Left:
+		walkDirection = vector2::right;
+		break;
+	case Direction::Right:
+		walkDirection = vector2::left;
+		break;
+	default:
+		break;
+	}
+}
+
+void Insect::onCollisionWithEntity(Entity* entity, Direction direction)
+{
+	switch (entity->getType())
+	{
+	case EntityType::PlayerType:
+		switch (direction)
+		{
+		case Direction::Up:
+			die();
+			dynamic_cast<Player*>(entity)->jump(350);
+			break;
+		default:
+			dynamic_cast<Player*>(entity)->die();
+			break;
+		}
+		break;
+	case EntityType::EnemyType:
+		switch (direction)
+		{
+		case Direction::Right:
+			walkDirection = vector2::left;
+			break;
+		case Direction::Left:
+			walkDirection = vector2::right;
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void Insect::horizontalMovement(float deltaTime)
+{
+	velocity.x = walkDirection.x * walkSpeed;
+}
+
+void Insect::die()
+{
+	currentState = InsectState::Crushed;
+	destroyTimer = 0;
+}
