@@ -18,6 +18,16 @@ bool Camera::inCamera(SDL_FRect& other)
 	return false;
 }
 
+SDL_FRect Camera::adjustToCamera(SDL_FRect& other)
+{
+	return {
+		roundf(other.x - rect.x),
+		roundf(other.y - rect.y),
+		other.w,
+		other.h
+	};
+}
+
 void Camera::update(SDL_FRect& player)
 {
 	if (player.x > rect.x + (rect.w / 10 * 4))

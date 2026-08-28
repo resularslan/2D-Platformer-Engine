@@ -8,7 +8,7 @@
 #define WINDOW_WIDTH (WINDOW_WIDTH_TILE * CELL_SIZE)
 #define WINDOW_HEIGHT (MAP_HEIGHT_TILE * CELL_SIZE)
 
-enum Direction
+enum class Direction
 {
 	Up,
 	Down,
@@ -16,7 +16,7 @@ enum Direction
 	Right
 };
 
-enum EntityType
+enum class EntityType
 {
 	PlayerType,
 	EnemyType,

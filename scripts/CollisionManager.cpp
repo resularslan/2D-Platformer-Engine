@@ -40,10 +40,10 @@ std::vector<Entity*> CollisionManager::entityCollision(Entity& entity)
 	for (auto& otherEntity : _entities)
 	{
 		if (otherEntity->getID() == entity.getID()) continue;
-		if (entity.getCollisionRect().x + entity.getCollisionRect().w > otherEntity->getCollisionRect().x &&
-			otherEntity->getCollisionRect().x + otherEntity->getCollisionRect().w > entity.getCollisionRect().x &&
-			entity.getCollisionRect().y + entity.getCollisionRect().h > otherEntity->getCollisionRect().y &&
-			otherEntity->getCollisionRect().y + otherEntity->getCollisionRect().h > entity.getCollisionRect().y)
+		if (entity.getCollisionRect().x + entity.getCollisionRect().w >= otherEntity->getCollisionRect().x &&
+			otherEntity->getCollisionRect().x + otherEntity->getCollisionRect().w >= entity.getCollisionRect().x &&
+			entity.getCollisionRect().y + entity.getCollisionRect().h >= otherEntity->getCollisionRect().y &&
+			otherEntity->getCollisionRect().y + otherEntity->getCollisionRect().h >= entity.getCollisionRect().y)
 		{
 			entityList.push_back(otherEntity.get());
 		}

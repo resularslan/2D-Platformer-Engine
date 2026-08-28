@@ -1,6 +1,15 @@
 #include "Entity.h"
 #include "CollisionManager.h"
 
+Entity::Entity(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
+	:
+	_renderer(renderer),
+	_camera(camera),
+	_xPos(xPos),
+	_yPos(yPos),
+	_id(id)
+{ }
+
 void Entity::update(float deltaTime, CollisionManager& collisionManager)
 {
 	horizontalMovement(deltaTime);
@@ -14,15 +23,15 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 			velocity.y = maxVelocityY;
 		}
 	}
+	oldCollisionPos = { collisionRect.x , collisionRect.y };
 	rect.x += velocity.x * deltaTime;
 	updateCollisionRect();
 	std::vector<TileCollisionInfo> xTileCollisions = collisionManager.tileCollision(*this);
-	std::vector<Entity*> xEntityCollisions = collisionManager.entityCollision(*this);
 	if (xTileCollisions.size() > 0)
 	{
-		if (velocity.x > 0)
+		for (auto& tile : xTileCollisions)
 		{
-			for (auto& tile : xTileCollisions)
+			if (velocity.x > 0)
 			{
 				if (tile.collisionType == Solid)
 				{
@@ -34,10 +43,7 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 					}
 				}
 			}
-		}
-		else if (velocity.x < 0)
-		{
-			for (auto& tile : xTileCollisions)
+			else if (velocity.x < 0)
 			{
 				if (tile.collisionType == Solid)
 				{
@@ -51,38 +57,14 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 			}
 		}
 	}
-	if (xEntityCollisions.size() > 0)
-	{
-		if (velocity.x > 0)
-		{
-			for (auto& entity : xEntityCollisions)
-			{
-				if (oldCollisionPos.x + collisionRect.w <= entity->getCollisionRect().x)
-				{
-					onCollisionWithEntity(entity, Right);
-				}
-			}
-		}
-		else if (velocity.x < 0)
-		{
-			for (auto& entity : xEntityCollisions)
-			{
-				if (oldCollisionPos.x >= entity->getCollisionRect().x + entity->getCollisionRect().w)
-				{
-					onCollisionWithEntity(entity, Direction::Left);
-				}
-			}
-		}
-	}
 	rect.y += velocity.y * deltaTime;
 	updateCollisionRect();
 	std::vector<TileCollisionInfo> yTileCollisions = collisionManager.tileCollision(*this);
-	std::vector<Entity*> yEntityCollisions = collisionManager.entityCollision(*this);
 	if (yTileCollisions.size() > 0)
 	{
-		if (velocity.y > 0)
+		for (auto& tile : yTileCollisions)
 		{
-			for (auto& tile : yTileCollisions)
+			if (velocity.y > 0)
 			{
 				if (tile.collisionType == Solid)
 				{
@@ -94,20 +76,17 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 					}
 				}
 			}
-		}
-		else if (velocity.y < 0)
-		{
-			for (auto& tile : yTileCollisions)
+			else if (velocity.y < 0)
 			{
 				if (tile.collisionType == Solid || tile.collisionType == SolidFromBottom)
 				{
 					if (oldCollisionPos.y >= tile.tilePos.y + tile.tilePos.h)
 					{
-						if (collisionRect.x + (collisionRect.w / 2) < tile.tilePos.x)
+						if (collisionRect.x + upCollisionErrorMargin < tile.tilePos.x && yTileCollisions.size() == 1)
 						{
 							alignRect(tile.tilePos, Direction::Left);
 						}
-						else if (collisionRect.x + (collisionRect.w / 2) > tile.tilePos.x + tile.tilePos.w)
+						else if (collisionRect.x + collisionRect.w > tile.tilePos.x + tile.tilePos.w + upCollisionErrorMargin && yTileCollisions.size() == 1)
 						{
 							alignRect(tile.tilePos, Direction::Right);
 						}
@@ -123,31 +102,34 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 			}
 		}
 	}
-	if (yEntityCollisions.size() > 0)
+	updateCollisionRect();
+}
+
+void Entity::lateUpdate(float deltaTime, CollisionManager& collisionManager)
+{
+	std::vector<Entity*> entityCollisions = collisionManager.entityCollision(*this);
+	if (entityCollisions.size() > 0)
 	{
-		if (velocity.y > 0)
+		for (auto& entity : entityCollisions)
 		{
-			for (auto& entity : yEntityCollisions)
+			if (oldCollisionPos.y + collisionRect.h <= entity->getOldCollisionPos().y)
 			{
-				if (oldCollisionPos.y + collisionRect.h <= entity->getCollisionRect().y)
-				{
-					onCollisionWithEntity(entity, Direction::Down);
-				}
+				onCollisionWithEntity(entity, Direction::Down);
 			}
-		}
-		else if (velocity.y < 0)
-		{
-			for (auto& entity : yEntityCollisions)
+			if (oldCollisionPos.y >= entity->getOldCollisionPos().y + entity->getCollisionRect().h)
 			{
-				if (oldCollisionPos.y >= entity->getCollisionRect().y + entity->getCollisionRect().h)
-				{
-					onCollisionWithEntity(entity, Direction::Up);
-				}
+				onCollisionWithEntity(entity, Direction::Up);
+			}
+			if (oldCollisionPos.x >= entity->getOldCollisionPos().x + entity->getCollisionRect().w)
+			{
+				onCollisionWithEntity(entity, Direction::Left);
+			}
+			if (oldCollisionPos.x + collisionRect.w <= entity->getOldCollisionPos().x)
+			{
+				onCollisionWithEntity(entity, Direction::Right);
 			}
 		}
 	}
-	updateCollisionRect();
-	oldCollisionPos = { collisionRect.x , collisionRect.y };
 }
 
 SDL_FRect Entity::getRect()
@@ -160,6 +142,11 @@ SDL_FRect Entity::getCollisionRect()
 	return collisionRect;
 }
 
+vector2 Entity::getOldCollisionPos()
+{
+	return oldCollisionPos;
+}
+
 EntityType Entity::getType()
 {
 	return type;
@@ -167,12 +154,12 @@ EntityType Entity::getType()
 
 int Entity::getID()
 {
-	return id;
+	return _id;
 }
 
-void Entity::setID(int newID)
+bool Entity::getActiveState()
 {
-	id = newID;
+	return isActive;
 }
 
 void Entity::onCollisionWithTile(Direction direction)
