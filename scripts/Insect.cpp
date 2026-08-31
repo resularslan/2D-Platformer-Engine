@@ -20,14 +20,12 @@ Insect::~Insect()
 
 void Insect::init()
 {
-	rect = { _xPos, _yPos, CELL_SIZE * 2, CELL_SIZE * 2 };
+	Entity::init();
 	walkFrames[0] = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Walk1.png");
 	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Walk2.png");
-	crushedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Death.png");
-	reversedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Reverse.png");
+	crushedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Crushed.png");
+	reversedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Death.png");
 	type = EntityType::EnemyType;
-	center = { rect.w / 2, rect.h / 2 };
-	oldCollisionPos = { collisionRect.x, collisionRect.y };
 	currentState = InsectState::Alive;
 }
 
@@ -133,7 +131,7 @@ void Insect::onCollisionWithEntity(Entity* entity, Direction direction)
 		switch (direction)
 		{
 		case Direction::Up:
-			die();
+			crush();
 			dynamic_cast<Player*>(entity)->jump(350);
 			break;
 		default:
@@ -164,8 +162,13 @@ void Insect::horizontalMovement(float deltaTime)
 	velocity.x = walkDirection.x * walkSpeed;
 }
 
-void Insect::die()
+void Insect::crush()
 {
 	currentState = InsectState::Crushed;
 	destroyTimer = 0;
+}
+
+void Insect::die()
+{
+	return;
 }

@@ -1,0 +1,232 @@
+#include "Turtle.h"
+#include "Player.h"
+
+Turtle::Turtle(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
+	:
+	Entity(xPos, yPos, renderer, camera, id),
+	walkFrames{ nullptr, nullptr },
+	sleepingFrame(nullptr),
+	reversedFrame(nullptr)
+{}
+
+Turtle::~Turtle()
+{
+	SDL_DestroyTexture(sleepingFrame);
+	SDL_DestroyTexture(reversedFrame);
+	for (int i = 0; i < 2; i++) {
+		SDL_DestroyTexture(walkFrames[i]);
+	}
+}
+
+void Turtle::init()
+{
+	Entity::init();
+	walkFrames[0] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Walk1.png");
+	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Walk2.png");
+	sleepingFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Sleeping.png");
+	reversedFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Death.png");
+	type = EntityType::EnemyType;
+	currentState = TurtleState::Alive;
+}
+
+void Turtle::update(float deltaTime, CollisionManager& collisionManager)
+{
+	if (!_camera.inCamera(rect))
+	{
+		return;
+	}
+	switch (currentState)
+	{
+	case TurtleState::Alive:
+		Entity::update(deltaTime, collisionManager);
+		animation(2, walkAnimationFrameDelay, deltaTime);
+		break;
+	case TurtleState::Sleeping:
+		Entity::update(deltaTime, collisionManager);
+		if (walkDirection.x == 0)
+		{
+			wakeTimer += deltaTime;
+		}
+		if (wakeTimer >= wakeTime)
+		{
+			currentState = TurtleState::Alive;
+			speed = walkSpeed;
+		}
+		break;
+	case TurtleState::Reversed:
+		break;
+	default:
+		break;
+	}
+}
+
+void Turtle::lateUpdate(float deltaTime, CollisionManager& collisionManager)
+{
+	if (!_camera.inCamera(rect))
+	{
+		return;
+	}
+	switch (currentState)
+	{
+	case TurtleState::Alive:
+		Entity::lateUpdate(deltaTime, collisionManager);
+		break;
+	case TurtleState::Sleeping:
+		Entity::lateUpdate(deltaTime, collisionManager);
+		break;
+	case TurtleState::Reversed:
+		break;
+	default:
+		break;
+	}
+}
+
+void Turtle::draw()
+{
+	if (!_camera.inCamera(rect))
+	{
+		return;
+	}
+	SDL_FRect newRect = _camera.adjustToCamera(rect);
+	switch (currentState)
+	{
+	case TurtleState::Alive:
+		SDL_RenderTextureRotated(_renderer, walkFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+		break;
+	case TurtleState::Sleeping:
+		SDL_RenderTextureRotated(_renderer, sleepingFrame, NULL, &newRect, 0, &center, flip);
+		break;
+	case TurtleState::Reversed:
+		SDL_RenderTextureRotated(_renderer, reversedFrame, NULL, &newRect, 0, &center, flip);
+		break;
+	default:
+		break;
+	}
+}
+
+void Turtle::restart()
+{
+	return;
+}
+
+void Turtle::onCollisionWithTile(Direction direction)
+{
+	Entity::onCollisionWithTile(direction);
+	switch (direction)
+	{
+	case Direction::Up:
+		break;
+	case Direction::Down:
+		break;
+	case Direction::Left:
+		walkDirection = vector2::right;
+		break;
+	case Direction::Right:
+		walkDirection = vector2::left;
+		break;
+	default:
+		break;
+	}
+}
+
+void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
+{
+	switch (currentState)
+	{
+	case TurtleState::Alive:
+		switch (entity->getType())
+		{
+		case EntityType::PlayerType:
+			switch (direction)
+			{
+			case Direction::Up:
+				sleep();
+				dynamic_cast<Player*>(entity)->jump(350);
+				break;
+			default:
+				dynamic_cast<Player*>(entity)->die();
+				break;
+			}
+			break;
+		case EntityType::EnemyType:
+			switch (direction)
+			{
+			case Direction::Right:
+				walkDirection = vector2::left;
+				break;
+			case Direction::Left:
+				walkDirection = vector2::right;
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+		break;
+	case TurtleState::Sleeping:
+		switch (entity->getType())
+		{
+		case EntityType::PlayerType:
+			switch (direction)
+			{
+			case Direction::Right:
+				if (walkDirection.x == 0)
+				{
+					walkDirection = vector2::left;
+					speed = fastSpeed;
+				}
+				else
+				{
+					dynamic_cast<Player*>(entity)->die();
+				}
+				break;
+			case Direction::Left:
+				if (walkDirection.x == 0)
+				{
+					walkDirection = vector2::right;
+					speed = fastSpeed;
+				}
+				else
+				{
+					dynamic_cast<Player*>(entity)->die();
+				}
+				break;
+			default:
+				break;
+			}
+			break;
+		case EntityType::EnemyType:
+			switch (direction)
+			{
+			case Direction::Right:
+				break;
+			case Direction::Left:
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+		break;
+	case TurtleState::Reversed:
+		break;
+	default:
+		break;
+	}
+}
+
+void Turtle::horizontalMovement(float deltaTime)
+{
+	velocity.x = walkDirection.x * speed;
+}
+
+void Turtle::sleep()
+{
+	currentState = TurtleState::Sleeping;
+	wakeTimer = 0;
+	walkDirection.x = 0;
+}

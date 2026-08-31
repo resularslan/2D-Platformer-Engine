@@ -43,7 +43,7 @@ Player::~Player()
 
 void Player::init()
 {
-	rect = { _xPos, _yPos , CELL_SIZE * 2, CELL_SIZE * 2 };
+	Entity::init();
 	smallRunFrames[0] = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Run1.png");
 	smallRunFrames[1] = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Run2.png");
 	smallRunFrames[2] = IMG_LoadTexture(_renderer, "assets/Player/Player_Small_Run3.png");
@@ -97,10 +97,7 @@ void Player::init()
 	shrinkInfos[24] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
 	shrinkInfos[25] = { 31 * shrinkAnimationFrameSeconds , 32 * shrinkAnimationFrameSeconds, CELL_SIZE * 4, 0, bigShrink };
 	shrinkInfos[26] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
-	flip = SDL_FLIP_NONE;
 	type = EntityType::PlayerType;
-	center = { rect.w / 2, rect.h / 2 };
-	oldCollisionPos = { collisionRect.x, collisionRect.y };
 	currentState = PlayerState::Alive;
 }
 

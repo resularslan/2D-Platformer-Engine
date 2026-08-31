@@ -10,6 +10,15 @@ Entity::Entity(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, i
 	_id(id)
 { }
 
+void Entity::init()
+{
+	rect = { _xPos, _yPos , CELL_SIZE * 2, CELL_SIZE * 2 };
+	updateCollisionRect();
+	center = { rect.w / 2, rect.h / 2 };
+	oldCollisionPos = { collisionRect.x, collisionRect.y };
+	flip = SDL_FLIP_NONE;
+}
+
 void Entity::update(float deltaTime, CollisionManager& collisionManager)
 {
 	horizontalMovement(deltaTime);

@@ -2,20 +2,20 @@
 
 #include "Entity.h"
 
-enum class InsectState
+enum class TurtleState
 {
 	Alive,
-	Crushed,
+	Sleeping,
 	Reversed
 };
 
 class Player;
 
-class Insect : public Entity
+class Turtle : public Entity
 {
 public:
-	Insect(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
-	~Insect();
+	Turtle(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
+	~Turtle();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
 	void lateUpdate(float deltaTime, CollisionManager& collisionManager) override;
@@ -26,15 +26,18 @@ protected:
 	void onCollisionWithTile(Direction direction) override;
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
-	void crush();
+	void sleep();
 	void die();
 	SDL_Texture* walkFrames[2];
-	SDL_Texture* crushedFrame;
+	SDL_Texture* sleepingFrame;
 	SDL_Texture* reversedFrame;
 	vector2 walkDirection = vector2::left;
+	float speed = 100;
 	const float walkSpeed = 100;
+	const float fastSpeed = 400;
 	const float walkAnimationFrameDelay = 0.4f;
-	float destroyTimer = 0;
-	const float destroyTime = 1;
-	InsectState currentState = InsectState::Alive;
+	float wakeTimer = 0;
+	const float wakeTime = 5;
+	TurtleState currentState = TurtleState::Alive;
 };
+
