@@ -6,13 +6,13 @@ Insect::Insect(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, i
 	Entity(xPos, yPos, renderer, camera, id),
 	walkFrames{ nullptr, nullptr },
 	crushedFrame(nullptr),
-	reversedFrame(nullptr)
+	deathFrame(nullptr)
 {}
 
 Insect::~Insect()
 {
 	SDL_DestroyTexture(crushedFrame);
-	SDL_DestroyTexture(reversedFrame);
+	SDL_DestroyTexture(deathFrame);
 	for (int i = 0; i < 2; i++) {
 		SDL_DestroyTexture(walkFrames[i]);
 	}
@@ -24,7 +24,7 @@ void Insect::init()
 	walkFrames[0] = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Walk1.png");
 	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Walk2.png");
 	crushedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Crushed.png");
-	reversedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Death.png");
+	deathFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Death.png");
 	type = EntityType::EnemyType;
 	currentState = InsectState::Alive;
 }
@@ -48,7 +48,12 @@ void Insect::update(float deltaTime, CollisionManager& collisionManager)
 			isActive = false;
 		}
 		break;
-	case InsectState::Reversed:
+	case InsectState::Dying:
+		if (_camera.inCamera(rect))
+		{
+			velocity.y += gravity * deltaTime;
+		}
+		rect.y += velocity.y * deltaTime;
 		break;
 	default:
 		break;
@@ -68,7 +73,7 @@ void Insect::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 		break;
 	case InsectState::Crushed:
 		break;
-	case InsectState::Reversed:
+	case InsectState::Dying:
 		break;
 	default:
 		break;
@@ -90,8 +95,8 @@ void Insect::draw()
 	case InsectState::Crushed:
 		SDL_RenderTextureRotated(_renderer, crushedFrame, NULL, &newRect, 0, &center, flip);
 		break;
-	case InsectState::Reversed:
-		SDL_RenderTextureRotated(_renderer, reversedFrame, NULL, &newRect, 0, &center, flip);
+	case InsectState::Dying:
+		SDL_RenderTextureRotated(_renderer, deathFrame, NULL, &newRect, 0, &center, flip);
 		break;
 	default:
 		break;
@@ -101,6 +106,20 @@ void Insect::draw()
 void Insect::restart()
 {
 	return;
+}
+
+void Insect::die()
+{
+	currentState = InsectState::Dying;
+	if (_camera.inCamera(rect))
+	{
+		velocity.y = -deathJumpForce;
+	}
+	else
+	{
+		velocity.y = 0;
+	}
+	velocity.x = SDL_randf() > 0.5f ? walkDirection.x : -walkDirection.x;
 }
 
 void Insect::onCollisionWithTile(Direction direction)
@@ -166,9 +185,4 @@ void Insect::crush()
 {
 	currentState = InsectState::Crushed;
 	destroyTimer = 0;
-}
-
-void Insect::die()
-{
-	return;
 }

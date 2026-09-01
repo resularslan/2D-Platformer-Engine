@@ -6,13 +6,13 @@ Turtle::Turtle(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, i
 	Entity(xPos, yPos, renderer, camera, id),
 	walkFrames{ nullptr, nullptr },
 	sleepingFrame(nullptr),
-	reversedFrame(nullptr)
+	deathFrame(nullptr)
 {}
 
 Turtle::~Turtle()
 {
 	SDL_DestroyTexture(sleepingFrame);
-	SDL_DestroyTexture(reversedFrame);
+	SDL_DestroyTexture(deathFrame);
 	for (int i = 0; i < 2; i++) {
 		SDL_DestroyTexture(walkFrames[i]);
 	}
@@ -24,7 +24,7 @@ void Turtle::init()
 	walkFrames[0] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Walk1.png");
 	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Walk2.png");
 	sleepingFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Sleeping.png");
-	reversedFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Death.png");
+	deathFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Death.png");
 	type = EntityType::EnemyType;
 	currentState = TurtleState::Alive;
 }
@@ -50,10 +50,11 @@ void Turtle::update(float deltaTime, CollisionManager& collisionManager)
 		if (wakeTimer >= wakeTime)
 		{
 			currentState = TurtleState::Alive;
+			walkDirection = { oldWalkDirectionX, walkDirection.y };
 			speed = walkSpeed;
 		}
 		break;
-	case TurtleState::Reversed:
+	case TurtleState::Dying:
 		break;
 	default:
 		break;
@@ -74,7 +75,12 @@ void Turtle::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 	case TurtleState::Sleeping:
 		Entity::lateUpdate(deltaTime, collisionManager);
 		break;
-	case TurtleState::Reversed:
+	case TurtleState::Dying:
+		if (_camera.inCamera(rect))
+		{
+			velocity.y += gravity * deltaTime;
+		}
+		rect.y += velocity.y * deltaTime;
 		break;
 	default:
 		break;
@@ -96,8 +102,9 @@ void Turtle::draw()
 	case TurtleState::Sleeping:
 		SDL_RenderTextureRotated(_renderer, sleepingFrame, NULL, &newRect, 0, &center, flip);
 		break;
-	case TurtleState::Reversed:
-		SDL_RenderTextureRotated(_renderer, reversedFrame, NULL, &newRect, 0, &center, flip);
+	case TurtleState::Dying:
+		SDL_RenderTextureRotated(_renderer, deathFrame, NULL, &newRect, 0, &center, flip);
+		SDL_RenderTextureRotated(_renderer, deathFrame, NULL, &newRect, 0, &center, flip);
 		break;
 	default:
 		break;
@@ -107,6 +114,20 @@ void Turtle::draw()
 void Turtle::restart()
 {
 	return;
+}
+
+void Turtle::die()
+{
+	currentState = TurtleState::Dying;
+	if (_camera.inCamera(rect))
+	{
+		velocity.y = -deathJumpForce;
+	}
+	else
+	{
+		velocity.y = 0;
+	}
+	velocity.x = SDL_randf() > 0.5f ? walkDirection.x : -walkDirection.x;
 }
 
 void Turtle::onCollisionWithTile(Direction direction)
@@ -201,8 +222,16 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Right:
+				if (walkDirection.x != 0)
+				{
+					entity->die();
+				}
 				break;
 			case Direction::Left:
+				if (walkDirection.x != 0)
+				{
+					entity->die();
+				}
 				break;
 			default:
 				break;
@@ -212,7 +241,7 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 			break;
 		}
 		break;
-	case TurtleState::Reversed:
+	case TurtleState::Dying:
 		break;
 	default:
 		break;
@@ -228,5 +257,6 @@ void Turtle::sleep()
 {
 	currentState = TurtleState::Sleeping;
 	wakeTimer = 0;
+	oldWalkDirectionX = walkDirection.x;
 	walkDirection.x = 0;
 }

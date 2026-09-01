@@ -19,6 +19,7 @@ public:
 	virtual void lateUpdate(float deltaTime, CollisionManager& collisionManager) = 0;
 	virtual void restart() = 0;
 	virtual void draw() = 0;
+	virtual void die() {};
 	SDL_FRect getRect();
 	SDL_FRect getCollisionRect();
 	vector2 getOldCollisionPos();

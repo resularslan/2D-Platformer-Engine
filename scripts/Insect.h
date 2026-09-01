@@ -6,7 +6,7 @@ enum class InsectState
 {
 	Alive,
 	Crushed,
-	Reversed
+	Dying
 };
 
 class Player;
@@ -21,19 +21,20 @@ public:
 	void lateUpdate(float deltaTime, CollisionManager& collisionManager) override;
 	void draw() override;
 	void restart() override;
+	void die() override;
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void onCollisionWithTile(Direction direction) override;
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
 	void crush();
-	void die();
 	SDL_Texture* walkFrames[2];
 	SDL_Texture* crushedFrame;
-	SDL_Texture* reversedFrame;
+	SDL_Texture* deathFrame;
 	vector2 walkDirection = vector2::left;
 	const float walkSpeed = 100;
 	const float walkAnimationFrameDelay = 0.4f;
+	const float deathJumpForce = 300;
 	float destroyTimer = 0;
 	const float destroyTime = 1;
 	InsectState currentState = InsectState::Alive;

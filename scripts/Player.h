@@ -30,7 +30,7 @@ public:
 	void lateUpdate(float deltaTime, CollisionManager& collisionManager) override;
 	void draw() override;
 	void restart() override;
-	void die();
+	void die() override;
 	void grow();
 	void shrink();
 	void jump(float force);

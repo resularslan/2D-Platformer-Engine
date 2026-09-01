@@ -6,7 +6,7 @@ enum class TurtleState
 {
 	Alive,
 	Sleeping,
-	Reversed
+	Dying
 };
 
 class Player;
@@ -21,21 +21,23 @@ public:
 	void lateUpdate(float deltaTime, CollisionManager& collisionManager) override;
 	void draw() override;
 	void restart() override;
+	void die() override;
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void onCollisionWithTile(Direction direction) override;
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
 	void sleep();
-	void die();
 	SDL_Texture* walkFrames[2];
 	SDL_Texture* sleepingFrame;
-	SDL_Texture* reversedFrame;
+	SDL_Texture* deathFrame;
 	vector2 walkDirection = vector2::left;
+	float oldWalkDirectionX = walkDirection.x;
 	float speed = 100;
 	const float walkSpeed = 100;
 	const float fastSpeed = 400;
 	const float walkAnimationFrameDelay = 0.4f;
+	const float deathJumpForce = 300;
 	float wakeTimer = 0;
 	const float wakeTime = 5;
 	TurtleState currentState = TurtleState::Alive;
