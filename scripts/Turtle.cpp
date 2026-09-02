@@ -31,10 +31,6 @@ void Turtle::init()
 
 void Turtle::update(float deltaTime, CollisionManager& collisionManager)
 {
-	if (!_camera.inCamera(rect))
-	{
-		return;
-	}
 	switch (currentState)
 	{
 	case TurtleState::Alive:
@@ -63,10 +59,6 @@ void Turtle::update(float deltaTime, CollisionManager& collisionManager)
 
 void Turtle::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 {
-	if (!_camera.inCamera(rect))
-	{
-		return;
-	}
 	switch (currentState)
 	{
 	case TurtleState::Alive:
@@ -89,10 +81,6 @@ void Turtle::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 
 void Turtle::draw()
 {
-	if (!_camera.inCamera(rect))
-	{
-		return;
-	}
 	SDL_FRect newRect = _camera.adjustToCamera(rect);
 	switch (currentState)
 	{
@@ -103,7 +91,6 @@ void Turtle::draw()
 		SDL_RenderTextureRotated(_renderer, sleepingFrame, NULL, &newRect, 0, &center, flip);
 		break;
 	case TurtleState::Dying:
-		SDL_RenderTextureRotated(_renderer, deathFrame, NULL, &newRect, 0, &center, flip);
 		SDL_RenderTextureRotated(_renderer, deathFrame, NULL, &newRect, 0, &center, flip);
 		break;
 	default:
@@ -165,7 +152,7 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 				dynamic_cast<Player*>(entity)->jump(350);
 				break;
 			default:
-				dynamic_cast<Player*>(entity)->die();
+				dynamic_cast<Player*>(entity)->takeDamage();
 				break;
 			}
 			break;
@@ -192,6 +179,25 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 		case EntityType::PlayerType:
 			switch (direction)
 			{
+			case Direction::Up:
+				if (walkDirection.x == 0)
+				{
+					if (entity->getCollisionRect().x + entity->getCollisionRect().w < collisionRect.x + (collisionRect.w / 2))
+					{
+						walkDirection = vector2::right;
+						speed = fastSpeed;
+					}
+					else
+					{
+						walkDirection = vector2::left;
+						speed = fastSpeed;
+					}
+				}
+				else
+				{
+					walkDirection = vector2::zero;
+				}
+				break;
 			case Direction::Right:
 				if (walkDirection.x == 0)
 				{
@@ -200,7 +206,7 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 				}
 				else
 				{
-					dynamic_cast<Player*>(entity)->die();
+					dynamic_cast<Player*>(entity)->takeDamage();
 				}
 				break;
 			case Direction::Left:
@@ -211,7 +217,7 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 				}
 				else
 				{
-					dynamic_cast<Player*>(entity)->die();
+					dynamic_cast<Player*>(entity)->takeDamage();
 				}
 				break;
 			default:

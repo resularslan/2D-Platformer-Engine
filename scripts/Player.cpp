@@ -358,6 +358,18 @@ void Player::shrink()
 	originalY = rect.y;
 }
 
+void Player::takeDamage()
+{
+	if (isBig)
+	{
+		shrink();
+	}
+	else
+	{
+		die();
+	}
+}
+
 void Player::jump(float force)
 {
 	velocity.y = -force;

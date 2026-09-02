@@ -31,10 +31,6 @@ void Insect::init()
 
 void Insect::update(float deltaTime, CollisionManager& collisionManager)
 {
-	if (!_camera.inCamera(rect))
-	{
-		return;
-	}
 	switch (currentState)
 	{
 	case InsectState::Alive:
@@ -62,10 +58,6 @@ void Insect::update(float deltaTime, CollisionManager& collisionManager)
 
 void Insect::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 {
-	if (!_camera.inCamera(rect))
-	{
-		return;
-	}
 	switch (currentState)
 	{
 	case InsectState::Alive:
@@ -82,10 +74,6 @@ void Insect::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 
 void Insect::draw()
 {
-	if (!_camera.inCamera(rect))
-	{
-		return;
-	}
 	SDL_FRect newRect = _camera.adjustToCamera(rect);
 	switch (currentState)
 	{
@@ -154,7 +142,7 @@ void Insect::onCollisionWithEntity(Entity* entity, Direction direction)
 			dynamic_cast<Player*>(entity)->jump(350);
 			break;
 		default:
-			dynamic_cast<Player*>(entity)->die();
+			dynamic_cast<Player*>(entity)->takeDamage();
 			break;
 		}
 		break;

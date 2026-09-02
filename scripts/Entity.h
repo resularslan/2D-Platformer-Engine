@@ -44,7 +44,7 @@ protected:
 	bool isActive = true;
 	bool isGrounded = false;
 	float gravity = 1500;
-	float maxVelocityY = 800;
+	float maxVelocityY = 400;
 	float _xPos;
 	float _yPos;
 	const float upCollisionErrorMargin = 16;

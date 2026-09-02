@@ -32,8 +32,8 @@ private:
 	SDL_Texture* crushedFrame;
 	SDL_Texture* deathFrame;
 	vector2 walkDirection = vector2::left;
-	const float walkSpeed = 100;
-	const float walkAnimationFrameDelay = 0.4f;
+	const float walkSpeed = 75;
+	const float walkAnimationFrameDelay = 0.2f;
 	const float deathJumpForce = 300;
 	float destroyTimer = 0;
 	const float destroyTime = 1;

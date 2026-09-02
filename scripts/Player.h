@@ -31,6 +31,7 @@ public:
 	void draw() override;
 	void restart() override;
 	void die() override;
+	void takeDamage();
 	void grow();
 	void shrink();
 	void jump(float force);
@@ -56,7 +57,7 @@ private:
 	const std::array<bool, SDL_SCANCODE_COUNT>& _keys;
 	PlayerState currentState = PlayerState::Alive;
 	float maxRunSpeed = 150;
-	const float minRunSpeedThreshold = 180;
+	const float minRunSpeedThreshold = 150;
 	const float maxRunSpeedThreshold = 300;
 	float runAcceleration = 350;
 	const float minRunAccelerationThreshold = 300;

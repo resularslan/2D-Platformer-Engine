@@ -33,8 +33,6 @@ void Game::init()
 	turtleInfo = { 214 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	camera = new Camera();
 	tileMap = new TileMap();
-	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, renderer ,*camera, entityCount++ );
-	entities.push_back(std::move(player));
 	for (int i = 0; i < 16; i++)
 	{
 		insects[i] = std::make_unique<Insect>(insectInfos[i].xPos, insectInfos[i].yPos, renderer, *camera, entityCount++);
@@ -42,6 +40,8 @@ void Game::init()
 	}
 	turtle = std::make_unique<Turtle>(turtleInfo.xPos, turtleInfo.yPos, renderer, *camera, entityCount++);
 	entities.push_back(std::move(turtle));
+	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, renderer, *camera, entityCount++);
+	entities.push_back(std::move(player));
 	collisionManager = new CollisionManager(entities);
 	camera->init();
 	tileMap->init(renderer);
@@ -76,7 +76,8 @@ void Game::update(float deltaTime)
 {
 	for (const auto& entity : entities)
 	{
-		if (!entity->getActiveState())
+		SDL_FRect entityRect = entity->getRect();
+		if (!entity->getActiveState() || !camera->inCamera(entityRect))
 		{
 			continue;
 		}
@@ -89,7 +90,8 @@ void Game::update(float deltaTime)
 	}
 	for (const auto& entity : entities)
 	{
-		if (!entity->getActiveState())
+		SDL_FRect entityRect = entity->getRect();
+		if (!entity->getActiveState() || !camera->inCamera(entityRect))
 		{
 			continue;
 		}
@@ -104,7 +106,8 @@ void Game::render()
 	tileMap->render(renderer, camera);
 	for (const auto& entity : entities)
 	{
-		if (!entity->getActiveState())
+		SDL_FRect entityRect = entity->getRect();
+		if (!entity->getActiveState() || !camera->inCamera(entityRect))
 		{
 			continue;
 		}

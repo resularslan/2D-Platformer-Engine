@@ -39,6 +39,7 @@ std::vector<Entity*> CollisionManager::entityCollision(Entity& entity)
 	std::vector<Entity*> entityList;
 	for (auto& otherEntity : _entities)
 	{
+		if (otherEntity->getActiveState() == false) continue;
 		if (otherEntity->getID() == entity.getID()) continue;
 		if (entity.getCollisionRect().x + entity.getCollisionRect().w >= otherEntity->getCollisionRect().x &&
 			otherEntity->getCollisionRect().x + otherEntity->getCollisionRect().w >= entity.getCollisionRect().x &&

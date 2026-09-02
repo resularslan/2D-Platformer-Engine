@@ -34,9 +34,9 @@ private:
 	vector2 walkDirection = vector2::left;
 	float oldWalkDirectionX = walkDirection.x;
 	float speed = 100;
-	const float walkSpeed = 100;
+	const float walkSpeed = 75;
 	const float fastSpeed = 400;
-	const float walkAnimationFrameDelay = 0.4f;
+	const float walkAnimationFrameDelay = 0.2f;
 	const float deathJumpForce = 300;
 	float wakeTimer = 0;
 	const float wakeTime = 5;
