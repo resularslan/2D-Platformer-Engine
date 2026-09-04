@@ -27,6 +27,11 @@ void TileMap::render(SDL_Renderer* renderer, Camera* camera)
 	}
 }
 
+void TileMap::setTile(int row, int col, int tileID)
+{
+	tiles[row][col].tileID = tileID;
+}
+
 void TileMap::loadTileMap()
 {
 	std::ifstream file("assets/TileMap/tiledAll.map");
@@ -41,6 +46,5 @@ void TileMap::loadTileMap()
 			tiles[row][col].originalY = tiles[row][col].rect.y;
 		}
 	}
-
 	file.close();
 }

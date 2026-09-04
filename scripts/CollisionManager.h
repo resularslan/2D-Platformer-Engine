@@ -8,7 +8,7 @@
 #include "Constants.h"
 #include "MathUtils.h"
 
-enum CollisionType
+enum class CollisionType
 {
 	None,
 	Solid,
@@ -17,7 +17,7 @@ enum CollisionType
 
 struct TileCollisionInfo
 {
-	SDL_FRect tilePos;
+	SDL_FRect tileRect;
 	CollisionType collisionType;
 };
 
@@ -30,7 +30,7 @@ public:
 	void init();
 	std::vector<TileCollisionInfo> tileCollision(Entity& entity);
 	std::vector<Entity*> entityCollision(Entity& entity);
-
+	void setCollisionType(int row, int col, CollisionType type);
 private:
 	void loadCollisionTypes();
 	CollisionType collisionTypes[MAP_HEIGHT_TILE][MAP_WIDTH_TILE];

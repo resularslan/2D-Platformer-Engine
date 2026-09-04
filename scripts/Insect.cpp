@@ -110,9 +110,9 @@ void Insect::die()
 	velocity.x = SDL_randf() > 0.5f ? walkDirection.x : -walkDirection.x;
 }
 
-void Insect::onCollisionWithTile(Direction direction)
+void Insect::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 {
-	Entity::onCollisionWithTile(direction);
+	Entity::onCollisionWithTile(direction, tileRect);
 	switch (direction)
 	{
 	case Direction::Up:

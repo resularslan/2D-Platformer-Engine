@@ -22,6 +22,7 @@ class TileMap
 public:
 	void init(SDL_Renderer* renderer);
 	void render(SDL_Renderer* renderer, Camera* camera);
+	void setTile(int row, int col, int tileID);
 private:
 	Tile tiles[MAP_HEIGHT_TILE][MAP_WIDTH_TILE];
 	SDL_FPoint center = { TILE_SIZE, TILE_SIZE };

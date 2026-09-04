@@ -25,7 +25,7 @@ std::vector<TileCollisionInfo> CollisionManager::tileCollision(Entity& entity)
 			if (collisionTypes[i][j] != CollisionType::None)
 			{
 				TileCollisionInfo info;
-				info.tilePos = { (float) j * CELL_SIZE * 2, (float) i * CELL_SIZE * 2, (float) CELL_SIZE * 2, (float) CELL_SIZE * 2 };
+				info.tileRect = { (float) j * CELL_SIZE * 2, (float) i * CELL_SIZE * 2, (float) CELL_SIZE * 2, (float) CELL_SIZE * 2 };
 				info.collisionType = collisionTypes[i][j];
 				infos.push_back(info);
 			}
@@ -50,6 +50,11 @@ std::vector<Entity*> CollisionManager::entityCollision(Entity& entity)
 		}
 	}
 	return entityList;
+}
+
+void CollisionManager::setCollisionType(int row, int col, CollisionType type)
+{
+	collisionTypes[row][col] = type;
 }
 
 void CollisionManager::loadCollisionTypes()

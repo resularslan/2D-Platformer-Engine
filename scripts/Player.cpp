@@ -376,9 +376,9 @@ void Player::jump(float force)
 	isJumping = true;
 }
 
-void Player::onCollisionWithTile(Direction direction)
+void Player::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 {
-	Entity::onCollisionWithTile(direction);
+	Entity::onCollisionWithTile(direction, tileRect);
 	switch (direction)
 	{
 	case Direction::Up:

@@ -38,7 +38,7 @@ public:
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void verticalMovement(float deltaTime) override;
-	void onCollisionWithTile(Direction direction) override;
+	void onCollisionWithTile(Direction direction, SDL_FRect tileRect) override;
 private:
 	SDL_Texture* smallRunFrames[3];
 	SDL_Texture* smallIdleFrame;

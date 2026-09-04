@@ -24,7 +24,7 @@ public:
 	void die() override;
 protected:
 	void horizontalMovement(float deltaTime) override;
-	void onCollisionWithTile(Direction direction) override;
+	void onCollisionWithTile(Direction direction, SDL_FRect tileRect) override;
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
 	void sleep();

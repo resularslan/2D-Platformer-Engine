@@ -117,9 +117,9 @@ void Turtle::die()
 	velocity.x = SDL_randf() > 0.5f ? walkDirection.x : -walkDirection.x;
 }
 
-void Turtle::onCollisionWithTile(Direction direction)
+void Turtle::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 {
-	Entity::onCollisionWithTile(direction);
+	Entity::onCollisionWithTile(direction, tileRect);
 	switch (direction)
 	{
 	case Direction::Up:

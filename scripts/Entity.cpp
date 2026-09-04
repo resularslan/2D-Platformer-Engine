@@ -42,24 +42,24 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 		{
 			if (velocity.x > 0)
 			{
-				if (tile.collisionType == Solid)
+				if (tile.collisionType == CollisionType::Solid)
 				{
-					if (oldCollisionPos.x + collisionRect.w <= tile.tilePos.x)
+					if (oldCollisionPos.x + collisionRect.w <= tile.tileRect.x)
 					{
-						alignRect(tile.tilePos, Direction::Left);
-						onCollisionWithTile(Direction::Right);
+						alignRect(tile.tileRect, Direction::Left);
+						onCollisionWithTile(Direction::Right, tile.tileRect);
 						break;
 					}
 				}
 			}
 			else if (velocity.x < 0)
 			{
-				if (tile.collisionType == Solid)
+				if (tile.collisionType == CollisionType::Solid)
 				{
-					if (oldCollisionPos.x >= tile.tilePos.x + tile.tilePos.w)
+					if (oldCollisionPos.x >= tile.tileRect.x + tile.tileRect.w)
 					{
-						alignRect(tile.tilePos, Direction::Right);
-						onCollisionWithTile(Direction::Left);
+						alignRect(tile.tileRect, Direction::Right);
+						onCollisionWithTile(Direction::Left, tile.tileRect);
 						break;
 					}
 				}
@@ -75,35 +75,35 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 		{
 			if (velocity.y > 0)
 			{
-				if (tile.collisionType == Solid)
+				if (tile.collisionType == CollisionType::Solid)
 				{
-					if (oldCollisionPos.y + collisionRect.h <= tile.tilePos.y)
+					if (oldCollisionPos.y + collisionRect.h <= tile.tileRect.y)
 					{
-						alignRect(tile.tilePos, Direction::Up);
-						onCollisionWithTile(Direction::Down);
+						alignRect(tile.tileRect, Direction::Up);
+						onCollisionWithTile(Direction::Down, tile.tileRect);
 						break;
 					}
 				}
 			}
 			else if (velocity.y < 0)
 			{
-				if (tile.collisionType == Solid || tile.collisionType == SolidFromBottom)
+				if (tile.collisionType == CollisionType::Solid || tile.collisionType == CollisionType::SolidFromBottom)
 				{
-					if (oldCollisionPos.y >= tile.tilePos.y + tile.tilePos.h)
+					if (oldCollisionPos.y >= tile.tileRect.y + tile.tileRect.h)
 					{
-						if (collisionRect.x + upCollisionErrorMargin < tile.tilePos.x && yTileCollisions.size() == 1)
+						if (collisionRect.x + upCollisionErrorMargin < tile.tileRect.x && yTileCollisions.size() == 1)
 						{
-							alignRect(tile.tilePos, Direction::Left);
+							alignRect(tile.tileRect, Direction::Left);
 						}
-						else if (collisionRect.x + collisionRect.w > tile.tilePos.x + tile.tilePos.w + upCollisionErrorMargin && yTileCollisions.size() == 1)
+						else if (collisionRect.x + collisionRect.w > tile.tileRect.x + tile.tileRect.w + upCollisionErrorMargin && yTileCollisions.size() == 1)
 						{
-							alignRect(tile.tilePos, Direction::Right);
+							alignRect(tile.tileRect, Direction::Right);
 						}
 						else
 						{
 							velocity.y = 0;
-							alignRect(tile.tilePos, Direction::Down);
-							onCollisionWithTile(Direction::Up);
+							alignRect(tile.tileRect, Direction::Down);
+							onCollisionWithTile(Direction::Up, tile.tileRect);
 						}
 						break;
 					}
@@ -171,7 +171,7 @@ bool Entity::getActiveState()
 	return isActive;
 }
 
-void Entity::onCollisionWithTile(Direction direction)
+void Entity::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 {
 	switch (direction)
 	{
