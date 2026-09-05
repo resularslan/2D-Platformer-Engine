@@ -80,7 +80,7 @@ void Game::update(float deltaTime)
 	for (const auto& entity : entities)
 	{
 		SDL_FRect entityRect = entity->getRect();
-		if (!entity->getActiveState() || !camera->inCamera(entityRect))
+		if (!entity->getActiveState() || (!camera->inCamera(entityRect) && entity->getType() != EntityType::PlayerType))
 		{
 			continue;
 		}
@@ -94,7 +94,7 @@ void Game::update(float deltaTime)
 	for (const auto& entity : entities)
 	{
 		SDL_FRect entityRect = entity->getRect();
-		if (!entity->getActiveState() || !camera->inCamera(entityRect))
+		if (!entity->getActiveState() || (!camera->inCamera(entityRect) && entity->getType() != EntityType::PlayerType))
 		{
 			continue;
 		}
@@ -110,7 +110,7 @@ void Game::render()
 	for (const auto& entity : entities)
 	{
 		SDL_FRect entityRect = entity->getRect();
-		if (!entity->getActiveState() || !camera->inCamera(entityRect))
+		if (!entity->getActiveState() || (!camera->inCamera(entityRect) && entity->getType() != EntityType::PlayerType))
 		{
 			continue;
 		}
