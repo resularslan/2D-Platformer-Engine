@@ -38,6 +38,7 @@ private:
 	const float fastSpeed = 400;
 	const float walkAnimationFrameDelay = 0.2f;
 	const float deathJumpForce = 300;
+	bool wasInCamera = true;
 	float wakeTimer = 0;
 	const float wakeTime = 5;
 	TurtleState currentState = TurtleState::Alive;

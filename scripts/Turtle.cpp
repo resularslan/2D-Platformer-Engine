@@ -49,6 +49,11 @@ void Turtle::update(float deltaTime, CollisionManager& collisionManager)
 			walkDirection = { oldWalkDirectionX, walkDirection.y };
 			speed = walkSpeed;
 		}
+		if (wasInCamera && !_camera.inCamera(rect))
+		{
+			isActive = false;
+		}
+		wasInCamera = _camera.inCamera(rect);
 		break;
 	case TurtleState::Dying:
 		break;
