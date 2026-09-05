@@ -15,7 +15,7 @@ GrowMushroom::~GrowMushroom()
 void GrowMushroom::init()
 {
 	Entity::init();
-	texture = IMG_LoadTexture(_renderer, "assets/Items/growMushroom.png");
+	texture = IMG_LoadTexture(_renderer, "assets/Items/GrowMushroom.png");
 	type = EntityType::InteractableType;
 }
 

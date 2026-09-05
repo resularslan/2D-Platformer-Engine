@@ -15,7 +15,7 @@ HealthMushroom::~HealthMushroom()
 void HealthMushroom::init()
 {
 	Entity::init();
-	texture = IMG_LoadTexture(_renderer, "assets/Items/healthMushroom.png");
+	texture = IMG_LoadTexture(_renderer, "assets/Items/HealthMushroom.png");
 	type = EntityType::InteractableType;
 }
 
