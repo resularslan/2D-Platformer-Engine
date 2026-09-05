@@ -4,7 +4,7 @@ void Camera::init()
 {
 	rect.x = 0;
 	rect.y = 0;
-	rect.w = WINDOW_WIDTH;
+	rect.w = CAMERA_WIDTH;
 	rect.h = WINDOW_HEIGHT;
 }
 
