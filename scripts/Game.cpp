@@ -32,6 +32,7 @@ void Game::init()
 	insectInfos[15] = { 351 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	turtleInfo = { 214 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	growMushroomInfo = { 20 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
+	healthMushroomInfo = { 16 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	camera = new Camera();
 	tileMap = new TileMap();
 	for (int i = 0; i < 16; i++)
@@ -43,6 +44,8 @@ void Game::init()
 	entities.push_back(std::move(turtle));
 	growMushroom = std::make_unique<GrowMushroom>(growMushroomInfo.xPos, growMushroomInfo.yPos, renderer, *camera, entityCount++);
 	entities.push_back(std::move(growMushroom));
+	healthMushroom = std::make_unique<HealthMushroom>(healthMushroomInfo.xPos, healthMushroomInfo.yPos, renderer, *camera, entityCount++);
+	entities.push_back(std::move(healthMushroom));
 	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, renderer, *camera, entityCount++);
 	entities.push_back(std::move(player));
 	collisionManager = new CollisionManager(entities);

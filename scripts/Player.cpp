@@ -344,6 +344,18 @@ void Player::die()
 	}
 }
 
+void Player::takeDamage()
+{
+	if (isBig)
+	{
+		shrink();
+	}
+	else
+	{
+		die();
+	}
+}
+
 void Player::grow()
 {
 	growTimer = 0;
@@ -358,16 +370,9 @@ void Player::shrink()
 	originalY = rect.y;
 }
 
-void Player::takeDamage()
+void Player::addLife()
 {
-	if (isBig)
-	{
-		shrink();
-	}
-	else
-	{
-		die();
-	}
+	life++;
 }
 
 void Player::jump(float force)

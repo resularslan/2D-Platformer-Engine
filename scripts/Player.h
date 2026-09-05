@@ -34,6 +34,7 @@ public:
 	void takeDamage();
 	void grow();
 	void shrink();
+	void addLife();
 	void jump(float force);
 protected:
 	void horizontalMovement(float deltaTime) override;
