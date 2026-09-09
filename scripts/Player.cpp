@@ -148,6 +148,10 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			invincibleSlowingSeconds = 0;
 			invincibleFinishSeconds = 0;
 			invincibleTimer = 0;
+			if (isStarMode)
+			{
+				isStarMode = false;
+			}
 			canDie = true;
 		}
 		if (invincibleTimer > invincibleSlowingSeconds)
@@ -375,10 +379,25 @@ void Player::addLife()
 	life++;
 }
 
+void Player::starMode()
+{
+	invincibleFinishSeconds = 8;
+	invincibleTimer = 0;
+	invincibleSlowingSeconds = 7;
+	invincibleFrameSeconds = 0.016f;
+	canDie = false;
+	isStarMode = true;
+}
+
 void Player::jump(float force)
 {
 	velocity.y = -force;
 	isJumping = true;
+}
+
+bool Player::getStarModeState()
+{
+	return isStarMode;
 }
 
 void Player::onCollisionWithTile(Direction direction, SDL_FRect tileRect)

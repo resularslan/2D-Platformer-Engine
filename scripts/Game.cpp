@@ -21,9 +21,9 @@ void Game::init()
 	insectInfos[4] = { 160 * CELL_SIZE, WINDOW_HEIGHT - 22 * CELL_SIZE };
 	insectInfos[5] = { 164 * CELL_SIZE, WINDOW_HEIGHT - 22 * CELL_SIZE };
 	insectInfos[6] = { 194 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
-	insectInfos[7] = { 197 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
+	insectInfos[7] = { 196 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	insectInfos[8] = { 228 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
-	insectInfos[9] = { 231 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
+	insectInfos[9] = { 230 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	insectInfos[10] = { 248 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	insectInfos[11] = { 251 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	insectInfos[12] = { 256 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };

@@ -35,7 +35,9 @@ public:
 	void grow();
 	void shrink();
 	void addLife();
+	void starMode();
 	void jump(float force);
+	bool getStarModeState();
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void verticalMovement(float deltaTime) override;
@@ -74,7 +76,7 @@ private:
 	bool canSustainJump = false;
 	bool isSliding = false;
 	bool canDie = true;
-	bool starMode = false;
+	bool isStarMode = false;
 	bool facingRight = true;
 	const float slowJumpGravity = 700;
 	const float fastJumpGravity = 873;

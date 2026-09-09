@@ -18,6 +18,7 @@ void Star::init()
 	texture = IMG_LoadTexture(_renderer, "assets/Items/Stars.png");
 	type = EntityType::InteractableType;
 	gravity = starGravity;
+	isActive = false;
 }
 
 void Star::update(float deltaTime, CollisionManager& collisionManager)
@@ -68,7 +69,7 @@ void Star::onCollisionWithEntity(Entity* entity, Direction direction)
 	switch (entity->getType())
 	{
 	case EntityType::PlayerType:
-		dynamic_cast<Player*>(entity)->addLife();
+		dynamic_cast<Player*>(entity)->starMode();
 		isActive = false;
 		break;
 	}

@@ -138,14 +138,27 @@ void Insect::onCollisionWithEntity(Entity* entity, Direction direction)
 		switch (direction)
 		{
 		case Direction::Up:
-			crush();
-			dynamic_cast<Player*>(entity)->jump(350);
+			if (dynamic_cast<Player*>(entity)->getStarModeState())
+			{
+				die();
+			}
+			else
+			{
+				crush();
+				dynamic_cast<Player*>(entity)->jump(350);
+			}
 			break;
 		default:
-			dynamic_cast<Player*>(entity)->takeDamage();
+			if (dynamic_cast<Player*>(entity)->getStarModeState())
+			{
+				die();
+			}
+			else
+			{
+				dynamic_cast<Player*>(entity)->takeDamage();
+			}
 			break;
 		}
-		break;
 	case EntityType::EnemyType:
 		switch (direction)
 		{
