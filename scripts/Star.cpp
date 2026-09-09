@@ -23,13 +23,40 @@ void Star::init()
 
 void Star::update(float deltaTime, CollisionManager& collisionManager)
 {
-	Entity::update(deltaTime, collisionManager);
 	animation(4, frameDelay, deltaTime);
+	switch (currentState)
+	{
+	case StarState::Spawning:
+		spawnTimer += deltaTime;
+		if (spawnTimer < spawnTime)
+		{
+			rect.y -= spawnSpeed * deltaTime;
+		}
+		else
+		{
+			currentState = StarState::Alive;
+		}
+		break;
+	case StarState::Alive:
+		Entity::update(deltaTime, collisionManager);
+		break;
+	default:
+		break;
+	}
 }
 
 void Star::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 {
-	Entity::lateUpdate(deltaTime, collisionManager);
+	switch (currentState)
+	{
+	case StarState::Spawning:
+		break;
+	case StarState::Alive:
+		Entity::lateUpdate(deltaTime, collisionManager);
+		break;
+	default:
+		break;
+	}
 }
 
 void Star::draw()

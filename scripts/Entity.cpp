@@ -171,6 +171,22 @@ bool Entity::getActiveState()
 	return isActive;
 }
 
+void Entity::spawn()
+{
+	isActive = true;
+	canSpawn = false;
+}
+
+bool Entity::isSpawnable()
+{
+	return canSpawn;
+}
+
+void Entity::setSpawnableState(bool state)
+{
+	canSpawn = state;
+}
+
 void Entity::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 {
 	switch (direction)

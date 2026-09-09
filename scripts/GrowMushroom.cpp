@@ -17,16 +17,44 @@ void GrowMushroom::init()
 	Entity::init();
 	texture = IMG_LoadTexture(_renderer, "assets/Items/GrowMushroom.png");
 	type = EntityType::InteractableType;
+	isActive = false;
 }
 
 void GrowMushroom::update(float deltaTime, CollisionManager& collisionManager)
 {
-	Entity::update(deltaTime, collisionManager);
+	switch (currentState)
+	{
+	case GrowMushroomState::Spawning:
+		spawnTimer += deltaTime;
+		if (spawnTimer < spawnTime)
+		{
+			rect.y -= spawnSpeed * deltaTime;
+		}
+		else
+		{
+			currentState = GrowMushroomState::Alive;
+		}
+		break;
+	case GrowMushroomState::Alive:
+		Entity::update(deltaTime, collisionManager);
+		break;
+	default:
+		break;
+	}
 }
 
 void GrowMushroom::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 {
-	Entity::lateUpdate(deltaTime, collisionManager);
+	switch (currentState)
+	{
+	case GrowMushroomState::Spawning:
+		break;
+	case GrowMushroomState::Alive:
+		Entity::lateUpdate(deltaTime, collisionManager);
+		break;
+	default:
+		break;
+	}
 }
 
 void GrowMushroom::draw()

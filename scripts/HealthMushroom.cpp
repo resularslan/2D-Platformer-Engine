@@ -17,16 +17,44 @@ void HealthMushroom::init()
 	Entity::init();
 	texture = IMG_LoadTexture(_renderer, "assets/Items/HealthMushroom.png");
 	type = EntityType::InteractableType;
+	isActive = false;
 }
 
 void HealthMushroom::update(float deltaTime, CollisionManager& collisionManager)
 {
-	Entity::update(deltaTime, collisionManager);
+	switch (currentState)
+	{
+	case HealthMushroomState::Spawning:
+		spawnTimer += deltaTime;
+		if (spawnTimer < spawnTime)
+		{
+			rect.y -= spawnSpeed * deltaTime;
+		}
+		else
+		{
+			currentState = HealthMushroomState::Alive;
+		}
+		break;
+	case HealthMushroomState::Alive:
+		Entity::update(deltaTime, collisionManager);
+		break;
+	default:
+		break;
+	}
 }
 
 void HealthMushroom::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 {
-	Entity::lateUpdate(deltaTime, collisionManager);
+	switch (currentState)
+	{
+	case HealthMushroomState::Spawning:
+		break;
+	case HealthMushroomState::Alive:
+		Entity::lateUpdate(deltaTime, collisionManager);
+		break;
+	default:
+		break;
+	}
 }
 
 void HealthMushroom::draw()

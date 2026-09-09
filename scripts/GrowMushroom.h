@@ -1,6 +1,12 @@
 #pragma once
 #include "Entity.h"
 
+enum class GrowMushroomState
+{
+	Spawning,
+	Alive
+};
+
 class GrowMushroom : public Entity
 {
 public:
@@ -16,6 +22,10 @@ protected:
 	void onCollisionWithTile(Direction direction, SDL_FRect tileRect) override;
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
+	GrowMushroomState currentState = GrowMushroomState::Spawning;
+	float spawnTimer = 0;
+	const float spawnTime = 0.65f;
+	const float spawnSpeed = 50;
 	SDL_Texture* texture;
 	vector2 moveDirection = vector2::left;
 	const float speed = 100;

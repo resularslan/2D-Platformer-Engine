@@ -33,7 +33,7 @@ void Game::init()
 	turtleInfo = { 214 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	growMushroomInfo = { 20 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	healthMushroomInfo = { 16 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
-	starInfo = { 50 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
+	starInfo = { 32 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
 	camera = new Camera();
 	tileMap = new TileMap();
 	for (int i = 0; i < 16; i++)
@@ -86,6 +86,10 @@ void Game::update(float deltaTime)
 	for (const auto& entity : entities)
 	{
 		SDL_FRect entityRect = entity->getRect();
+		if (entity->isSpawnable())
+		{
+			entity->spawn();
+		}
 		if (!entity->getActiveState() || (!camera->inCamera(entityRect) && entity->getType() != EntityType::PlayerType))
 		{
 			continue;
