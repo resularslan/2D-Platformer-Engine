@@ -38,6 +38,7 @@ public:
 	void starMode();
 	void jump(float force);
 	bool getStarModeState();
+	bool getBigState();
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void verticalMovement(float deltaTime) override;

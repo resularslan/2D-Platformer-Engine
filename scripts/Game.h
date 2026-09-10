@@ -15,6 +15,7 @@
 #include "GrowMushroom.h"
 #include "HealthMushroom.h"
 #include "Star.h"
+#include "Brick.h"
 #include "Camera.h"
 #include "TileMap.h"
 #include "CollisionManager.h"
@@ -48,6 +49,7 @@ private:
     entityInfo growMushroomInfo;
     entityInfo healthMushroomInfo;
     entityInfo starInfo;
+    entityInfo brickInfos[30];
     int entityCount = 0;
     std::unique_ptr<Player> player;
     std::unique_ptr<Insect> insects[16];
@@ -55,5 +57,6 @@ private:
     std::unique_ptr<GrowMushroom> growMushroom;
     std::unique_ptr<HealthMushroom> healthMushroom;
     std::unique_ptr<Star> star;
+    std::unique_ptr<Brick> bricks[30];
     CollisionManager* collisionManager;
 };

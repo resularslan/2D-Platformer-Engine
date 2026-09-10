@@ -43,7 +43,6 @@ void TileMap::loadTileMap()
 		for (int col = 0; col < MAP_WIDTH_TILE; col++) {
 			file >> tiles[row][col].tileID;
 			tiles[row][col].rect = { (float)col * CELL_SIZE, (float) row * CELL_SIZE, CELL_SIZE, CELL_SIZE };
-			tiles[row][col].originalY = tiles[row][col].rect.y;
 		}
 	}
 	file.close();

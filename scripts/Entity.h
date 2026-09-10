@@ -31,9 +31,9 @@ public:
 	void setSpawnableState(bool state);
 protected:
 	virtual void verticalMovement(float deltaTime) {};
-	virtual void horizontalMovement(float deltaTime) = 0;
+	virtual void horizontalMovement(float deltaTime) {};
 	virtual void onCollisionWithEntity(Entity* entity, Direction direction) {};
-	virtual void onCollisionWithTile(Direction direction, SDL_FRect tileRect) = 0;
+	virtual void onCollisionWithTile(Direction direction, SDL_FRect tileRect);
 	void animation(int frameCount, float frameDelay, float deltaTime);
 	void updateCollisionRect();
 	void alignRect(SDL_FRect other, Direction direction);

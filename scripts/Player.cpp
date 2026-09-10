@@ -400,6 +400,11 @@ bool Player::getStarModeState()
 	return isStarMode;
 }
 
+bool Player::getBigState()
+{
+	return isBig;
+}
+
 void Player::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 {
 	Entity::onCollisionWithTile(direction, tileRect);

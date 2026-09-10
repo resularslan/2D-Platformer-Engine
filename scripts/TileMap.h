@@ -10,9 +10,6 @@ struct Tile
 {
 	int tileID;
 	SDL_FRect rect;
-	float originalY;
-	float animTimer = 0;
-	float lastAnimTimer = 0;
 };
 
 class Camera;
