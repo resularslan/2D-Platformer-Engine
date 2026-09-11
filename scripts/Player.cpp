@@ -176,6 +176,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			isBig = true;
 			updateCollisionRect();
 			oldCollisionPos = { collisionRect.x, collisionRect.y };
+			canCollide = true;
 		}
 		break;
 	case PlayerState::Shrinking:
@@ -200,6 +201,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			invincibleFrameSeconds = 0.016f;
 			updateCollisionRect();
 			oldCollisionPos = { collisionRect.x, collisionRect.y };
+			canCollide = true;
 		}
 		break;
 	case PlayerState::Dying:
@@ -212,7 +214,6 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			}
 			rect.y += velocity.y * deltaTime;
 		}
-		updateCollisionRect();
 		break;
 	default:
 		break;
@@ -346,6 +347,7 @@ void Player::die()
 			velocity.y = 0;
 		}
 		canDie = false;
+		canCollide = false;
 	}
 }
 
@@ -366,6 +368,7 @@ void Player::grow()
 	growTimer = 0;
 	currentState = PlayerState::Growing;
 	originalY = rect.y;
+	canCollide = false;
 }
 
 void Player::shrink()
@@ -373,6 +376,7 @@ void Player::shrink()
 	shrinkTimer = 0;
 	currentState = PlayerState::Shrinking;
 	originalY = rect.y;
+	canCollide = false;
 }
 
 void Player::addLife()

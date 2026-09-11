@@ -41,6 +41,7 @@ void Brick::update(float deltaTime, CollisionManager& collisionManager)
 		{
 			rect.y = originalY;
 			currentState = BrickState::Static;
+			collisionMargin = brickCollisionMargin;
 		}
 		updateCollisionRect();
 		break;
@@ -107,14 +108,7 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 		switch (entity->getType())
 		{
 		case EntityType::EnemyType:
-			switch (direction)
-			{
-			case Direction::Up:
-				entity->die();
-				break;
-			default:
-				break;
-			}
+			entity->die();
 			break;
 		default:
 			break;
@@ -130,4 +124,5 @@ void Brick::move()
 {
 	currentState = BrickState::Moving;
 	moveTimer = 0;
+	collisionMargin = { 8, 2 };
 }

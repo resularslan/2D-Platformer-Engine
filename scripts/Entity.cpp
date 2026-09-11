@@ -121,6 +121,10 @@ void Entity::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 	{
 		for (auto& entity : entityCollisions)
 		{
+			if (!entity->getCollidableState())
+			{
+				continue;
+			}
 			if (oldCollisionPos.y + collisionRect.h <= entity->getOldCollisionPos().y)
 			{
 				onCollisionWithEntity(entity, Direction::Down);
@@ -185,6 +189,11 @@ bool Entity::isSpawnable()
 void Entity::setSpawnableState(bool state)
 {
 	canSpawn = state;
+}
+
+bool Entity::getCollidableState()
+{
+	return canCollide;
 }
 
 void Entity::onCollisionWithTile(Direction direction, SDL_FRect tileRect)

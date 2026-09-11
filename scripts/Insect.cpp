@@ -50,6 +50,7 @@ void Insect::update(float deltaTime, CollisionManager& collisionManager)
 			velocity.y += gravity * deltaTime;
 		}
 		rect.y += velocity.y * deltaTime;
+		updateCollisionRect();
 		break;
 	default:
 		break;
@@ -99,6 +100,7 @@ void Insect::restart()
 void Insect::die()
 {
 	currentState = InsectState::Dying;
+	canCollide = false;
 	if (_camera.inCamera(rect))
 	{
 		velocity.y = -deathJumpForce;

@@ -56,6 +56,12 @@ void Turtle::update(float deltaTime, CollisionManager& collisionManager)
 		wasInCamera = _camera.inCamera(rect);
 		break;
 	case TurtleState::Dying:
+		if (_camera.inCamera(rect))
+		{
+			velocity.y += gravity * deltaTime;
+		}
+		rect.y += velocity.y * deltaTime;
+		updateCollisionRect();
 		break;
 	default:
 		break;
@@ -73,11 +79,6 @@ void Turtle::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 		Entity::lateUpdate(deltaTime, collisionManager);
 		break;
 	case TurtleState::Dying:
-		if (_camera.inCamera(rect))
-		{
-			velocity.y += gravity * deltaTime;
-		}
-		rect.y += velocity.y * deltaTime;
 		break;
 	default:
 		break;
@@ -111,6 +112,7 @@ void Turtle::restart()
 void Turtle::die()
 {
 	currentState = TurtleState::Dying;
+	canCollide = false;
 	if (_camera.inCamera(rect))
 	{
 		velocity.y = -deathJumpForce;
@@ -247,13 +249,13 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Right:
-				if (walkDirection.x != 0)
+				if (velocity.x != 0)
 				{
 					entity->die();
 				}
 				break;
 			case Direction::Left:
-				if (walkDirection.x != 0)
+				if (velocity.x != 0)
 				{
 					entity->die();
 				}

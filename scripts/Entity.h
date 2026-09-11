@@ -29,6 +29,7 @@ public:
 	void spawn();
 	bool isSpawnable();
 	void setSpawnableState(bool state);
+	bool getCollidableState();
 protected:
 	virtual void verticalMovement(float deltaTime) {};
 	virtual void horizontalMovement(float deltaTime) {};
@@ -44,6 +45,7 @@ protected:
 	vector2 collisionMargin = { 8, 2 };
 	vector2 velocity = vector2::zero;
 	vector2 oldCollisionPos;
+	bool canCollide = true;
 	bool isActive = true;
 	bool isGrounded = false;
 	bool canSpawn = false;
