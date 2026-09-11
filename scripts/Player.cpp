@@ -124,9 +124,9 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			rect.x = _camera.getRect().x;
 			velocity.x = 0;
 		}
-		else if (rect.x + rect.w > _camera.getRect().x + _camera.getRect().w)
+		else if (rect.x + rect.w > _camera.getRect().x + WINDOW_WIDTH)
 		{
-			rect.x = (_camera.getRect().x + _camera.getRect().w) - rect.w;
+			rect.x = (_camera.getRect().x + WINDOW_WIDTH) - rect.w;
 			velocity.x = 0;
 		}
 		if (isGrounded)
@@ -212,6 +212,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			}
 			rect.y += velocity.y * deltaTime;
 		}
+		updateCollisionRect();
 		break;
 	default:
 		break;

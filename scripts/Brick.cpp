@@ -115,6 +115,7 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			default:
 				break;
 			}
+			break;
 		default:
 			break;
 		}

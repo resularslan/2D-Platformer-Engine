@@ -159,6 +159,7 @@ void Insect::onCollisionWithEntity(Entity* entity, Direction direction)
 			}
 			break;
 		}
+		break;
 	case EntityType::EnemyType:
 		switch (direction)
 		{
