@@ -14,10 +14,10 @@ Brick::~Brick()
 
 void Brick::init()
 {
+	collisionMargin = brickCollisionMargin;
 	Entity::init();
 	brickTexture = IMG_LoadTexture(_renderer, "assets/TileMap/Brick.png");
 	type = EntityType::InteractableType;
-	collisionRect = { rect.x + 4, rect.y + 4 };
 	originalY = rect.y;
 }
 
@@ -26,10 +26,8 @@ void Brick::update(float deltaTime, CollisionManager& collisionManager)
 	switch (currentState)
 	{
 	case BrickState::Static:
-		Entity::lateUpdate(deltaTime, collisionManager);
 		break;
 	case BrickState::Moving:
-		Entity::lateUpdate(deltaTime, collisionManager);
 		moveTimer += deltaTime;
 		if (moveTimer < moveTime / 2)
 		{
@@ -44,6 +42,7 @@ void Brick::update(float deltaTime, CollisionManager& collisionManager)
 			rect.y = originalY;
 			currentState = BrickState::Static;
 		}
+		updateCollisionRect();
 		break;
 	default:
 		break;
@@ -55,8 +54,10 @@ void Brick::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 	switch (currentState)
 	{
 	case BrickState::Static:
+		Entity::lateUpdate(deltaTime, collisionManager);
 		break;
 	case BrickState::Moving:
+		Entity::lateUpdate(deltaTime, collisionManager);
 		break;
 	default:
 		break;

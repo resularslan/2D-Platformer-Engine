@@ -23,7 +23,7 @@ private:
 	void move();
 	BrickState currentState = BrickState::Static;
 	SDL_Texture* brickTexture;
-	vector2 brickCollisionMargin = { 0, 0 };
+	vector2 brickCollisionMargin = { -4, -4 };
 	float originalY;
 	float moveTimer = 0;
 	const float moveTime = 0.5f;
