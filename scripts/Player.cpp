@@ -106,18 +106,6 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 	switch (currentState)
 	{
 	case PlayerState::Alive:
-		if (_keys[SDL_SCANCODE_D])
-		{
-			die();
-		}
-		if (_keys[SDL_SCANCODE_G])
-		{
-			grow();
-		}
-		if (_keys[SDL_SCANCODE_S])
-		{
-			shrink();
-		}
 		Entity::update(deltaTime, collisionManager);
 		if (rect.x < _camera.getRect().x)
 		{

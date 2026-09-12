@@ -27,6 +27,7 @@ void Turtle::init()
 	deathFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Death.png");
 	type = EntityType::EnemyType;
 	currentState = TurtleState::Alive;
+	speed = walkSpeed;
 }
 
 void Turtle::update(float deltaTime, CollisionManager& collisionManager)
@@ -56,12 +57,13 @@ void Turtle::update(float deltaTime, CollisionManager& collisionManager)
 		wasInCamera = _camera.inCamera(rect);
 		break;
 	case TurtleState::Dying:
+		horizontalMovement(deltaTime);
 		if (_camera.inCamera(rect))
 		{
 			velocity.y += gravity * deltaTime;
 		}
+		rect.x += velocity.x * deltaTime;
 		rect.y += velocity.y * deltaTime;
-		updateCollisionRect();
 		break;
 	default:
 		break;
@@ -112,6 +114,7 @@ void Turtle::restart()
 void Turtle::die()
 {
 	currentState = TurtleState::Dying;
+	speed = deathSpeed;
 	canCollide = false;
 	if (_camera.inCamera(rect))
 	{
@@ -121,7 +124,8 @@ void Turtle::die()
 	{
 		velocity.y = 0;
 	}
-	velocity.x = SDL_randf() > 0.5f ? walkDirection.x : -walkDirection.x;
+	SDL_srand(0);
+	velocity.x = SDL_rand(1) == 1 ? walkDirection.x : -walkDirection.x;
 }
 
 void Turtle::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
@@ -203,15 +207,14 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 			case Direction::Up:
 				if (walkDirection.x == 0)
 				{
+					speed = fastSpeed;
 					if (entity->getCollisionRect().x + entity->getCollisionRect().w < collisionRect.x + (collisionRect.w / 2))
 					{
 						walkDirection = vector2::right;
-						speed = fastSpeed;
 					}
 					else
 					{
 						walkDirection = vector2::left;
-						speed = fastSpeed;
 					}
 				}
 				else

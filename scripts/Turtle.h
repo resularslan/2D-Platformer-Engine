@@ -33,8 +33,9 @@ private:
 	SDL_Texture* deathFrame;
 	vector2 walkDirection = vector2::left;
 	float oldWalkDirectionX = walkDirection.x;
-	float speed = 100;
+	float speed;
 	const float walkSpeed = 75;
+	const float deathSpeed = 100;
 	const float fastSpeed = 400;
 	const float walkAnimationFrameDelay = 0.2f;
 	const float deathJumpForce = 300;

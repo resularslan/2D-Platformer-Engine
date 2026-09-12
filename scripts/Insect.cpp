@@ -27,6 +27,7 @@ void Insect::init()
 	deathFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Death.png");
 	type = EntityType::EnemyType;
 	currentState = InsectState::Alive;
+	speed = walkSpeed;
 }
 
 void Insect::update(float deltaTime, CollisionManager& collisionManager)
@@ -45,12 +46,13 @@ void Insect::update(float deltaTime, CollisionManager& collisionManager)
 		}
 		break;
 	case InsectState::Dying:
+		horizontalMovement(deltaTime);
 		if (_camera.inCamera(rect))
 		{
 			velocity.y += gravity * deltaTime;
 		}
+		rect.x += velocity.x * deltaTime;
 		rect.y += velocity.y * deltaTime;
-		updateCollisionRect();
 		break;
 	default:
 		break;
@@ -100,6 +102,7 @@ void Insect::restart()
 void Insect::die()
 {
 	currentState = InsectState::Dying;
+	speed = deathSpeed;
 	canCollide = false;
 	if (_camera.inCamera(rect))
 	{
@@ -109,7 +112,7 @@ void Insect::die()
 	{
 		velocity.y = 0;
 	}
-	velocity.x = SDL_randf() > 0.5f ? walkDirection.x : -walkDirection.x;
+	SDL_srand(0);
 }
 
 void Insect::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
@@ -182,7 +185,7 @@ void Insect::onCollisionWithEntity(Entity* entity, Direction direction)
 
 void Insect::horizontalMovement(float deltaTime)
 {
-	velocity.x = walkDirection.x * walkSpeed;
+	velocity.x = walkDirection.x * speed;
 }
 
 void Insect::crush()
