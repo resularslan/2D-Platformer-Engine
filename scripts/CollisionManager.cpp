@@ -1,5 +1,6 @@
 #include "CollisionManager.h"
 #include "Entity.h"
+#include <iostream>
 
 CollisionManager::CollisionManager(std::vector<std::unique_ptr<Entity>>& entities)
 	: _entities(entities)
@@ -54,7 +55,10 @@ std::vector<Entity*> CollisionManager::entityCollision(Entity& entity)
 
 void CollisionManager::setCollisionType(int row, int col, CollisionType type)
 {
-	collisionTypes[row][col] = type;
+	if (row >= 0 && row < MAP_HEIGHT_TILE / 2 && col >= 0 && col < MAP_WIDTH_TILE / 2)
+	{
+		collisionTypes[row][col] = type;
+	}
 }
 
 void CollisionManager::loadCollisionTypes()
@@ -69,7 +73,7 @@ void CollisionManager::loadCollisionTypes()
 		for (int col = 0; col < MAP_WIDTH_TILE / 2; col++) {
 			int collisionNumber;
 			file >> collisionNumber;
-			if (collisionNumber >= 0 && collisionNumber <= 6)
+			if (collisionNumber >= 0 && collisionNumber <= 2)
 			{
 				collisionTypes[row][col] = (CollisionType)collisionNumber;
 			}

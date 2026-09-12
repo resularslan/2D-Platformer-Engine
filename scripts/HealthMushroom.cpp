@@ -68,6 +68,12 @@ void HealthMushroom::restart()
 	return;
 }
 
+void HealthMushroom::jump()
+{
+	velocity.y = -jumpForce;
+	moveDirection.x = -moveDirection.x;
+}
+
 void HealthMushroom::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 {
 	Entity::onCollisionWithTile(direction, tileRect);

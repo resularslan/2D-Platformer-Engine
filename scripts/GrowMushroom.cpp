@@ -68,6 +68,12 @@ void GrowMushroom::restart()
 	return;
 }
 
+void GrowMushroom::jump()
+{
+	velocity.y = -jumpForce;
+	moveDirection.x = -moveDirection.x;
+}
+
 void GrowMushroom::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 {
 	Entity::onCollisionWithTile(direction, tileRect);

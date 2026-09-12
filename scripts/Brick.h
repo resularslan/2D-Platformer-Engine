@@ -10,7 +10,7 @@ enum class BrickState
 class Brick : public Entity
 {
 public:
-	Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
+	Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager);
 	~Brick();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
@@ -21,6 +21,7 @@ protected:
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
 	void move();
+	CollisionManager& _collisionManager;
 	BrickState currentState = BrickState::Static;
 	SDL_Texture* brickTexture;
 	vector2 brickCollisionMargin = { 0, 0 };

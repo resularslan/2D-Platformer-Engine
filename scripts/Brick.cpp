@@ -1,10 +1,13 @@
 #include "Brick.h"
 #include "Player.h"
+#include "CollisionManager.h"
+#include <iostream>
 
-Brick::Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
+Brick::Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager)
 	:
 	Entity(xPos, yPos, renderer, camera, id),
-	brickTexture(nullptr)
+	brickTexture(nullptr),
+	_collisionManager(collisionManager)
 {}
 
 Brick::~Brick()
@@ -77,7 +80,11 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			case Direction::Down:
 				if (dynamic_cast<Player*>(entity)->getBigState())
 				{
-					// Break();
+					isActive = false;
+					int row = rect.y / (CELL_SIZE * 2);
+					int col = rect.x / (CELL_SIZE * 2);
+					std::cout << row << " " << col << " " << std::endl;
+					_collisionManager.setCollisionType(row, col, CollisionType::None);
 				}
 				else
 				{
@@ -109,6 +116,7 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Up:
+				entity->jump();
 				break;
 			default:
 				break;

@@ -33,6 +33,6 @@ public:
 	void setCollisionType(int row, int col, CollisionType type);
 private:
 	void loadCollisionTypes();
-	CollisionType collisionTypes[MAP_HEIGHT_TILE][MAP_WIDTH_TILE];
+	CollisionType collisionTypes[MAP_HEIGHT_TILE / 2][MAP_WIDTH_TILE / 2];
 	std::vector<std::unique_ptr<Entity>>& _entities;
 };

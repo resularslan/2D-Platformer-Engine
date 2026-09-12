@@ -81,7 +81,7 @@ void Game::init()
 	entities.push_back(std::move(star));
 	for (int i = 0; i < 30; i++)
 	{
-		bricks[i] = std::make_unique<Brick>(brickInfos[i].xPos, brickInfos[i].yPos, renderer, *camera, entityCount++);
+		bricks[i] = std::make_unique<Brick>(brickInfos[i].xPos, brickInfos[i].yPos, renderer, *camera, entityCount++, *collisionManager);
 		entities.push_back(std::move(bricks[i]));
 	}
 	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, renderer, *camera, entityCount++);

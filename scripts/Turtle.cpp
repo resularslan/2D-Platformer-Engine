@@ -125,7 +125,8 @@ void Turtle::die()
 		velocity.y = 0;
 	}
 	SDL_srand(0);
-	velocity.x = SDL_rand(1) == 1 ? walkDirection.x : -walkDirection.x;
+	int randomNumber = SDL_rand(1);
+	velocity.x = randomNumber == 1 ? walkDirection.x : -walkDirection.x;
 }
 
 void Turtle::onCollisionWithTile(Direction direction, SDL_FRect tileRect)

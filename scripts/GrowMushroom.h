@@ -17,6 +17,7 @@ public:
 	void lateUpdate(float deltaTime, CollisionManager& collisionManager) override;
 	void draw() override;
 	void restart() override;
+	void jump();
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void onCollisionWithTile(Direction direction, SDL_FRect tileRect) override;
@@ -29,4 +30,5 @@ private:
 	SDL_Texture* texture;
 	vector2 moveDirection = vector2::left;
 	const float speed = 100;
+	const float jumpForce = 200;
 };

@@ -20,6 +20,7 @@ public:
 	virtual void restart() = 0;
 	virtual void draw() = 0;
 	virtual void die() {};
+	virtual void jump() {};
 	SDL_FRect getRect();
 	SDL_FRect getCollisionRect();
 	vector2 getOldCollisionPos();
