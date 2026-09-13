@@ -25,6 +25,10 @@ void Turtle::init()
 	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Walk2.png");
 	sleepingFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Sleeping.png");
 	deathFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Death.png");
+	SDL_SetTextureScaleMode(walkFrames[0], SDL_SCALEMODE_NEAREST);
+	SDL_SetTextureScaleMode(walkFrames[1], SDL_SCALEMODE_NEAREST);
+	SDL_SetTextureScaleMode(sleepingFrame, SDL_SCALEMODE_NEAREST);
+	SDL_SetTextureScaleMode(deathFrame, SDL_SCALEMODE_NEAREST);
 	type = EntityType::EnemyType;
 	currentState = TurtleState::Alive;
 	speed = walkSpeed;

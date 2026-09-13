@@ -16,6 +16,7 @@ void Star::init()
 {
 	Entity::init();
 	texture = IMG_LoadTexture(_renderer, "assets/Items/Stars.png");
+	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 	type = EntityType::InteractableType;
 	gravity = starGravity;
 	isActive = false;

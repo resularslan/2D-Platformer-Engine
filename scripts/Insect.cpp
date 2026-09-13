@@ -25,6 +25,10 @@ void Insect::init()
 	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Walk2.png");
 	crushedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Crushed.png");
 	deathFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Death.png");
+	SDL_SetTextureScaleMode(walkFrames[0], SDL_SCALEMODE_NEAREST);
+	SDL_SetTextureScaleMode(walkFrames[1], SDL_SCALEMODE_NEAREST);
+	SDL_SetTextureScaleMode(crushedFrame, SDL_SCALEMODE_NEAREST);
+	SDL_SetTextureScaleMode(deathFrame, SDL_SCALEMODE_NEAREST);
 	type = EntityType::EnemyType;
 	currentState = InsectState::Alive;
 	speed = walkSpeed;

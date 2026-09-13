@@ -16,6 +16,7 @@ void HealthMushroom::init()
 {
 	Entity::init();
 	texture = IMG_LoadTexture(_renderer, "assets/Items/HealthMushroom.png");
+	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 	type = EntityType::InteractableType;
 	isActive = false;
 }

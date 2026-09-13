@@ -19,6 +19,7 @@ void Brick::init()
 	collisionMargin = brickCollisionMargin;
 	Entity::init();
 	brickTexture = IMG_LoadTexture(_renderer, "assets/TileMap/Brick.png");
+	SDL_SetTextureScaleMode(brickTexture, SDL_SCALEMODE_NEAREST);
 	type = EntityType::InteractableType;
 	originalY = rect.y;
 }
