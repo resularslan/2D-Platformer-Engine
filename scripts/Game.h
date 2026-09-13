@@ -59,6 +59,7 @@ private:
     std::unique_ptr<HealthMushroom> healthMushroom;
     std::unique_ptr<Star> star;
     std::unique_ptr<Brick> bricks[30];
-    std::unique_ptr<BrickPiece> brickPiece;
+    std::unique_ptr<BrickPiece> brickPieces[20];
+    std::vector<BrickPiece*> brickPiecesOriginals;
     CollisionManager* collisionManager;
 };

@@ -1,12 +1,14 @@
 #include "Brick.h"
 #include "Player.h"
 #include "CollisionManager.h"
+#include "BrickPiece.h"
 
-Brick::Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager)
+Brick::Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, std::vector<BrickPiece*>& brickPieces)
 	:
 	Entity(xPos, yPos, renderer, camera, id),
 	brickTexture(nullptr),
-	_collisionManager(collisionManager)
+	_collisionManager(collisionManager),
+	_brickPieces(brickPieces)
 {}
 
 Brick::~Brick()
@@ -54,6 +56,10 @@ void Brick::update(float deltaTime, CollisionManager& collisionManager)
 			int row = rect.y / (CELL_SIZE * 2);
 			int col = rect.x / (CELL_SIZE * 2);
 			_collisionManager.setCollisionType(row, col, CollisionType::None);
+			createBrickPiece(-1, rect.x, rect.y, 300);
+			createBrickPiece(-1, rect.x, rect.y + CELL_SIZE, 150);
+			createBrickPiece(1, rect.x + CELL_SIZE, rect.y, 300);
+			createBrickPiece(1, rect.x + CELL_SIZE, rect.y + CELL_SIZE, 150);
 		}
 		break;
 	default:
@@ -139,6 +145,21 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			break;
 		}
 		break;
+	}
+}
+
+void Brick::createBrickPiece(float directionX, float posX, float posY, float jumpForce)
+{
+	for (auto& piece : _brickPieces)
+	{
+		if (!piece->getActiveState())
+		{
+			piece->setActiveState(true);
+			piece->jump(jumpForce);
+			piece->setDirectionX(directionX);
+			piece->setPosition(posX, posY);
+			break;
+		}
 	}
 }
 

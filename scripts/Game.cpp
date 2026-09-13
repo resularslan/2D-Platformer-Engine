@@ -80,13 +80,17 @@ void Game::init()
 	entities.push_back(std::move(healthMushroom));
 	star = std::make_unique<Star>(starInfo.xPos, starInfo.yPos, renderer, *camera, entityCount++);
 	entities.push_back(std::move(star));
+	for (int i = 0; i < 20; i++)
+	{
+		brickPieces[i] = std::make_unique<BrickPiece>(-99 * CELL_SIZE, -99 * CELL_SIZE, renderer, *camera, entityCount++);
+		brickPiecesOriginals.push_back(brickPieces[i].get());
+		entities.push_back(std::move(brickPieces[i]));
+	}
 	for (int i = 0; i < 30; i++)
 	{
-		bricks[i] = std::make_unique<Brick>(brickInfos[i].xPos, brickInfos[i].yPos, renderer, *camera, entityCount++, *collisionManager);
+		bricks[i] = std::make_unique<Brick>(brickInfos[i].xPos, brickInfos[i].yPos, renderer, *camera, entityCount++, *collisionManager, brickPiecesOriginals);
 		entities.push_back(std::move(bricks[i]));
 	}
-	brickPiece = std::make_unique<BrickPiece>(20 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, renderer, *camera, entityCount++);
-	entities.push_back(std::move(brickPiece));
 	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, renderer, *camera, entityCount++);
 	entities.push_back(std::move(player));
 	camera->init();

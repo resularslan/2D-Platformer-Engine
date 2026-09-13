@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include <memory>
 
 enum class BrickState
 {
@@ -8,10 +9,12 @@ enum class BrickState
 	Breaking
 };
 
+class BrickPiece;
+
 class Brick : public Entity
 {
 public:
-	Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager);
+	Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, std::vector<BrickPiece*>& brickPieces);
 	~Brick();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
@@ -21,9 +24,11 @@ public:
 protected:
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
+	void createBrickPiece(float directionX, float posX, float posY, float force);
 	void move();
 	void breaking();
 	CollisionManager& _collisionManager;
+	std::vector<BrickPiece*>& _brickPieces;
 	BrickState currentState = BrickState::Static;
 	SDL_Texture* brickTexture;
 	vector2 brickCollisionMargin = { 0, 0 };

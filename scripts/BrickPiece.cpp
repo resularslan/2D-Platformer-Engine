@@ -21,7 +21,8 @@ void BrickPiece::init()
 	SDL_SetTextureScaleMode(textures[1], SDL_SCALEMODE_NEAREST);
 	type = EntityType::InteractableType;
 	canCollide = false;
-	velocity.y = -jumpForce;
+	gravity = thisGravity;
+	isActive = false;
 }
 
 void BrickPiece::update(float deltaTime, CollisionManager& collisionManager)
@@ -39,6 +40,10 @@ void BrickPiece::update(float deltaTime, CollisionManager& collisionManager)
 	rect.x += velocity.x * deltaTime;
 	rect.y += velocity.y * deltaTime;
 	animation(2, 0.5f, deltaTime);
+	if (!_camera.inCamera(rect))
+	{
+		isActive = false;
+	}
 }
 
 void BrickPiece::lateUpdate(float deltaTime, CollisionManager& collisionManager)
@@ -60,6 +65,22 @@ void BrickPiece::restart()
 void BrickPiece::setDirectionX(float x)
 {
 	direction.x = x;
+}
+
+void BrickPiece::setPosition(float x, float y)
+{
+	rect.x = x;
+	rect.y = y;
+}
+
+void BrickPiece::setActiveState(float state)
+{
+	isActive = state;
+}
+
+void BrickPiece::jump(float force)
+{
+	velocity.y = -force;
 }
 
 void BrickPiece::horizontalMovement(float deltaTime)
