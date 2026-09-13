@@ -1,7 +1,6 @@
 #include "Brick.h"
 #include "Player.h"
 #include "CollisionManager.h"
-#include <iostream>
 
 Brick::Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager)
 	:
@@ -46,6 +45,16 @@ void Brick::update(float deltaTime, CollisionManager& collisionManager)
 			currentState = BrickState::Static;
 		}
 		break;
+	case BrickState::Breaking:
+		destroyTimer += deltaTime;
+		if (destroyTimer >= destroyTime)
+		{
+			isActive = false;
+			int row = rect.y / (CELL_SIZE * 2);
+			int col = rect.x / (CELL_SIZE * 2);
+			_collisionManager.setCollisionType(row, col, CollisionType::None);
+		}
+		break;
 	default:
 		break;
 	}
@@ -58,8 +67,15 @@ void Brick::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 
 void Brick::draw()
 {
-	SDL_FRect newRect = _camera.adjustToCamera(rect);
-	SDL_RenderTextureRotated(_renderer, brickTexture, NULL, &newRect, 0, &center, flip);
+	switch (currentState)
+	{
+	case BrickState::Breaking:
+		break;
+	default:
+		SDL_FRect newRect = _camera.adjustToCamera(rect);
+		SDL_RenderTextureRotated(_renderer, brickTexture, NULL, &newRect, 0, &center, flip);
+		break;
+	}
 }
 
 void Brick::restart()
@@ -80,11 +96,7 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			case Direction::Down:
 				if (dynamic_cast<Player*>(entity)->getBigState())
 				{
-					isActive = false;
-					int row = rect.y / (CELL_SIZE * 2);
-					int col = rect.x / (CELL_SIZE * 2);
-					std::cout << row << " " << col << " " << std::endl;
-					_collisionManager.setCollisionType(row, col, CollisionType::None);
+					breaking();
 				}
 				else
 				{
@@ -99,7 +111,7 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			break;
 		}
 		break;
-	case BrickState::Moving:
+	default:
 		switch (entity->getType())
 		{
 		case EntityType::EnemyType:
@@ -126,8 +138,6 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			break;
 		}
 		break;
-	default:
-		break;
 	}
 }
 
@@ -135,4 +145,10 @@ void Brick::move()
 {
 	currentState = BrickState::Moving;
 	moveTimer = 0;
+}
+
+void Brick::breaking()
+{
+	currentState = BrickState::Breaking;
+	destroyTimer = 0;
 }

@@ -66,6 +66,7 @@ void Game::init()
 	brickInfos[29] = { 342 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
 	camera = new Camera();
 	tileMap = new TileMap();
+	collisionManager = new CollisionManager(entities);
 	for (int i = 0; i < 16; i++)
 	{
 		insects[i] = std::make_unique<Insect>(insectInfos[i].xPos, insectInfos[i].yPos, renderer, *camera, entityCount++);
@@ -86,7 +87,6 @@ void Game::init()
 	}
 	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, renderer, *camera, entityCount++);
 	entities.push_back(std::move(player));
-	collisionManager = new CollisionManager(entities);
 	camera->init();
 	tileMap->init(renderer);
 	collisionManager->init();

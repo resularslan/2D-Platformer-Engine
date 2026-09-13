@@ -4,7 +4,8 @@
 enum class BrickState
 {
 	Static,
-	Moving
+	Moving,
+	Breaking
 };
 
 class Brick : public Entity
@@ -21,6 +22,7 @@ protected:
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
 	void move();
+	void breaking();
 	CollisionManager& _collisionManager;
 	BrickState currentState = BrickState::Static;
 	SDL_Texture* brickTexture;
@@ -29,4 +31,6 @@ private:
 	float moveTimer = 0;
 	const float moveTime = 0.3f;
 	const float moveSpeed = 100;
+	float destroyTimer = 0;
+	const float destroyTime = 0.1f;
 };

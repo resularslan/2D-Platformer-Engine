@@ -1,6 +1,5 @@
 #include "CollisionManager.h"
 #include "Entity.h"
-#include <iostream>
 
 CollisionManager::CollisionManager(std::vector<std::unique_ptr<Entity>>& entities)
 	: _entities(entities)
