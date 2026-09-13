@@ -16,6 +16,7 @@
 #include "HealthMushroom.h"
 #include "Star.h"
 #include "Brick.h"
+#include "BrickPiece.h"
 #include "Camera.h"
 #include "TileMap.h"
 #include "CollisionManager.h"
@@ -58,5 +59,6 @@ private:
     std::unique_ptr<HealthMushroom> healthMushroom;
     std::unique_ptr<Star> star;
     std::unique_ptr<Brick> bricks[30];
+    std::unique_ptr<BrickPiece> brickPiece;
     CollisionManager* collisionManager;
 };
