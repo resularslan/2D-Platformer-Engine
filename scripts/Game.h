@@ -17,6 +17,7 @@
 #include "Star.h"
 #include "Brick.h"
 #include "BrickPiece.h"
+#include "QuestionBlock.h"
 #include "Camera.h"
 #include "TileMap.h"
 #include "CollisionManager.h"
@@ -51,7 +52,13 @@ private:
     entityInfo healthMushroomInfo;
     entityInfo starInfo;
     entityInfo brickInfos[30];
+    entityInfo questionBlockInfos[13];
     int entityCount = 0;
+    float commonAnimTimer = 0;
+    float commonLastAnimTimer = 0;
+    int commonFrameIndex = 0;
+    const int commonFrameCount = 4;
+    const float commonFrameDelay = 0.2f;
     std::unique_ptr<Player> player;
     std::unique_ptr<Insect> insects[16];
     std::unique_ptr<Turtle> turtle;
@@ -61,5 +68,6 @@ private:
     std::unique_ptr<Brick> bricks[30];
     std::unique_ptr<BrickPiece> brickPieces[20];
     std::vector<BrickPiece*> brickPiecesOriginals;
+    std::unique_ptr<QuestionBlock> questionBlocks[13];
     CollisionManager* collisionManager;
 };

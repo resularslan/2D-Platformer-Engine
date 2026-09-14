@@ -64,6 +64,19 @@ void Game::init()
 	brickInfos[27] = { 336 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
 	brickInfos[28] = { 338 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
 	brickInfos[29] = { 342 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	questionBlockInfos[0] = { 32 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	questionBlockInfos[1] = { 42 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	questionBlockInfos[2] = { 44 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	questionBlockInfos[3] = { 46 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	questionBlockInfos[4] = { 156 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	questionBlockInfos[5] = { 188 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	questionBlockInfos[6] = { 212 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	questionBlockInfos[7] = { 218 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	questionBlockInfos[8] = { 218 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	questionBlockInfos[9] = { 224 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	questionBlockInfos[10] = { 258 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	questionBlockInfos[11] = { 260 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	questionBlockInfos[12] = { 340 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
 	camera = new Camera();
 	tileMap = new TileMap();
 	collisionManager = new CollisionManager(entities);
@@ -90,6 +103,11 @@ void Game::init()
 	{
 		bricks[i] = std::make_unique<Brick>(brickInfos[i].xPos, brickInfos[i].yPos, renderer, *camera, entityCount++, *collisionManager, brickPiecesOriginals);
 		entities.push_back(std::move(bricks[i]));
+	}
+	for (int i = 0; i < 13; i++)
+	{
+		questionBlocks[i] = std::make_unique<QuestionBlock>(questionBlockInfos[i].xPos, questionBlockInfos[i].yPos, renderer, *camera, entityCount++, *collisionManager, commonFrameIndex);
+		entities.push_back(std::move(questionBlocks[i]));
 	}
 	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, renderer, *camera, entityCount++);
 	entities.push_back(std::move(player));
@@ -124,6 +142,12 @@ void Game::handleEvents()
 
 void Game::update(float deltaTime)
 {
+	commonAnimTimer += deltaTime;
+	if (commonAnimTimer > commonLastAnimTimer + commonFrameDelay)
+	{
+		commonLastAnimTimer = commonAnimTimer;
+		commonFrameIndex = (commonFrameIndex + 1) % commonFrameCount;
+	}
 	for (const auto& entity : entities)
 	{
 		SDL_FRect entityRect = entity->getRect();

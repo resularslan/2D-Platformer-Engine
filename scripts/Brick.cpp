@@ -56,10 +56,10 @@ void Brick::update(float deltaTime, CollisionManager& collisionManager)
 			int row = rect.y / (CELL_SIZE * 2);
 			int col = rect.x / (CELL_SIZE * 2);
 			_collisionManager.setCollisionType(row, col, CollisionType::None);
-			createBrickPiece(-1, rect.x, rect.y, 300);
-			createBrickPiece(-1, rect.x, rect.y + CELL_SIZE, 150);
-			createBrickPiece(1, rect.x + CELL_SIZE, rect.y, 300);
-			createBrickPiece(1, rect.x + CELL_SIZE, rect.y + CELL_SIZE, 150);
+			createBrickPiece(-1, rect.x, rect.y, 450);
+			createBrickPiece(-1, rect.x, rect.y + CELL_SIZE, 225);
+			createBrickPiece(1, rect.x + CELL_SIZE, rect.y, 450);
+			createBrickPiece(1, rect.x + CELL_SIZE, rect.y + CELL_SIZE, 225);
 		}
 		break;
 	default:

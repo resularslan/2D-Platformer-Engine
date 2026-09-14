@@ -22,5 +22,4 @@ private:
 	vector2 brickCollisionMargin = { 0, 0 };
 	vector2 direction = { 1, 0 };
 	const float speed = 100;
-	const float thisGravity = 600;
 };

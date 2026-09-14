@@ -21,7 +21,6 @@ void BrickPiece::init()
 	SDL_SetTextureScaleMode(textures[1], SDL_SCALEMODE_NEAREST);
 	type = EntityType::InteractableType;
 	canCollide = false;
-	gravity = thisGravity;
 	isActive = false;
 }
 
@@ -39,7 +38,7 @@ void BrickPiece::update(float deltaTime, CollisionManager& collisionManager)
 	}
 	rect.x += velocity.x * deltaTime;
 	rect.y += velocity.y * deltaTime;
-	animation(2, 0.5f, deltaTime);
+	animation(2, 0.8f, deltaTime);
 	if (!_camera.inCamera(rect))
 	{
 		isActive = false;
