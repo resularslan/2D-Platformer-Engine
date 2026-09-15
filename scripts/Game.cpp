@@ -143,10 +143,21 @@ void Game::handleEvents()
 void Game::update(float deltaTime)
 {
 	commonAnimTimer += deltaTime;
-	if (commonAnimTimer > commonLastAnimTimer + commonFrameDelay)
+	if (commonFrameIndex == 0)
 	{
-		commonLastAnimTimer = commonAnimTimer;
-		commonFrameIndex = (commonFrameIndex + 1) % commonFrameCount;
+		if (commonAnimTimer > commonLastAnimTimer + commonFirstFrameDelay)
+		{
+			commonLastAnimTimer = commonAnimTimer;
+			commonFrameIndex = 1;
+		}
+	}
+	else
+	{
+		if (commonAnimTimer > commonLastAnimTimer + commonFrameDelay)
+		{
+			commonLastAnimTimer = commonAnimTimer;
+			commonFrameIndex = (commonFrameIndex + 1) % 4;
+		}
 	}
 	for (const auto& entity : entities)
 	{

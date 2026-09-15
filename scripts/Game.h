@@ -58,7 +58,8 @@ private:
     float commonLastAnimTimer = 0;
     int commonFrameIndex = 0;
     const int commonFrameCount = 4;
-    const float commonFrameDelay = 0.2f;
+    const float commonFirstFrameDelay = 0.39f;
+    const float commonFrameDelay = 0.13f;
     std::unique_ptr<Player> player;
     std::unique_ptr<Insect> insects[16];
     std::unique_ptr<Turtle> turtle;
