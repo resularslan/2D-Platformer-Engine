@@ -14,6 +14,7 @@ void Game::init()
 		isRunning = false;
 	}
 	SDL_SetRenderVSync(renderer, 1);
+	SDL_srand(0);
 	insectInfos[0] = { 44 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	insectInfos[1] = { 80 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE  };
 	insectInfos[2] = { 102 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE  };

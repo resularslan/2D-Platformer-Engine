@@ -114,7 +114,6 @@ void QuestionBlock::onCollisionWithEntity(Entity* entity, Direction direction)
 			case Direction::Down:
 				if (dynamic_cast<Player*>(entity)->getHitBlockRect().x != rect.x || dynamic_cast<Player*>(entity)->getHitBlockRect().y != rect.y)
 				{
-
 					return;
 				}
 				move();

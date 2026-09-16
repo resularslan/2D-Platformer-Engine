@@ -562,7 +562,7 @@ void Player::verticalMovement(float deltaTime)
 	bool isFast = abs(velocity.x) > minRunSpeedThreshold;
 	initialJumpForce = isFast ? maxJumpForce : minJumpForce;
 	isFalling = velocity.y > 0 || !_keys[SDL_SCANCODE_Z];
-	if (velocity.y < 0)
+	if (velocity.y < 0 && canSustainJump)
 	{
 		gravity = isFast ? fastJumpGravity : slowJumpGravity;
 	}
