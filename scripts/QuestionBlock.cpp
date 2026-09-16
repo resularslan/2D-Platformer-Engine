@@ -33,7 +33,7 @@ void QuestionBlock::init()
 		SDL_SetTextureScaleMode(textures[i], SDL_SCALEMODE_NEAREST);
 	}
 	SDL_SetTextureScaleMode(emptyTexture, SDL_SCALEMODE_NEAREST);
-	type = EntityType::InteractableType;
+	type = EntityType::BlockType;
 	originalY = rect.y;
 }
 
@@ -112,6 +112,11 @@ void QuestionBlock::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Down:
+				if (dynamic_cast<Player*>(entity)->getHitBlockRect().x != rect.x || dynamic_cast<Player*>(entity)->getHitBlockRect().y != rect.y)
+				{
+
+					return;
+				}
 				move();
 				break;
 			default:

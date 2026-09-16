@@ -35,78 +35,61 @@ void Entity::update(float deltaTime, CollisionManager& collisionManager)
 	oldCollisionPos = { collisionRect.x , collisionRect.y };
 	rect.x += velocity.x * deltaTime;
 	updateCollisionRect();
-	std::vector<TileCollisionInfo> xTileCollisions = collisionManager.tileCollision(*this);
-	if (xTileCollisions.size() > 0)
+	TileCollisionInfo xTileCollision = collisionManager.tileCollision(*this);
+	if (velocity.x > 0)
 	{
-		for (auto& tile : xTileCollisions)
+		if (xTileCollision.collisionType == CollisionType::Solid)
 		{
-			if (velocity.x > 0)
+			if (oldCollisionPos.x + collisionRect.w <= xTileCollision.tileRect.x)
 			{
-				if (tile.collisionType == CollisionType::Solid)
-				{
-					if (oldCollisionPos.x + collisionRect.w <= tile.tileRect.x)
-					{
-						alignRect(tile.tileRect, Direction::Left);
-						onCollisionWithTile(Direction::Right, tile.tileRect);
-						break;
-					}
-				}
+				alignRect(xTileCollision.tileRect, Direction::Left);
+				onCollisionWithTile(Direction::Right, xTileCollision.tileRect);
 			}
-			else if (velocity.x < 0)
+		}
+	}
+	else if (velocity.x < 0)
+	{
+		if (xTileCollision.collisionType == CollisionType::Solid)
+		{
+			if (oldCollisionPos.x >= xTileCollision.tileRect.x + xTileCollision.tileRect.w)
 			{
-				if (tile.collisionType == CollisionType::Solid)
-				{
-					if (oldCollisionPos.x >= tile.tileRect.x + tile.tileRect.w)
-					{
-						alignRect(tile.tileRect, Direction::Right);
-						onCollisionWithTile(Direction::Left, tile.tileRect);
-						break;
-					}
-				}
+				alignRect(xTileCollision.tileRect, Direction::Right);
+				onCollisionWithTile(Direction::Left, xTileCollision.tileRect);
 			}
 		}
 	}
 	rect.y += velocity.y * deltaTime;
 	updateCollisionRect();
-	std::vector<TileCollisionInfo> yTileCollisions = collisionManager.tileCollision(*this);
-	if (yTileCollisions.size() > 0)
+	TileCollisionInfo yTileCollision = collisionManager.tileCollision(*this);
+	if (velocity.y > 0)
 	{
-		for (auto& tile : yTileCollisions)
+		if (yTileCollision.collisionType == CollisionType::Solid)
 		{
-			if (velocity.y > 0)
+			if (oldCollisionPos.y + collisionRect.h <= yTileCollision.tileRect.y)
 			{
-				if (tile.collisionType == CollisionType::Solid)
-				{
-					if (oldCollisionPos.y + collisionRect.h <= tile.tileRect.y)
-					{
-						alignRect(tile.tileRect, Direction::Up);
-						onCollisionWithTile(Direction::Down, tile.tileRect);
-						break;
-					}
-				}
+				alignRect(yTileCollision.tileRect, Direction::Up);
+				onCollisionWithTile(Direction::Down, yTileCollision.tileRect);
 			}
-			else if (velocity.y < 0)
+		}
+	}
+	else if (velocity.y < 0)
+	{
+		if (yTileCollision.collisionType == CollisionType::Solid || yTileCollision.collisionType == CollisionType::SolidFromBottom)
+		{
+			if (oldCollisionPos.y >= yTileCollision.tileRect.y + yTileCollision.tileRect.h)
 			{
-				if (tile.collisionType == CollisionType::Solid || tile.collisionType == CollisionType::SolidFromBottom)
+				if (collisionRect.x + upCollisionErrorMargin < yTileCollision.tileRect.x && yTileCollision.collidedTileCount == 1)
 				{
-					if (oldCollisionPos.y >= tile.tileRect.y + tile.tileRect.h)
-					{
-						if (collisionRect.x + upCollisionErrorMargin < tile.tileRect.x && yTileCollisions.size() == 1)
-						{
-							alignRect(tile.tileRect, Direction::Left);
-						}
-						else if (collisionRect.x + collisionRect.w > tile.tileRect.x + tile.tileRect.w + upCollisionErrorMargin && yTileCollisions.size() == 1)
-						{
-							alignRect(tile.tileRect, Direction::Right);
-						}
-						else
-						{
-							velocity.y = 0;
-							alignRect(tile.tileRect, Direction::Down);
-							onCollisionWithTile(Direction::Up, tile.tileRect);
-						}
-						break;
-					}
+					alignRect(yTileCollision.tileRect, Direction::Left);
+				}
+				else if (collisionRect.x + collisionRect.w > yTileCollision.tileRect.x + yTileCollision.tileRect.w + upCollisionErrorMargin && yTileCollision.collidedTileCount == 1)
+				{
+					alignRect(yTileCollision.tileRect, Direction::Right);
+				}
+				else
+				{
+					alignRect(yTileCollision.tileRect, Direction::Down);
+					onCollisionWithTile(Direction::Up, yTileCollision.tileRect);
 				}
 			}
 		}
@@ -201,6 +184,7 @@ void Entity::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 	switch (direction)
 	{
 	case Direction::Up:
+		velocity.y = 0;
 		break;
 	case Direction::Down:
 		isGrounded = true;

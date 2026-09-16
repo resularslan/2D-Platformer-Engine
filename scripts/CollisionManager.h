@@ -19,6 +19,7 @@ struct TileCollisionInfo
 {
 	SDL_FRect tileRect;
 	CollisionType collisionType;
+	int collidedTileCount = 0;
 };
 
 class Entity;
@@ -28,7 +29,7 @@ class CollisionManager
 public:
 	CollisionManager(std::vector<std::unique_ptr<Entity>>& entities);
 	void init();
-	std::vector<TileCollisionInfo> tileCollision(Entity& entity);
+	TileCollisionInfo tileCollision(Entity& entity);
 	std::vector<Entity*> entityCollision(Entity& entity);
 	void setCollisionType(int row, int col, CollisionType type);
 private:

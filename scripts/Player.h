@@ -39,6 +39,7 @@ public:
 	void jump(float force);
 	bool getStarModeState();
 	bool getBigState();
+	SDL_FRect getHitBlockRect();
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void verticalMovement(float deltaTime) override;
@@ -101,4 +102,5 @@ private:
 	float shrinkTimer = 0;
 	float originalY = 0;
 	int life = 3;
+	SDL_FRect hitBlockRect;
 };

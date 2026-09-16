@@ -420,12 +420,18 @@ bool Player::getBigState()
 	return isBig;
 }
 
+SDL_FRect Player::getHitBlockRect()
+{
+	return hitBlockRect;
+}
+
 void Player::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 {
 	Entity::onCollisionWithTile(direction, tileRect);
 	switch (direction)
 	{
 	case Direction::Up:
+		hitBlockRect = tileRect;
 		break;
 	case Direction::Down:
 		isJumping = false;

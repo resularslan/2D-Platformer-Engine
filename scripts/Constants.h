@@ -22,5 +22,6 @@ enum class EntityType
 {
 	PlayerType,
 	EnemyType,
-	InteractableType
+	InteractableType,
+	BlockType
 };

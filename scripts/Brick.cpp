@@ -22,7 +22,7 @@ void Brick::init()
 	Entity::init();
 	brickTexture = IMG_LoadTexture(_renderer, "assets/TileMap/Brick.png");
 	SDL_SetTextureScaleMode(brickTexture, SDL_SCALEMODE_NEAREST);
-	type = EntityType::InteractableType;
+	type = EntityType::BlockType;
 	originalY = rect.y;
 }
 
@@ -101,6 +101,10 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Down:
+				if (dynamic_cast<Player*>(entity)->getHitBlockRect().x != rect.x || dynamic_cast<Player*>(entity)->getHitBlockRect().y != rect.y)
+				{
+					return;
+				}
 				if (dynamic_cast<Player*>(entity)->getBigState())
 				{
 					breaking();

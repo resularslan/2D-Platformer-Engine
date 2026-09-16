@@ -1,5 +1,6 @@
 #include "CollisionManager.h"
 #include "Entity.h"
+#include <cmath>
 
 CollisionManager::CollisionManager(std::vector<std::unique_ptr<Entity>>& entities)
 	: _entities(entities)
@@ -10,14 +11,17 @@ void CollisionManager::init()
 	loadCollisionTypes();
 }
 
-std::vector<TileCollisionInfo> CollisionManager::tileCollision(Entity& entity)
+TileCollisionInfo CollisionManager::tileCollision(Entity& entity)
 {
-	std::vector<TileCollisionInfo> infos;
 	float errorMargin = 0.001f;
 	int minX = entity.getCollisionRect().x / (CELL_SIZE * 2);
 	int maxX = (entity.getCollisionRect().x + entity.getCollisionRect().w - errorMargin) / (CELL_SIZE * 2);
 	int minY = entity.getCollisionRect().y / (CELL_SIZE * 2);
 	int maxY = (entity.getCollisionRect().y + entity.getCollisionRect().h - errorMargin) / (CELL_SIZE * 2);
+	float entityCenter = entity.getCollisionRect().x + (entity.getCollisionRect().w / 2);
+	float minimumDistance = maxX * CELL_SIZE;
+	TileCollisionInfo bestInfo;
+	int tileCount = 0;
 	for (int i = minY; i <= maxY; i++)
 	{
 		for (int j = minX; j <= maxX; j++)
@@ -25,13 +29,21 @@ std::vector<TileCollisionInfo> CollisionManager::tileCollision(Entity& entity)
 			if (collisionTypes[i][j] != CollisionType::None)
 			{
 				TileCollisionInfo info;
-				info.tileRect = { (float) j * CELL_SIZE * 2, (float) i * CELL_SIZE * 2, (float) CELL_SIZE * 2, (float) CELL_SIZE * 2 };
+				info.tileRect = { (float)j * CELL_SIZE * 2, (float)i * CELL_SIZE * 2, (float)CELL_SIZE * 2, (float)CELL_SIZE * 2 };
 				info.collisionType = collisionTypes[i][j];
-				infos.push_back(info);
+				tileCount++;
+				float tileCenter = j * CELL_SIZE * 2 + CELL_SIZE;
+				float distance = std::abs(entityCenter - tileCenter);
+				if (distance < minimumDistance)
+				{
+					bestInfo = info;
+					minimumDistance = distance;
+				}
 			}
 		}
 	}
-	return infos;
+	bestInfo.collidedTileCount = tileCount;
+	return bestInfo;
 }
 
 std::vector<Entity*> CollisionManager::entityCollision(Entity& entity)
