@@ -1,8 +1,8 @@
 #include "BrickPiece.h"
 
-BrickPiece::BrickPiece(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
+BrickPiece::BrickPiece(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id)
 	:
-	Entity(xPos, yPos, renderer, camera, id),
+	Entity(xPos, yPos, width, height, renderer, camera, id),
 	textures(nullptr, nullptr)
 {}
 
@@ -14,7 +14,7 @@ BrickPiece::~BrickPiece()
 
 void BrickPiece::init()
 {
-	rect = { _xPos, _yPos, CELL_SIZE, CELL_SIZE };
+	Entity::init();
 	textures[0] = IMG_LoadTexture(_renderer, "assets/TileMap/BrickPiece-1.png");
 	textures[1] = IMG_LoadTexture(_renderer, "assets/TileMap/BrickPiece-2.png");
 	SDL_SetTextureScaleMode(textures[0], SDL_SCALEMODE_NEAREST);

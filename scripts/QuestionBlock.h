@@ -11,7 +11,7 @@ enum class QuestionBlockState
 class QuestionBlock : public Entity
 {
 public:
-	QuestionBlock(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, int& commonFrameIndex);
+	QuestionBlock(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, int& commonFrameIndex);
 	~QuestionBlock();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;

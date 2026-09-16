@@ -1,9 +1,9 @@
 #include "Star.h"
 #include "Player.h"
 
-Star::Star(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
+Star::Star(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id)
 	:
-	Entity(xPos, yPos, renderer, camera, id),
+	Entity(xPos, yPos, width, height, renderer, camera, id),
 	texture(nullptr)
 {}
 

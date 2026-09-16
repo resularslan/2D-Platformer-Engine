@@ -14,7 +14,7 @@ class Player;
 class Insect : public Entity
 {
 public:
-	Insect(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
+	Insect(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
 	~Insect();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;

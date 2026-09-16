@@ -10,7 +10,7 @@ enum class HealthMushroomState
 class HealthMushroom : public Entity
 {
 public:
-	HealthMushroom(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
+	HealthMushroom(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
 	~HealthMushroom();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;

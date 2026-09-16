@@ -14,7 +14,7 @@ class Player;
 class Turtle : public Entity
 {
 public:
-	Turtle(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
+	Turtle(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
 	~Turtle();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
@@ -29,7 +29,7 @@ protected:
 private:
 	void sleep();
 	SDL_Texture* walkFrames[2];
-	SDL_Texture* sleepingFrame;
+	SDL_Texture* sleepingFrame[2];
 	SDL_Texture* deathFrame;
 	vector2 walkDirection = vector2::left;
 	float oldWalkDirectionX = walkDirection.x;
@@ -42,6 +42,8 @@ private:
 	bool wasInCamera = true;
 	float wakeTimer = 0;
 	const float wakeTime = 5;
+	const float wakeAnimationTime = 2.5;
+	const float wakingAnimationFrameDelay = 0.3f;
 	TurtleState currentState = TurtleState::Alive;
 };
 

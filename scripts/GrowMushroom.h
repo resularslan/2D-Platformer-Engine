@@ -10,7 +10,7 @@ enum class GrowMushroomState
 class GrowMushroom : public Entity
 {
 public:
-	GrowMushroom(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
+	GrowMushroom(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
 	~GrowMushroom();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;

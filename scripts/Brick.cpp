@@ -3,9 +3,9 @@
 #include "CollisionManager.h"
 #include "BrickPiece.h"
 
-Brick::Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, std::vector<BrickPiece*>& brickPieces)
+Brick::Brick(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, std::vector<BrickPiece*>& brickPieces)
 	:
-	Entity(xPos, yPos, renderer, camera, id),
+	Entity(xPos, yPos, width, height, renderer, camera, id),
 	brickTexture(nullptr),
 	_collisionManager(collisionManager),
 	_brickPieces(brickPieces)

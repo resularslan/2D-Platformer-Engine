@@ -1,18 +1,20 @@
 #include "Entity.h"
 #include "CollisionManager.h"
 
-Entity::Entity(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
+Entity::Entity(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id)
 	:
 	_renderer(renderer),
 	_camera(camera),
 	_xPos(xPos),
 	_yPos(yPos),
-	_id(id)
+	_id(id),
+	_width(width),
+	_height(height)
 { }
 
 void Entity::init()
 {
-	rect = { _xPos, _yPos , CELL_SIZE * 2, CELL_SIZE * 2 };
+	rect = { _xPos, _yPos , _width, _height };
 	updateCollisionRect();
 	center = { rect.w / 2, rect.h / 2 };
 	oldCollisionPos = { collisionRect.x, collisionRect.y };

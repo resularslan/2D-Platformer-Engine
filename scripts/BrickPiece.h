@@ -4,7 +4,7 @@
 class BrickPiece : public Entity
 {
 public:
-	BrickPiece(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
+	BrickPiece(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
 	~BrickPiece();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;

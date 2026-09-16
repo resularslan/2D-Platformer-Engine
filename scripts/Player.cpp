@@ -1,8 +1,8 @@
 #include "Player.h"
 
-Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
+Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id)
 	:
-	Entity(xPos, yPos, renderer, camera, id),
+	Entity(xPos, yPos, width, height, renderer, camera, id),
 	_keys(keys),
 	smallRunFrames{ nullptr, nullptr, nullptr },
 	smallIdleFrame(nullptr),

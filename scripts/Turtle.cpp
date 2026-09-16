@@ -1,9 +1,9 @@
 #include "Turtle.h"
 #include "Player.h"
 
-Turtle::Turtle(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id)
+Turtle::Turtle(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id)
 	:
-	Entity(xPos, yPos, renderer, camera, id),
+	Entity(xPos, yPos, width, height, renderer, camera, id),
 	walkFrames{ nullptr, nullptr },
 	sleepingFrame(nullptr),
 	deathFrame(nullptr)
@@ -11,7 +11,9 @@ Turtle::Turtle(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, i
 
 Turtle::~Turtle()
 {
-	SDL_DestroyTexture(sleepingFrame);
+	for (int i = 0; i < 2; i++) {
+		SDL_DestroyTexture(sleepingFrame[i]);
+	}
 	SDL_DestroyTexture(deathFrame);
 	for (int i = 0; i < 2; i++) {
 		SDL_DestroyTexture(walkFrames[i]);
@@ -23,11 +25,13 @@ void Turtle::init()
 	Entity::init();
 	walkFrames[0] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Walk1.png");
 	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Walk2.png");
-	sleepingFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Sleeping.png");
+	sleepingFrame[0] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Sleeping.png");
+	sleepingFrame[1] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Waking.png");
 	deathFrame = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Death.png");
 	SDL_SetTextureScaleMode(walkFrames[0], SDL_SCALEMODE_NEAREST);
 	SDL_SetTextureScaleMode(walkFrames[1], SDL_SCALEMODE_NEAREST);
-	SDL_SetTextureScaleMode(sleepingFrame, SDL_SCALEMODE_NEAREST);
+	SDL_SetTextureScaleMode(sleepingFrame[0], SDL_SCALEMODE_NEAREST);
+	SDL_SetTextureScaleMode(sleepingFrame[1], SDL_SCALEMODE_NEAREST);
 	SDL_SetTextureScaleMode(deathFrame, SDL_SCALEMODE_NEAREST);
 	type = EntityType::EnemyType;
 	currentState = TurtleState::Alive;
@@ -48,11 +52,18 @@ void Turtle::update(float deltaTime, CollisionManager& collisionManager)
 		{
 			wakeTimer += deltaTime;
 		}
+		if (wakeTimer >= wakeAnimationTime)
+		{
+			animation(2, wakingAnimationFrameDelay, deltaTime);
+		}
 		if (wakeTimer >= wakeTime)
 		{
 			currentState = TurtleState::Alive;
-			walkDirection = { oldWalkDirectionX, walkDirection.y };
+			walkDirection = { -oldWalkDirectionX, walkDirection.y };
 			speed = walkSpeed;
+			rect.y -= CELL_SIZE;
+			rect.h = CELL_SIZE * 3;
+			updateCollisionRect();
 		}
 		if (wasInCamera && !_camera.inCamera(rect))
 		{
@@ -100,7 +111,7 @@ void Turtle::draw()
 		SDL_RenderTextureRotated(_renderer, walkFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 		break;
 	case TurtleState::Sleeping:
-		SDL_RenderTextureRotated(_renderer, sleepingFrame, NULL, &newRect, 0, &center, flip);
+		SDL_RenderTextureRotated(_renderer, sleepingFrame[frameIndex], NULL, &newRect, 0, &center, flip);
 		break;
 	case TurtleState::Dying:
 		SDL_RenderTextureRotated(_renderer, deathFrame, NULL, &newRect, 0, &center, flip);
@@ -130,6 +141,9 @@ void Turtle::die()
 	}
 	int randomNumber = SDL_rand(2);
 	walkDirection.x = randomNumber == 1 ? 1 : -1;
+	rect.y += CELL_SIZE;
+	rect.h = CELL_SIZE * 2;
+	updateCollisionRect();
 }
 
 void Turtle::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
@@ -284,6 +298,7 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 
 void Turtle::horizontalMovement(float deltaTime)
 {
+	flip = velocity.x > 0 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 	velocity.x = walkDirection.x * speed;
 }
 
@@ -293,4 +308,8 @@ void Turtle::sleep()
 	wakeTimer = 0;
 	oldWalkDirectionX = walkDirection.x;
 	walkDirection.x = 0;
+	frameIndex = 0;
+	rect.y += CELL_SIZE;
+	rect.h = CELL_SIZE * 2;
+	updateCollisionRect();
 }

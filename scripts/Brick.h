@@ -14,7 +14,7 @@ class BrickPiece;
 class Brick : public Entity
 {
 public:
-	Brick(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, std::vector<BrickPiece*>& brickPieces);
+	Brick(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, std::vector<BrickPiece*>& brickPieces);
 	~Brick();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;

@@ -10,7 +10,7 @@ enum class StarState
 class Star : public Entity
 {
 public:
-	Star(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
+	Star(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
 	~Star();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;

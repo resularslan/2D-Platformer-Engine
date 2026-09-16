@@ -2,9 +2,9 @@
 #include "Player.h"
 #include "CollisionManager.h"
 
-QuestionBlock::QuestionBlock(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, int& commonFrameIndex)
+QuestionBlock::QuestionBlock(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, int& commonFrameIndex)
 	:
-	Entity(xPos, yPos, renderer, camera, id),
+	Entity(xPos, yPos, width, height, renderer, camera, id),
 	textures(nullptr, nullptr, nullptr),
 	_collisionManager(collisionManager),
 	_commonFrameIndex(commonFrameIndex)

@@ -12,7 +12,7 @@ class CollisionManager;
 class Entity
 {
 public:
-	Entity(float xPos, float yPos, SDL_Renderer* renderer, Camera& camera, int id);
+	Entity(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
 	virtual ~Entity() = default;
 	virtual void init() = 0;
 	virtual void update(float deltaTime, CollisionManager& collisionManager) = 0;
@@ -54,6 +54,8 @@ protected:
 	float maxVelocityY = 400;
 	float _xPos;
 	float _yPos;
+	float _width;
+	float _height;
 	const float upCollisionErrorMargin = 16;
 	EntityType type;
 	int _id;
