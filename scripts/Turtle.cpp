@@ -48,10 +48,7 @@ void Turtle::update(float deltaTime, CollisionManager& collisionManager)
 		break;
 	case TurtleState::Sleeping:
 		Entity::update(deltaTime, collisionManager);
-		if (walkDirection.x == 0)
-		{
-			wakeTimer += deltaTime;
-		}
+		wakeTimer += deltaTime;
 		if (wakeTimer >= wakeAnimationTime)
 		{
 			animation(2, wakingAnimationFrameDelay, deltaTime);
@@ -65,6 +62,9 @@ void Turtle::update(float deltaTime, CollisionManager& collisionManager)
 			rect.h = CELL_SIZE * 3;
 			updateCollisionRect();
 		}
+		break;
+	case TurtleState::Sliding:
+		Entity::update(deltaTime, collisionManager);
 		if (wasInCamera && !_camera.inCamera(rect))
 		{
 			isActive = false;
@@ -89,15 +89,10 @@ void Turtle::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 {
 	switch (currentState)
 	{
-	case TurtleState::Alive:
-		Entity::lateUpdate(deltaTime, collisionManager);
-		break;
-	case TurtleState::Sleeping:
-		Entity::lateUpdate(deltaTime, collisionManager);
-		break;
 	case TurtleState::Dying:
 		break;
 	default:
+		Entity::lateUpdate(deltaTime, collisionManager);
 		break;
 	}
 }
@@ -112,6 +107,9 @@ void Turtle::draw()
 		break;
 	case TurtleState::Sleeping:
 		SDL_RenderTextureRotated(_renderer, sleepingFrame[frameIndex], NULL, &newRect, 0, &center, flip);
+		break;
+	case TurtleState::Sliding:
+		SDL_RenderTextureRotated(_renderer, sleepingFrame[0], NULL, &newRect, 0, &center, flip);
 		break;
 	case TurtleState::Dying:
 		SDL_RenderTextureRotated(_renderer, deathFrame, NULL, &newRect, 0, &center, flip);
@@ -220,70 +218,50 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 		switch (entity->getType())
 		{
 		case EntityType::PlayerType:
+			currentState = TurtleState::Sliding;
 			switch (direction)
 			{
 			case Direction::Up:
-				if (walkDirection.x == 0)
+				speed = fastSpeed;
+				if (entity->getCollisionRect().x + entity->getCollisionRect().w < collisionRect.x + (collisionRect.w / 2))
 				{
-					speed = fastSpeed;
-					if (entity->getCollisionRect().x + entity->getCollisionRect().w < collisionRect.x + (collisionRect.w / 2))
-					{
-						walkDirection = vector2::right;
-					}
-					else
-					{
-						walkDirection = vector2::left;
-					}
+					walkDirection = vector2::right;
 				}
 				else
 				{
-					walkDirection = vector2::zero;
+					walkDirection = vector2::left;
 				}
 				break;
 			case Direction::Right:
-				if (walkDirection.x == 0)
-				{
-					walkDirection = vector2::left;
-					speed = fastSpeed;
-				}
-				else
-				{
-					dynamic_cast<Player*>(entity)->takeDamage();
-				}
+				walkDirection = vector2::left;
+				speed = fastSpeed;
 				break;
 			case Direction::Left:
-				if (walkDirection.x == 0)
-				{
-					walkDirection = vector2::right;
-					speed = fastSpeed;
-				}
-				else
-				{
-					dynamic_cast<Player*>(entity)->takeDamage();
-				}
+				walkDirection = vector2::right;
+				speed = fastSpeed;
 				break;
 			default:
 				break;
 			}
 			break;
-		case EntityType::EnemyType:
+		}
+		break;
+	case TurtleState::Sliding:
+		switch (entity->getType())
+		{
+		case EntityType::PlayerType:
 			switch (direction)
 			{
-			case Direction::Right:
-				if (velocity.x != 0)
-				{
-					entity->die();
-				}
-				break;
-			case Direction::Left:
-				if (velocity.x != 0)
-				{
-					entity->die();
-				}
+			case Direction::Up:
+				sleep();
 				break;
 			default:
+				dynamic_cast<Player*>(entity)->takeDamage();
 				break;
 			}
+			break;
+		case EntityType::EnemyType:
+			entity->die();
 			break;
 		default:
 			break;

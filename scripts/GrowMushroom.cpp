@@ -18,7 +18,7 @@ void GrowMushroom::init()
 	texture = IMG_LoadTexture(_renderer, "assets/Items/GrowMushroom.png");
 	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 	type = EntityType::InteractableType;
-	isActive = false;
+	currentState = GrowMushroomState::Spawning;
 }
 
 void GrowMushroom::update(float deltaTime, CollisionManager& collisionManager)

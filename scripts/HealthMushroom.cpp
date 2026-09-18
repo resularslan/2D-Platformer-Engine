@@ -18,7 +18,7 @@ void HealthMushroom::init()
 	texture = IMG_LoadTexture(_renderer, "assets/Items/HealthMushroom.png");
 	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 	type = EntityType::InteractableType;
-	isActive = false;
+	currentState = HealthMushroomState::Spawning;
 }
 
 void HealthMushroom::update(float deltaTime, CollisionManager& collisionManager)

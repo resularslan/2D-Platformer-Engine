@@ -6,6 +6,7 @@ enum class TurtleState
 {
 	Alive,
 	Sleeping,
+	Sliding,
 	Dying
 };
 
@@ -43,7 +44,7 @@ private:
 	float wakeTimer = 0;
 	const float wakeTime = 5;
 	const float wakeAnimationTime = 2.5;
-	const float wakingAnimationFrameDelay = 0.3f;
+	const float wakingAnimationFrameDelay = 0.6f;
 	TurtleState currentState = TurtleState::Alive;
 };
 

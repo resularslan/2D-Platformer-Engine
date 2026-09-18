@@ -10,6 +10,15 @@
 #define WINDOW_WIDTH (WINDOW_WIDTH_TILE * CELL_SIZE)
 #define WINDOW_HEIGHT (MAP_HEIGHT_TILE * CELL_SIZE)
 
+const int insectCount = 16;
+const int brickCount = 28;
+const int questionBlockCount = 16;
+const int brickPieceCount = 20;
+const int coinCount = 20;
+const int growMushroomCount = 20;
+const int healthMushroomCount = 20;
+const int starCount = 20;
+
 enum class Direction
 {
 	Up,

@@ -22,10 +22,19 @@
 #include "TileMap.h"
 #include "CollisionManager.h"
 
-struct entityInfo
+struct EntityInfo
 {
     float xPos;
     float yPos;
+};
+
+struct QuestionBlockInfo
+{
+    float xPos;
+    float yPos;
+    ItemType item;
+    QuestionBlockState initialState;
+    int itemCount;
 };
 
 class Game
@@ -46,13 +55,11 @@ private:
     std::vector<std::unique_ptr<Entity>> entities;
     Camera* camera;
     TileMap* tileMap;
-    entityInfo insectInfos[16];
-    entityInfo turtleInfo;
-    entityInfo growMushroomInfo;
-    entityInfo healthMushroomInfo;
-    entityInfo starInfo;
-    entityInfo brickInfos[30];
-    entityInfo questionBlockInfos[13];
+    CollisionManager* collisionManager;
+    EntityInfo insectInfos[insectCount];
+    EntityInfo turtleInfo;
+    EntityInfo brickInfos[brickCount];
+    QuestionBlockInfo questionBlockInfos[questionBlockCount];
     int entityCount = 0;
     float commonAnimTimer = 0;
     float commonLastAnimTimer = 0;
@@ -61,14 +68,16 @@ private:
     const float commonFirstFrameDelay = 0.39f;
     const float commonFrameDelay = 0.13f;
     std::unique_ptr<Player> player;
-    std::unique_ptr<Insect> insects[16];
+    std::unique_ptr<Insect> insects[insectCount];
     std::unique_ptr<Turtle> turtle;
-    std::unique_ptr<GrowMushroom> growMushroom;
-    std::unique_ptr<HealthMushroom> healthMushroom;
-    std::unique_ptr<Star> star;
-    std::unique_ptr<Brick> bricks[30];
-    std::unique_ptr<BrickPiece> brickPieces[20];
+    std::unique_ptr<GrowMushroom> growMushrooms[growMushroomCount];
+    std::unique_ptr<HealthMushroom> healthMushrooms[healthMushroomCount];
+    std::unique_ptr<Star> stars[starCount];
+    std::unique_ptr<Brick> bricks[brickCount];
+    std::unique_ptr<BrickPiece> brickPieces[brickPieceCount];
+    std::unique_ptr<QuestionBlock> questionBlocks[questionBlockCount];
     std::vector<BrickPiece*> brickPiecesOriginals;
-    std::unique_ptr<QuestionBlock> questionBlocks[13];
-    CollisionManager* collisionManager;
+    std::vector<GrowMushroom*> growMushroomOriginals;
+    std::vector<HealthMushroom*> healthMushroomOriginals;
+    std::vector<Star*> starOriginals;
 };

@@ -32,9 +32,6 @@ void Game::init()
 	insectInfos[14] = { 348 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	insectInfos[15] = { 351 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
 	turtleInfo = { 214 * CELL_SIZE, WINDOW_HEIGHT - 7 * CELL_SIZE };
-	growMushroomInfo = { 20 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
-	healthMushroomInfo = { 16 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE };
-	starInfo = { 32 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
 	brickInfos[0] = { 40 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
 	brickInfos[1] = { 44 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
 	brickInfos[2] = { 48 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
@@ -51,63 +48,76 @@ void Game::init()
 	brickInfos[13] = { 182 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
 	brickInfos[14] = { 184 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
 	brickInfos[15] = { 186 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	brickInfos[16] = { 188 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	brickInfos[17] = { 200 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	brickInfos[18] = { 202 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	brickInfos[19] = { 236 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	brickInfos[20] = { 242 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	brickInfos[21] = { 244 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	brickInfos[22] = { 246 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	brickInfos[23] = { 256 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	brickInfos[24] = { 258 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	brickInfos[25] = { 260 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	brickInfos[26] = { 262 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	brickInfos[27] = { 336 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	brickInfos[28] = { 338 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	brickInfos[29] = { 342 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	questionBlockInfos[0] = { 32 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	questionBlockInfos[1] = { 42 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	questionBlockInfos[2] = { 44 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	questionBlockInfos[3] = { 46 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	questionBlockInfos[4] = { 156 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	questionBlockInfos[5] = { 188 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	questionBlockInfos[6] = { 212 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	questionBlockInfos[7] = { 218 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	questionBlockInfos[8] = { 218 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	questionBlockInfos[9] = { 224 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
-	questionBlockInfos[10] = { 258 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	questionBlockInfos[11] = { 260 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
-	questionBlockInfos[12] = { 340 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	brickInfos[16] = { 200 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	brickInfos[17] = { 236 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	brickInfos[18] = { 242 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	brickInfos[19] = { 244 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	brickInfos[20] = { 246 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	brickInfos[21] = { 256 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	brickInfos[22] = { 258 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	brickInfos[23] = { 260 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	brickInfos[24] = { 262 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE };
+	brickInfos[25] = { 336 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	brickInfos[26] = { 338 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	brickInfos[27] = { 342 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE };
+	questionBlockInfos[0] = { 32 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[1] = { 42 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::GrowMushroom, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[2] = { 44 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[3] = { 46 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[4] = { 130 * CELL_SIZE, WINDOW_HEIGHT - 14 * CELL_SIZE, ItemType::HealthMushroom, QuestionBlockState::Invisible, 1 };
+	questionBlockInfos[5] = { 156 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::GrowMushroom, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[6] = { 188 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[7] = { 188 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Coin, QuestionBlockState::Brick, 5 };
+	questionBlockInfos[8] = { 202 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Star, QuestionBlockState::Brick, 1 };
+	questionBlockInfos[9] = { 212 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[10] = { 218 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[11] = { 218 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE, ItemType::GrowMushroom, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[12] = { 224 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[13] = { 258 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[14] = { 260 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
+	questionBlockInfos[15] = { 340 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
 	camera = new Camera();
 	tileMap = new TileMap();
 	collisionManager = new CollisionManager(entities);
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < insectCount; i++)
 	{
 		insects[i] = std::make_unique<Insect>(insectInfos[i].xPos, insectInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
 		entities.push_back(std::move(insects[i]));
 	}
 	turtle = std::make_unique<Turtle>(turtleInfo.xPos, turtleInfo.yPos, CELL_SIZE * 2, CELL_SIZE * 3, renderer, *camera, entityCount++);
 	entities.push_back(std::move(turtle));
-	growMushroom = std::make_unique<GrowMushroom>(growMushroomInfo.xPos, growMushroomInfo.yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
-	entities.push_back(std::move(growMushroom));
-	healthMushroom = std::make_unique<HealthMushroom>(healthMushroomInfo.xPos, healthMushroomInfo.yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
-	entities.push_back(std::move(healthMushroom));
-	star = std::make_unique<Star>(starInfo.xPos, starInfo.yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
-	entities.push_back(std::move(star));
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < growMushroomCount; i++)
+	{
+		growMushrooms[i] = std::make_unique<GrowMushroom>(-99 * CELL_SIZE, -99 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
+		growMushroomOriginals.push_back(growMushrooms[i].get());
+		entities.push_back(std::move(growMushrooms[i]));
+	}
+	for (int i = 0; i < healthMushroomCount; i++)
+	{
+		healthMushrooms[i] = std::make_unique<HealthMushroom>(-99 * CELL_SIZE, -99 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
+		healthMushroomOriginals.push_back(healthMushrooms[i].get());
+		entities.push_back(std::move(healthMushrooms[i]));
+	}
+	for (int i = 0; i < starCount; i++)
+	{
+		stars[i] = std::make_unique<Star>(-99 * CELL_SIZE, -99 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
+		starOriginals.push_back(stars[i].get());
+		entities.push_back(std::move(stars[i]));
+	}
+	for (int i = 0; i < brickPieceCount; i++)
 	{
 		brickPieces[i] = std::make_unique<BrickPiece>(-99 * CELL_SIZE, -99 * CELL_SIZE, CELL_SIZE, CELL_SIZE, renderer, *camera, entityCount++);
 		brickPiecesOriginals.push_back(brickPieces[i].get());
 		entities.push_back(std::move(brickPieces[i]));
 	}
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < brickCount; i++)
 	{
 		bricks[i] = std::make_unique<Brick>(brickInfos[i].xPos, brickInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, *collisionManager, brickPiecesOriginals);
 		entities.push_back(std::move(bricks[i]));
 	}
-	for (int i = 0; i < 13; i++)
+	for (int i = 0; i < questionBlockCount; i++)
 	{
-		questionBlocks[i] = std::make_unique<QuestionBlock>(questionBlockInfos[i].xPos, questionBlockInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, *collisionManager, commonFrameIndex);
+		questionBlocks[i] = std::make_unique<QuestionBlock>(questionBlockInfos[i].xPos, questionBlockInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, *collisionManager, commonFrameIndex, questionBlockInfos[i].item, questionBlockInfos[i].initialState, questionBlockInfos[i].itemCount);
 		entities.push_back(std::move(questionBlocks[i]));
 	}
 	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);

@@ -51,7 +51,7 @@ protected:
 	bool isGrounded = false;
 	bool canSpawn = false;
 	float gravity = 1500;
-	float maxVelocityY = 400;
+	float maxVelocityY = 600;
 	float _xPos;
 	float _yPos;
 	float _width;

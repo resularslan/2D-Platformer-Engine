@@ -19,7 +19,7 @@ void Star::init()
 	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 	type = EntityType::InteractableType;
 	gravity = starGravity;
-	isActive = false;
+	currentState = StarState::Spawning;
 }
 
 void Star::update(float deltaTime, CollisionManager& collisionManager)
