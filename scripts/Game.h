@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "Insect.h"
 #include "Turtle.h"
+#include "InteractableType.h"
 #include "GrowMushroom.h"
 #include "HealthMushroom.h"
 #include "Star.h"
@@ -77,7 +78,5 @@ private:
     std::unique_ptr<BrickPiece> brickPieces[brickPieceCount];
     std::unique_ptr<QuestionBlock> questionBlocks[questionBlockCount];
     std::vector<BrickPiece*> brickPiecesOriginals;
-    std::vector<GrowMushroom*> growMushroomOriginals;
-    std::vector<HealthMushroom*> healthMushroomOriginals;
-    std::vector<Star*> starOriginals;
+    std::vector<InteractableType*> interactableTypes;
 };

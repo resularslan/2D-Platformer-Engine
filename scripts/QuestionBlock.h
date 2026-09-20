@@ -1,5 +1,6 @@
 #pragma once
-#include "Entity.h"
+#include "BlockType.h"
+#include "InteractableType.h"
 
 enum class QuestionBlockState
 {
@@ -10,18 +11,10 @@ enum class QuestionBlockState
 	Empty
 };
 
-enum class ItemType
-{
-	GrowMushroom,
-	HealthMushroom,
-	Star,
-	Coin
-};
-
-class QuestionBlock : public Entity
+class QuestionBlock : public BlockType
 {
 public:
-	QuestionBlock(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, int& commonFrameIndex, ItemType item, QuestionBlockState initalState, int itemCount);
+	QuestionBlock(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, int& commonFrameIndex, ItemType item, QuestionBlockState initalState, int itemCount, std::vector<InteractableType*>& interactableTypes);
 	~QuestionBlock();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
@@ -30,10 +23,9 @@ public:
 	void restart() override;
 protected:
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
+	void move() override;
 private:
-	void move();
 	void spawnObject();
-	CollisionManager& _collisionManager;
 	QuestionBlockState _initialState;
 	QuestionBlockState currentState;
 	ItemType _item;
@@ -42,12 +34,6 @@ private:
 	SDL_Texture* textures[4];
 	SDL_Texture* brickTexture;
 	SDL_Texture* emptyTexture;
-	vector2 questionBlockCollisionMargin = { 0, 0 };
-	float originalY;
-	float moveTimer = 0;
-	const float moveTime = 0.3f;
-	const float moveSpeed = 100;
-	float destroyTimer = 0;
-	const float destroyTime = 0.1f;
+	std::vector<InteractableType*>& _interactableTypes;
 	int& _commonFrameIndex;
 };

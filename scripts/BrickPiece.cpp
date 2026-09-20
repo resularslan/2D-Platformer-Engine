@@ -19,7 +19,7 @@ void BrickPiece::init()
 	textures[1] = IMG_LoadTexture(_renderer, "assets/TileMap/BrickPiece-2.png");
 	SDL_SetTextureScaleMode(textures[0], SDL_SCALEMODE_NEAREST);
 	SDL_SetTextureScaleMode(textures[1], SDL_SCALEMODE_NEAREST);
-	type = EntityType::InteractableType;
+	type = EntityType::BlockType;
 	canCollide = false;
 	isActive = false;
 }

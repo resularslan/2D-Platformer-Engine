@@ -126,9 +126,12 @@ void Turtle::restart()
 void Turtle::die()
 {
 	Enemy::die();
+	if (currentState == TurtleState::Alive)
+	{
+		rect.y += CELL_SIZE;
+		rect.h = CELL_SIZE * 2;
+	}
 	currentState = TurtleState::Dying;
-	rect.y += CELL_SIZE;
-	rect.h = CELL_SIZE * 2;
 	updateCollisionRect();
 }
 
@@ -186,11 +189,9 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 		switch (entity->getType())
 		{
 		case EntityType::PlayerType:
-			currentState = TurtleState::Sliding;
 			switch (direction)
 			{
 			case Direction::Up:
-				speed = fastSpeed;
 				if (entity->getCollisionRect().x + entity->getCollisionRect().w < collisionRect.x + (collisionRect.w / 2))
 				{
 					walkDirection = vector2::right;
@@ -199,13 +200,17 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 				{
 					walkDirection = vector2::left;
 				}
+				currentState = TurtleState::Sliding;
+				speed = fastSpeed;
 				break;
 			case Direction::Right:
 				walkDirection = vector2::left;
+				currentState = TurtleState::Sliding;
 				speed = fastSpeed;
 				break;
 			case Direction::Left:
 				walkDirection = vector2::right;
+				currentState = TurtleState::Sliding;
 				speed = fastSpeed;
 				break;
 			default:
@@ -222,6 +227,7 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 			{
 			case Direction::Up:
 				sleep();
+				dynamic_cast<Player*>(entity)->jump(350);
 				break;
 			default:
 				dynamic_cast<Player*>(entity)->takeDamage();
@@ -244,12 +250,15 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 
 void Turtle::sleep()
 {
+	if (currentState == TurtleState::Alive)
+	{
+		rect.y += CELL_SIZE;
+		rect.h = CELL_SIZE * 2;
+	}
 	currentState = TurtleState::Sleeping;
 	wakeTimer = 0;
 	oldWalkDirectionX = walkDirection.x;
 	walkDirection.x = 0;
 	frameIndex = 0;
-	rect.y += CELL_SIZE;
-	rect.h = CELL_SIZE * 2;
 	updateCollisionRect();
 }

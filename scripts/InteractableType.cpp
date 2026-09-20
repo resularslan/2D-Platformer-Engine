@@ -10,6 +10,7 @@ void InteractableType::init()
 	Entity::init();
 	type = EntityType::InteractableType;
 	currentState = InteractableTypeState::Spawning;
+	isActive = false;
 }
 
 void InteractableType::update(float deltaTime, CollisionManager& collisionManager)
@@ -52,6 +53,19 @@ void InteractableType::lateUpdate(float deltaTime, CollisionManager& collisionMa
 void InteractableType::restart()
 {
 	return;
+}
+
+ItemType InteractableType::getItemType()
+{
+	return itemType;
+}
+
+void InteractableType::spawn(float xPos, float yPos)
+{
+	isActive = true;
+	rect.x = xPos;
+	rect.y = yPos;
+	updateCollisionRect();
 }
 
 void InteractableType::jump()

@@ -18,6 +18,7 @@ void Star::init()
 	texture = IMG_LoadTexture(_renderer, "assets/Items/Stars.png");
 	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 	gravity = starGravity;
+	itemType = ItemType::Star;
 }
 
 void Star::draw()

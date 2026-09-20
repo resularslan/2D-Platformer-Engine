@@ -34,3 +34,11 @@ enum class EntityType
 	InteractableType,
 	BlockType
 };
+
+enum class ItemType
+{
+	GrowMushroom,
+	HealthMushroom,
+	Star,
+	Coin
+};

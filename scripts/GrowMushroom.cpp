@@ -17,6 +17,7 @@ void GrowMushroom::init()
 	InteractableType::init();
 	texture = IMG_LoadTexture(_renderer, "assets/Items/GrowMushroom.png");
 	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
+	itemType = ItemType::GrowMushroom;
 }
 
 void GrowMushroom::draw()

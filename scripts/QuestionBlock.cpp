@@ -1,21 +1,20 @@
 #include "QuestionBlock.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "InteractableType.h"
 #include "CollisionManager.h"
 
-QuestionBlock::QuestionBlock(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, int& commonFrameIndex, ItemType item, QuestionBlockState initialState, int itemCount)
+QuestionBlock::QuestionBlock(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, int& commonFrameIndex, ItemType item, QuestionBlockState initialState, int itemCount, std::vector<InteractableType*>& interactableTypes)
 	:
-	Entity(xPos, yPos, width, height, renderer, camera, id),
+	BlockType(xPos, yPos, width, height, renderer, camera, id, collisionManager),
 	lastTexture(nullptr),
 	textures(nullptr, nullptr, nullptr, nullptr),
 	emptyTexture(nullptr),
 	brickTexture(nullptr),
-	_collisionManager(collisionManager),
 	_commonFrameIndex(commonFrameIndex),
 	_item(item),
 	_itemCount(itemCount),
-	_initialState(initialState)
+	_initialState(initialState),
+	_interactableTypes(interactableTypes)
 {}
 
 QuestionBlock::~QuestionBlock()
@@ -31,8 +30,7 @@ QuestionBlock::~QuestionBlock()
 
 void QuestionBlock::init()
 {
-	collisionMargin = questionBlockCollisionMargin;
-	Entity::init();
+	BlockType::init();
 	textures[0] = IMG_LoadTexture(_renderer, "assets/TileMap/QuestionBlock-1.png");
 	textures[1] = IMG_LoadTexture(_renderer, "assets/TileMap/QuestionBlock-2.png");
 	textures[2] = IMG_LoadTexture(_renderer, "assets/TileMap/QuestionBlock-3.png");
@@ -46,8 +44,6 @@ void QuestionBlock::init()
 	SDL_SetTextureScaleMode(brickTexture, SDL_SCALEMODE_NEAREST);
 	SDL_SetTextureScaleMode(emptyTexture, SDL_SCALEMODE_NEAREST);
 	currentState = _initialState;
-	type = EntityType::BlockType;
-	originalY = rect.y;
 }
 
 void QuestionBlock::update(float deltaTime, CollisionManager& collisionManager)
@@ -180,6 +176,7 @@ void QuestionBlock::onCollisionWithEntity(Entity* entity, Direction direction)
 				{
 					return;
 				}
+				spawnObject();
 				move();
 				break;
 			default:
@@ -195,23 +192,20 @@ void QuestionBlock::onCollisionWithEntity(Entity* entity, Direction direction)
 
 void QuestionBlock::move()
 {
+	BlockType::move();
 	currentState = QuestionBlockState::Moving;
-	moveTimer = 0;
 }
 
 void QuestionBlock::spawnObject()
 {
-	switch (_item)
+	for (auto& object : _interactableTypes)
 	{
-	case ItemType::GrowMushroom:
-		break;
-	case ItemType::HealthMushroom:
-		break;
-	case ItemType::Star:
-		break;
-	case ItemType::Coin:
-		break;
-	default:
-		break;
+		if (object->getItemType() == _item)
+		{
+			if (!object->getActiveState())
+			{
+				object->spawn(rect.x, rect.y);
+			}
+		}
 	}
 }

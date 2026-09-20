@@ -7,9 +7,8 @@
 
 Brick::Brick(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, std::vector<BrickPiece*>& brickPieces)
 	:
-	Entity(xPos, yPos, width, height, renderer, camera, id),
+	BlockType(xPos, yPos, width, height, renderer, camera, id, collisionManager),
 	brickTexture(nullptr),
-	_collisionManager(collisionManager),
 	_brickPieces(brickPieces)
 {}
 
@@ -20,12 +19,10 @@ Brick::~Brick()
 
 void Brick::init()
 {
-	collisionMargin = brickCollisionMargin;
-	Entity::init();
+	BlockType::init();
 	brickTexture = IMG_LoadTexture(_renderer, "assets/TileMap/Brick.png");
 	SDL_SetTextureScaleMode(brickTexture, SDL_SCALEMODE_NEAREST);
-	type = EntityType::BlockType;
-	originalY = rect.y;
+	currentState = BrickState::Static;
 }
 
 void Brick::update(float deltaTime, CollisionManager& collisionManager)
@@ -171,8 +168,8 @@ void Brick::createBrickPiece(float directionX, float posX, float posY, float jum
 
 void Brick::move()
 {
+	BlockType::move();
 	currentState = BrickState::Moving;
-	moveTimer = 0;
 }
 
 void Brick::breaking()

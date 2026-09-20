@@ -25,9 +25,6 @@ public:
 	EntityType getType();
 	int getID();
 	bool getActiveState();
-	void spawn();
-	bool isSpawnable();
-	void setSpawnableState(bool state);
 	bool getCollidableState();
 protected:
 	virtual void verticalMovement(float deltaTime) {};
@@ -47,7 +44,6 @@ protected:
 	bool canCollide = true;
 	bool isActive = true;
 	bool isGrounded = false;
-	bool canSpawn = false;
 	float gravity = 1500;
 	float maxVelocityY = 600;
 	float _xPos;

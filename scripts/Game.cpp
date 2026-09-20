@@ -64,7 +64,7 @@ void Game::init()
 	questionBlockInfos[1] = { 42 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::GrowMushroom, QuestionBlockState::QuestionBlock, 1 };
 	questionBlockInfos[2] = { 44 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
 	questionBlockInfos[3] = { 46 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
-	questionBlockInfos[4] = { 130 * CELL_SIZE, WINDOW_HEIGHT - 14 * CELL_SIZE, ItemType::HealthMushroom, QuestionBlockState::Invisible, 1 };
+	questionBlockInfos[4] = { 128 * CELL_SIZE, WINDOW_HEIGHT - 14 * CELL_SIZE, ItemType::HealthMushroom, QuestionBlockState::Invisible, 1 };
 	questionBlockInfos[5] = { 156 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::GrowMushroom, QuestionBlockState::QuestionBlock, 1 };
 	questionBlockInfos[6] = { 188 * CELL_SIZE, WINDOW_HEIGHT - 20 * CELL_SIZE, ItemType::Coin, QuestionBlockState::QuestionBlock, 1 };
 	questionBlockInfos[7] = { 188 * CELL_SIZE, WINDOW_HEIGHT - 12 * CELL_SIZE, ItemType::Coin, QuestionBlockState::Brick, 5 };
@@ -89,19 +89,19 @@ void Game::init()
 	for (int i = 0; i < growMushroomCount; i++)
 	{
 		growMushrooms[i] = std::make_unique<GrowMushroom>(-99 * CELL_SIZE, -99 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
-		growMushroomOriginals.push_back(growMushrooms[i].get());
+		interactableTypes.push_back(growMushrooms[i].get());
 		entities.push_back(std::move(growMushrooms[i]));
 	}
 	for (int i = 0; i < healthMushroomCount; i++)
 	{
 		healthMushrooms[i] = std::make_unique<HealthMushroom>(-99 * CELL_SIZE, -99 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
-		healthMushroomOriginals.push_back(healthMushrooms[i].get());
+		interactableTypes.push_back(healthMushrooms[i].get());
 		entities.push_back(std::move(healthMushrooms[i]));
 	}
 	for (int i = 0; i < starCount; i++)
 	{
 		stars[i] = std::make_unique<Star>(-99 * CELL_SIZE, -99 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
-		starOriginals.push_back(stars[i].get());
+		interactableTypes.push_back(stars[i].get());
 		entities.push_back(std::move(stars[i]));
 	}
 	for (int i = 0; i < brickPieceCount; i++)
@@ -117,7 +117,7 @@ void Game::init()
 	}
 	for (int i = 0; i < questionBlockCount; i++)
 	{
-		questionBlocks[i] = std::make_unique<QuestionBlock>(questionBlockInfos[i].xPos, questionBlockInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, *collisionManager, commonFrameIndex, questionBlockInfos[i].item, questionBlockInfos[i].initialState, questionBlockInfos[i].itemCount);
+		questionBlocks[i] = std::make_unique<QuestionBlock>(questionBlockInfos[i].xPos, questionBlockInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, *collisionManager, commonFrameIndex, questionBlockInfos[i].item, questionBlockInfos[i].initialState, questionBlockInfos[i].itemCount, interactableTypes);
 		entities.push_back(std::move(questionBlocks[i]));
 	}
 	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
@@ -173,10 +173,6 @@ void Game::update(float deltaTime)
 	for (const auto& entity : entities)
 	{
 		SDL_FRect entityRect = entity->getRect();
-		if (entity->isSpawnable())
-		{
-			entity->spawn();
-		}
 		if (!entity->getActiveState() || (!camera->inCamera(entityRect) && entity->getType() != EntityType::PlayerType))
 		{
 			continue;

@@ -30,9 +30,8 @@ private:
 	SDL_Texture* walkFrames[2];
 	SDL_Texture* sleepingFrame[2];
 	SDL_Texture* deathFrame;
-	vector2 walkDirection = vector2::left;
 	float oldWalkDirectionX = walkDirection.x;
-	const float fastSpeed = 400;
+	const float fastSpeed = 370;
 	const float walkAnimationFrameDelay = 0.2f;
 	bool wasInCamera = true;
 	float wakeTimer = 0;

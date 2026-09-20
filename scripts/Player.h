@@ -80,9 +80,9 @@ private:
 	bool canDie = true;
 	bool isStarMode = false;
 	bool facingRight = true;
-	const float slowJumpGravity = 700;
+	const float slowJumpGravity = 770;
 	const float fastJumpGravity = 873;
-	const float slowFallGravity = 2456;
+	const float slowFallGravity = 2500;
 	const float fastFallGravity = 3063;
 	float initialJumpForce = 470;
 	const float minJumpForce = 470;
