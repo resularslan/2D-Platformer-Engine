@@ -1,5 +1,7 @@
 #include "Brick.h"
 #include "Player.h"
+#include "Enemy.h"
+#include "InteractableType.h"
 #include "CollisionManager.h"
 #include "BrickPiece.h"
 
@@ -129,7 +131,7 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Up:
-				entity->die();
+				dynamic_cast<Enemy*>(entity)->die();
 				break;
 			default:
 				break;
@@ -139,7 +141,7 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Up:
-				entity->jump();
+				dynamic_cast<InteractableType*>(entity)->jump();
 				break;
 			default:
 				break;

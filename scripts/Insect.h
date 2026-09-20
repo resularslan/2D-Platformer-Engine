@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entity.h"
+#include "Enemy.h"
 
 enum class InsectState
 {
@@ -11,7 +11,7 @@ enum class InsectState
 
 class Player;
 
-class Insect : public Entity
+class Insect : public Enemy
 {
 public:
 	Insect(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
@@ -23,20 +23,13 @@ public:
 	void restart() override;
 	void die() override;
 protected:
-	void horizontalMovement(float deltaTime) override;
-	void onCollisionWithTile(Direction direction, SDL_FRect tileRect) override;
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
 	void crush();
 	SDL_Texture* walkFrames[2];
 	SDL_Texture* crushedFrame;
 	SDL_Texture* deathFrame;
-	vector2 walkDirection = vector2::left;
-	float speed;
-	const float walkSpeed = 75;
-	const float deathSpeed = 100;
 	const float walkAnimationFrameDelay = 0.2f;
-	const float deathJumpForce = 300;
 	float destroyTimer = 0;
 	const float destroyTime = 1;
 	InsectState currentState = InsectState::Alive;

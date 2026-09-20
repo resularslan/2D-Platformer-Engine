@@ -3,7 +3,7 @@
 
 HealthMushroom::HealthMushroom(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id)
 	:
-	Entity(xPos, yPos, width, height, renderer, camera, id),
+	InteractableType(xPos, yPos, width, height, renderer, camera, id),
 	texture(nullptr)
 {}
 
@@ -14,85 +14,15 @@ HealthMushroom::~HealthMushroom()
 
 void HealthMushroom::init()
 {
-	Entity::init();
+	InteractableType::init();
 	texture = IMG_LoadTexture(_renderer, "assets/Items/HealthMushroom.png");
 	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
-	type = EntityType::InteractableType;
-	currentState = HealthMushroomState::Spawning;
-}
-
-void HealthMushroom::update(float deltaTime, CollisionManager& collisionManager)
-{
-	switch (currentState)
-	{
-	case HealthMushroomState::Spawning:
-		spawnTimer += deltaTime;
-		if (spawnTimer < spawnTime)
-		{
-			rect.y -= spawnSpeed * deltaTime;
-		}
-		else
-		{
-			currentState = HealthMushroomState::Alive;
-		}
-		break;
-	case HealthMushroomState::Alive:
-		Entity::update(deltaTime, collisionManager);
-		break;
-	default:
-		break;
-	}
-}
-
-void HealthMushroom::lateUpdate(float deltaTime, CollisionManager& collisionManager)
-{
-	switch (currentState)
-	{
-	case HealthMushroomState::Spawning:
-		break;
-	case HealthMushroomState::Alive:
-		Entity::lateUpdate(deltaTime, collisionManager);
-		break;
-	default:
-		break;
-	}
 }
 
 void HealthMushroom::draw()
 {
 	SDL_FRect newRect = _camera.adjustToCamera(rect);
 	SDL_RenderTextureRotated(_renderer, texture, NULL, &newRect, 0, &center, flip);
-}
-
-void HealthMushroom::restart()
-{
-	return;
-}
-
-void HealthMushroom::jump()
-{
-	velocity.y = -jumpForce;
-	moveDirection.x = -moveDirection.x;
-}
-
-void HealthMushroom::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
-{
-	Entity::onCollisionWithTile(direction, tileRect);
-	switch (direction)
-	{
-	case Direction::Up:
-		break;
-	case Direction::Down:
-		break;
-	case Direction::Left:
-		moveDirection = vector2::right;
-		break;
-	case Direction::Right:
-		moveDirection = vector2::left;
-		break;
-	default:
-		break;
-	}
 }
 
 void HealthMushroom::onCollisionWithEntity(Entity* entity, Direction direction)
@@ -104,9 +34,4 @@ void HealthMushroom::onCollisionWithEntity(Entity* entity, Direction direction)
 		isActive = false;
 		break;
 	}
-}
-
-void HealthMushroom::horizontalMovement(float deltaTime)
-{
-	velocity.x = moveDirection.x * speed;
 }

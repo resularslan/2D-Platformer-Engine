@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entity.h"
+#include "Enemy.h"
 
 enum class TurtleState
 {
@@ -12,7 +12,7 @@ enum class TurtleState
 
 class Player;
 
-class Turtle : public Entity
+class Turtle : public Enemy
 {
 public:
 	Turtle(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
@@ -24,8 +24,6 @@ public:
 	void restart() override;
 	void die() override;
 protected:
-	void horizontalMovement(float deltaTime) override;
-	void onCollisionWithTile(Direction direction, SDL_FRect tileRect) override;
 	void onCollisionWithEntity(Entity* entity, Direction direction) override;
 private:
 	void sleep();
@@ -34,12 +32,8 @@ private:
 	SDL_Texture* deathFrame;
 	vector2 walkDirection = vector2::left;
 	float oldWalkDirectionX = walkDirection.x;
-	float speed;
-	const float walkSpeed = 75;
-	const float deathSpeed = 100;
 	const float fastSpeed = 400;
 	const float walkAnimationFrameDelay = 0.2f;
-	const float deathJumpForce = 300;
 	bool wasInCamera = true;
 	float wakeTimer = 0;
 	const float wakeTime = 5;

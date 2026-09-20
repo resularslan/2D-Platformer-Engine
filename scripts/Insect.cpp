@@ -3,7 +3,7 @@
 
 Insect::Insect(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id)
 	:
-	Entity(xPos, yPos, width, height, renderer, camera, id),
+	Enemy(xPos, yPos, width, height, renderer, camera, id),
 	walkFrames{ nullptr, nullptr },
 	crushedFrame(nullptr),
 	deathFrame(nullptr)
@@ -20,7 +20,7 @@ Insect::~Insect()
 
 void Insect::init()
 {
-	Entity::init();
+	Enemy::init();
 	walkFrames[0] = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Walk1.png");
 	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Walk2.png");
 	crushedFrame = IMG_LoadTexture(_renderer, "assets/Insect/Insect_Crushed.png");
@@ -29,7 +29,6 @@ void Insect::init()
 	SDL_SetTextureScaleMode(walkFrames[1], SDL_SCALEMODE_NEAREST);
 	SDL_SetTextureScaleMode(crushedFrame, SDL_SCALEMODE_NEAREST);
 	SDL_SetTextureScaleMode(deathFrame, SDL_SCALEMODE_NEAREST);
-	type = EntityType::EnemyType;
 	currentState = InsectState::Alive;
 	speed = walkSpeed;
 }
@@ -105,39 +104,8 @@ void Insect::restart()
 
 void Insect::die()
 {
+	Enemy::die();
 	currentState = InsectState::Dying;
-	speed = deathSpeed;
-	canCollide = false;
-	if (_camera.inCamera(rect))
-	{
-		velocity.y = -deathJumpForce;
-	}
-	else
-	{
-		velocity.y = 0;
-	}
-	int randomNumber = SDL_rand(2);
-	walkDirection.x = randomNumber == 1 ? 1 : -1;
-}
-
-void Insect::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
-{
-	Entity::onCollisionWithTile(direction, tileRect);
-	switch (direction)
-	{
-	case Direction::Up:
-		break;
-	case Direction::Down:
-		break;
-	case Direction::Left:
-		walkDirection = vector2::right;
-		break;
-	case Direction::Right:
-		walkDirection = vector2::left;
-		break;
-	default:
-		break;
-	}
 }
 
 void Insect::onCollisionWithEntity(Entity* entity, Direction direction)
@@ -186,11 +154,6 @@ void Insect::onCollisionWithEntity(Entity* entity, Direction direction)
 	default:
 		break;
 	}
-}
-
-void Insect::horizontalMovement(float deltaTime)
-{
-	velocity.x = walkDirection.x * speed;
 }
 
 void Insect::crush()

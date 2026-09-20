@@ -1,5 +1,7 @@
 #include "QuestionBlock.h"
 #include "Player.h"
+#include "Enemy.h"
+#include "InteractableType.h"
 #include "CollisionManager.h"
 
 QuestionBlock::QuestionBlock(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, int& commonFrameIndex, ItemType item, QuestionBlockState initialState, int itemCount)
@@ -145,7 +147,7 @@ void QuestionBlock::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Up:
-				entity->die();
+				dynamic_cast<Enemy*>(entity)->die();
 				break;
 			default:
 				break;
@@ -155,7 +157,7 @@ void QuestionBlock::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Up:
-				entity->jump();
+				dynamic_cast<InteractableType*>(entity)->jump();
 				break;
 			default:
 				break;

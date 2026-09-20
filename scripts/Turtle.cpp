@@ -3,7 +3,7 @@
 
 Turtle::Turtle(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id)
 	:
-	Entity(xPos, yPos, width, height, renderer, camera, id),
+	Enemy(xPos, yPos, width, height, renderer, camera, id),
 	walkFrames{ nullptr, nullptr },
 	sleepingFrame(nullptr),
 	deathFrame(nullptr)
@@ -22,7 +22,7 @@ Turtle::~Turtle()
 
 void Turtle::init()
 {
-	Entity::init();
+	Enemy::init();
 	walkFrames[0] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Walk1.png");
 	walkFrames[1] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Walk2.png");
 	sleepingFrame[0] = IMG_LoadTexture(_renderer, "assets/Turtle/Turtle_Sleeping.png");
@@ -33,7 +33,6 @@ void Turtle::init()
 	SDL_SetTextureScaleMode(sleepingFrame[0], SDL_SCALEMODE_NEAREST);
 	SDL_SetTextureScaleMode(sleepingFrame[1], SDL_SCALEMODE_NEAREST);
 	SDL_SetTextureScaleMode(deathFrame, SDL_SCALEMODE_NEAREST);
-	type = EntityType::EnemyType;
 	currentState = TurtleState::Alive;
 	speed = walkSpeed;
 }
@@ -126,42 +125,11 @@ void Turtle::restart()
 
 void Turtle::die()
 {
+	Enemy::die();
 	currentState = TurtleState::Dying;
-	speed = deathSpeed;
-	canCollide = false;
-	if (_camera.inCamera(rect))
-	{
-		velocity.y = -deathJumpForce;
-	}
-	else
-	{
-		velocity.y = 0;
-	}
-	int randomNumber = SDL_rand(2);
-	walkDirection.x = randomNumber == 1 ? 1 : -1;
 	rect.y += CELL_SIZE;
 	rect.h = CELL_SIZE * 2;
 	updateCollisionRect();
-}
-
-void Turtle::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
-{
-	Entity::onCollisionWithTile(direction, tileRect);
-	switch (direction)
-	{
-	case Direction::Up:
-		break;
-	case Direction::Down:
-		break;
-	case Direction::Left:
-		walkDirection = vector2::right;
-		break;
-	case Direction::Right:
-		walkDirection = vector2::left;
-		break;
-	default:
-		break;
-	}
 }
 
 void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
@@ -261,7 +229,7 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 			}
 			break;
 		case EntityType::EnemyType:
-			entity->die();
+			dynamic_cast<Enemy*>(entity)->die();
 			break;
 		default:
 			break;
@@ -272,12 +240,6 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 	default:
 		break;
 	}
-}
-
-void Turtle::horizontalMovement(float deltaTime)
-{
-	flip = velocity.x > 0 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-	velocity.x = walkDirection.x * speed;
 }
 
 void Turtle::sleep()
