@@ -375,6 +375,7 @@ void Player::takeDamage()
 
 void Player::grow()
 {
+	if (isBig) return;
 	growTimer = 0;
 	currentState = PlayerState::Growing;
 	originalY = rect.y;

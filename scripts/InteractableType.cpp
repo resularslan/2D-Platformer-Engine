@@ -25,6 +25,8 @@ void InteractableType::update(float deltaTime, CollisionManager& collisionManage
 		}
 		else
 		{
+			canCollide = true;
+			rect.y = spawnPositionY;
 			currentState = InteractableTypeState::Alive;
 		}
 		break;
@@ -62,16 +64,23 @@ ItemType InteractableType::getItemType()
 
 void InteractableType::spawn(float xPos, float yPos)
 {
+	currentState = InteractableTypeState::Spawning;
+	moveDirection = vector2::right;
+	spawnTimer = 0;
 	isActive = true;
 	rect.x = xPos;
 	rect.y = yPos;
+	spawnPositionY = rect.y - CELL_SIZE * 2;
+	canCollide = false;
 	updateCollisionRect();
 }
 
-void InteractableType::jump()
+void InteractableType::jump(float blockPosX)
 {
+	if (oldCollidedBlockPosX == blockPosX) return;
 	velocity.y = -jumpForce;
 	moveDirection.x = -moveDirection.x;
+	oldCollidedBlockPosX = blockPosX;
 }
 
 void InteractableType::onCollisionWithTile(Direction direction, SDL_FRect tileRect)

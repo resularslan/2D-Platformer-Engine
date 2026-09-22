@@ -138,7 +138,7 @@ void Brick::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Up:
-				dynamic_cast<InteractableType*>(entity)->jump();
+				dynamic_cast<InteractableType*>(entity)->jump(rect.x);
 				break;
 			default:
 				break;

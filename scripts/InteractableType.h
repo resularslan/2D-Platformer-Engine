@@ -15,7 +15,7 @@ public:
 	void update(float deltaTime, CollisionManager& collisionManager) override;
 	void lateUpdate(float deltaTime, CollisionManager& collisionManager) override;
 	void restart() override;
-	void jump();
+	void jump(float blockPosX);
 	ItemType getItemType();
 	void spawn(float xPos, float yPos);
 protected:
@@ -23,11 +23,13 @@ protected:
 	void onCollisionWithTile(Direction direction, SDL_FRect tileRect) override;
 	ItemType itemType;
 	InteractableTypeState currentState = InteractableTypeState::Spawning;
-	vector2 moveDirection = vector2::left;
+	vector2 moveDirection = vector2::right;
 	const float speed = 100;
-	const float jumpForce = 200;
+	const float jumpForce = 250;
 private:
 	float spawnTimer = 0;
 	const float spawnTime = 0.65f;
-	const float spawnSpeed = 30;
+	const float spawnSpeed = 50;
+	float spawnPositionY;
+	float oldCollidedBlockPosX = -999;
 };
