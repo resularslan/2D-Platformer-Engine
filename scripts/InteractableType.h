@@ -17,7 +17,7 @@ public:
 	void restart() override;
 	void jump(float blockPosX);
 	ItemType getItemType();
-	void spawn(float xPos, float yPos);
+	virtual void spawn(float xPos, float yPos);
 protected:
 	void horizontalMovement(float deltaTime) override;
 	void onCollisionWithTile(Direction direction, SDL_FRect tileRect) override;
@@ -26,10 +26,10 @@ protected:
 	vector2 moveDirection = vector2::right;
 	const float speed = 100;
 	const float jumpForce = 250;
-private:
 	float spawnTimer = 0;
 	const float spawnTime = 0.65f;
-	const float spawnSpeed = 50;
+	const float spawnSpeed = 55;
+private:
 	float spawnPositionY;
 	float oldCollidedBlockPosX = -999;
 };

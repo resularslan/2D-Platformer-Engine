@@ -35,6 +35,7 @@ public:
 	void grow();
 	void shrink();
 	void addLife();
+	void addCoin();
 	void starMode();
 	void jump(float force);
 	bool getStarModeState();
@@ -102,5 +103,6 @@ private:
 	float shrinkTimer = 0;
 	float originalY = 0;
 	int life = 3;
+	int coin = 0;
 	SDL_FRect hitBlockRect;
 };

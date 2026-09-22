@@ -16,6 +16,7 @@
 #include "GrowMushroom.h"
 #include "HealthMushroom.h"
 #include "Star.h"
+#include "Coin.h"
 #include "Brick.h"
 #include "BrickPiece.h"
 #include "QuestionBlock.h"
@@ -74,6 +75,7 @@ private:
     std::unique_ptr<GrowMushroom> growMushrooms[growMushroomCount];
     std::unique_ptr<HealthMushroom> healthMushrooms[healthMushroomCount];
     std::unique_ptr<Star> stars[starCount];
+    std::unique_ptr<Coin> coins[coinCount];
     std::unique_ptr<Brick> bricks[brickCount];
     std::unique_ptr<BrickPiece> brickPieces[brickPieceCount];
     std::unique_ptr<QuestionBlock> questionBlocks[questionBlockCount];

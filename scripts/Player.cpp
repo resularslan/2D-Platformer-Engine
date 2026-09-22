@@ -395,6 +395,11 @@ void Player::addLife()
 	life++;
 }
 
+void Player::addCoin()
+{
+	coin++;
+}
+
 void Player::starMode()
 {
 	invincibleFinishSeconds = 8;

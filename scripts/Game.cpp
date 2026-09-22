@@ -79,6 +79,7 @@ void Game::init()
 	camera = new Camera();
 	tileMap = new TileMap();
 	collisionManager = new CollisionManager(entities);
+	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
 	for (int i = 0; i < insectCount; i++)
 	{
 		insects[i] = std::make_unique<Insect>(insectInfos[i].xPos, insectInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
@@ -104,6 +105,12 @@ void Game::init()
 		interactableTypes.push_back(stars[i].get());
 		entities.push_back(std::move(stars[i]));
 	}
+	for (int i = 0; i < coinCount; i++)
+	{
+		coins[i] = std::make_unique<Coin>(-99 * CELL_SIZE, -99 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, player.get());
+		interactableTypes.push_back(coins[i].get());
+		entities.push_back(std::move(coins[i]));
+	}
 	for (int i = 0; i < brickPieceCount; i++)
 	{
 		brickPieces[i] = std::make_unique<BrickPiece>(-99 * CELL_SIZE, -99 * CELL_SIZE, CELL_SIZE, CELL_SIZE, renderer, *camera, entityCount++);
@@ -120,7 +127,6 @@ void Game::init()
 		questionBlocks[i] = std::make_unique<QuestionBlock>(questionBlockInfos[i].xPos, questionBlockInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, *collisionManager, commonFrameIndex, questionBlockInfos[i].item, questionBlockInfos[i].initialState, questionBlockInfos[i].itemCount, interactableTypes);
 		entities.push_back(std::move(questionBlocks[i]));
 	}
-	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
 	entities.push_back(std::move(player));
 	camera->init();
 	tileMap->init(renderer);
