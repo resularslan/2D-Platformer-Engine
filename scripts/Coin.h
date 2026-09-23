@@ -19,5 +19,6 @@ private:
 	Player* _player;
 	const float frameDelay = 0.025f;
 	const float coinSpawnTime = 0.5f;
-	const float coinSpawnSpeed = 250;
+	const float coinUpSpeed = 400;
+	const float coinDownSpeed = 250;
 };

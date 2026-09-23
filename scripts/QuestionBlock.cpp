@@ -62,6 +62,10 @@ void QuestionBlock::update(float deltaTime, CollisionManager& collisionManager)
 		}
 		else
 		{
+			if (_item != ItemType::Coin)
+			{
+				spawnObject();
+			}
 			_itemCount--;
 			rect.y = originalY;
 			int row = rect.y / (CELL_SIZE * 2);
@@ -176,7 +180,10 @@ void QuestionBlock::onCollisionWithEntity(Entity* entity, Direction direction)
 				{
 					return;
 				}
-				spawnObject();
+				if (_item == ItemType::Coin)
+				{
+					spawnObject();
+				}
 				move();
 				break;
 			default:

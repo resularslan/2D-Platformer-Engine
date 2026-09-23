@@ -28,7 +28,7 @@ protected:
 	const float jumpForce = 250;
 	float spawnTimer = 0;
 	const float spawnTime = 0.65f;
-	const float spawnSpeed = 55;
+	const float spawnSpeed = 50;
 private:
 	float spawnPositionY;
 	float oldCollidedBlockPosX = -999;

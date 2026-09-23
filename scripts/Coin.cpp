@@ -31,12 +31,12 @@ void Coin::update(float deltaTime, CollisionManager& collisionManager)
 		spawnTimer += deltaTime;
 		if (spawnTimer < coinSpawnTime / 2)
 		{
-			rect.y -= coinSpawnSpeed * deltaTime;
+			rect.y -= coinUpSpeed * deltaTime;
 		}
 		else if (spawnTimer < coinSpawnTime)
 		{
 			
-			rect.y += coinSpawnSpeed * deltaTime;
+			rect.y += coinDownSpeed * deltaTime;
 		}
 		else
 		{

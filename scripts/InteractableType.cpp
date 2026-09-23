@@ -28,6 +28,7 @@ void InteractableType::update(float deltaTime, CollisionManager& collisionManage
 			canCollide = true;
 			rect.y = spawnPositionY;
 			currentState = InteractableTypeState::Alive;
+			updateCollisionRect();
 		}
 		break;
 	case InteractableTypeState::Alive:
@@ -70,9 +71,8 @@ void InteractableType::spawn(float xPos, float yPos)
 	isActive = true;
 	rect.x = xPos;
 	rect.y = yPos;
-	spawnPositionY = rect.y - CELL_SIZE * 2;
+	spawnPositionY = yPos - CELL_SIZE * 2;
 	canCollide = false;
-	updateCollisionRect();
 }
 
 void InteractableType::jump(float blockPosX)
