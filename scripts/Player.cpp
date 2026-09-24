@@ -124,10 +124,6 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 	switch (currentState)
 	{
 	case PlayerState::Alive:
-		if (_keys[SDL_SCANCODE_G])
-		{
-			grow();
-		}
 		Entity::update(deltaTime, collisionManager);
 		if (rect.x < _camera.getRect().x)
 		{
@@ -225,6 +221,13 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			rect.y += velocity.y * deltaTime;
 		}
 		break;
+	case PlayerState::FlagAnimation:
+		Entity::update(deltaTime, collisionManager);
+		if (isGrounded)
+		{
+			float frameDelay = runAnimationSpeed / abs(velocity.x);
+			animation(3, frameDelay, deltaTime);
+		}
 	default:
 		break;
 	}
@@ -243,6 +246,8 @@ void Player::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 		break;
 	case PlayerState::Dying:
 		break;
+	case PlayerState::FlagAnimation:
+		Entity::lateUpdate(deltaTime, collisionManager);
 	default:
 		break;
 	}
@@ -321,6 +326,29 @@ void Player::draw()
 	case PlayerState::Dying:
 		SDL_RenderTextureRotated(_renderer, deathFrame, NULL, &newRect, 0, &center, flip);
 		break;
+	case PlayerState::FlagAnimation:
+		if (isBig)
+		{
+			if (isGrounded)
+			{
+				SDL_RenderTextureRotated(_renderer, bigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+			}
+			else
+			{
+				SDL_RenderTextureRotated(_renderer, bigFlag, NULL, &newRect, 0, &center, flip);
+			}
+		}
+		else
+		{
+			if (isGrounded)
+			{
+				SDL_RenderTextureRotated(_renderer, smallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
+			}
+			else
+			{
+				SDL_RenderTextureRotated(_renderer, smallFlag, NULL, &newRect, 0, &center, flip);
+			}
+		}
 	default:
 		break;
 	}
@@ -410,6 +438,11 @@ void Player::starMode()
 	isStarMode = true;
 }
 
+void Player::flagAnimation()
+{
+	currentState = PlayerState::FlagAnimation;
+}
+
 void Player::jump(float force)
 {
 	velocity.y = -force;
@@ -455,110 +488,123 @@ void Player::onCollisionWithTile(Direction direction, SDL_FRect tileRect)
 
 void Player::horizontalMovement(float deltaTime)
 {
-	maxRunSpeed = _keys[SDL_SCANCODE_X] ? maxRunSpeedThreshold : minRunSpeedThreshold;
-	if (isGrounded)
+	switch (currentState)
 	{
-		runAcceleration = (_keys[SDL_SCANCODE_X]) ? maxRunAccelerationThreshold : minRunAccelerationThreshold;
-	}
-	else
-	{
-		runAcceleration = airAcceleration;
-	}
-	if (velocity.x == 0)
-	{
-		isSliding = false;
-	}
-	if (_keys[SDL_SCANCODE_RIGHT] && velocity.x < maxRunSpeed)
-	{
-		isSliding = false;
-		velocity.x += runAcceleration * deltaTime;
-		if (velocity.x > maxRunSpeed) velocity.x = maxRunSpeed;
-	}
-	if (_keys[SDL_SCANCODE_LEFT] && velocity.x > -maxRunSpeed)
-	{
-		isSliding = false;
-		velocity.x -= runAcceleration * deltaTime;
-		if (velocity.x < -maxRunSpeed) velocity.x = -maxRunSpeed;
-	}
-	if (isGrounded)
-	{
-		if (_keys[SDL_SCANCODE_LEFT])
+	case PlayerState::Alive:
+		maxRunSpeed = _keys[SDL_SCANCODE_X] ? maxRunSpeedThreshold : minRunSpeedThreshold;
+		if (isGrounded)
 		{
-			facingRight = false;
+			runAcceleration = (_keys[SDL_SCANCODE_X]) ? maxRunAccelerationThreshold : minRunAccelerationThreshold;
 		}
-		if (_keys[SDL_SCANCODE_RIGHT])
+		else
 		{
-			facingRight = true;
+			runAcceleration = airAcceleration;
 		}
-		if (velocity.x > 0 && !facingRight)
+		if (velocity.x == 0)
 		{
-			isSliding = true;
-			velocity.x -= slideFriction * deltaTime;
-			if (velocity.x < 0)
+			isSliding = false;
+		}
+		if (_keys[SDL_SCANCODE_RIGHT] && velocity.x < maxRunSpeed)
+		{
+			isSliding = false;
+			velocity.x += runAcceleration * deltaTime;
+			if (velocity.x > maxRunSpeed) velocity.x = maxRunSpeed;
+		}
+		if (_keys[SDL_SCANCODE_LEFT] && velocity.x > -maxRunSpeed)
+		{
+			isSliding = false;
+			velocity.x -= runAcceleration * deltaTime;
+			if (velocity.x < -maxRunSpeed) velocity.x = -maxRunSpeed;
+		}
+		if (isGrounded)
+		{
+			if (_keys[SDL_SCANCODE_LEFT])
 			{
-				velocity.x = 0;
+				facingRight = false;
 			}
-		}
-		else if (velocity.x < 0 && facingRight)
-		{
-			isSliding = true;
-			velocity.x += slideFriction * deltaTime;
-			if (velocity.x > 0)
+			if (_keys[SDL_SCANCODE_RIGHT])
 			{
-				velocity.x = 0;
+				facingRight = true;
 			}
-		}
-		else if (velocity.x > 0 && isSliding)
-		{
-			velocity.x -= slideFriction * deltaTime;
-			if (velocity.x < 0)
+			if (velocity.x > 0 && !facingRight)
 			{
-				velocity.x = 0;
-			}
-		}
-		else if (velocity.x < 0 && isSliding)
-		{
-			velocity.x += slideFriction * deltaTime;
-			if (velocity.x > 0)
-			{
-				velocity.x = 0;
-			}
-		}
-		else if (_keys[SDL_SCANCODE_RIGHT] && velocity.x > maxRunSpeed)
-		{
-			velocity.x -= normalFriction * deltaTime;
-			if (velocity.x < maxRunSpeed)
-			{
-				velocity.x = maxRunSpeed;
-			}
-		}
-		else if (_keys[SDL_SCANCODE_LEFT] && velocity.x < -maxRunSpeed)
-		{
-			velocity.x += normalFriction * deltaTime;
-			if (velocity.x > -maxRunSpeed)
-			{
-				velocity.x = -maxRunSpeed;
-			}
-		}
-		else if (!_keys[SDL_SCANCODE_RIGHT] && !_keys[SDL_SCANCODE_LEFT])
-		{
-			if (velocity.x > 0)
-			{
-				velocity.x -= normalFriction * deltaTime;
+				isSliding = true;
+				velocity.x -= slideFriction * deltaTime;
 				if (velocity.x < 0)
 				{
 					velocity.x = 0;
 				}
 			}
-			else if (velocity.x < 0)
+			else if (velocity.x < 0 && facingRight)
 			{
-				velocity.x += normalFriction * deltaTime;
+				isSliding = true;
+				velocity.x += slideFriction * deltaTime;
 				if (velocity.x > 0)
 				{
 					velocity.x = 0;
 				}
 			}
+			else if (velocity.x > 0 && isSliding)
+			{
+				velocity.x -= slideFriction * deltaTime;
+				if (velocity.x < 0)
+				{
+					velocity.x = 0;
+				}
+			}
+			else if (velocity.x < 0 && isSliding)
+			{
+				velocity.x += slideFriction * deltaTime;
+				if (velocity.x > 0)
+				{
+					velocity.x = 0;
+				}
+			}
+			else if (_keys[SDL_SCANCODE_RIGHT] && velocity.x > maxRunSpeed)
+			{
+				velocity.x -= normalFriction * deltaTime;
+				if (velocity.x < maxRunSpeed)
+				{
+					velocity.x = maxRunSpeed;
+				}
+			}
+			else if (_keys[SDL_SCANCODE_LEFT] && velocity.x < -maxRunSpeed)
+			{
+				velocity.x += normalFriction * deltaTime;
+				if (velocity.x > -maxRunSpeed)
+				{
+					velocity.x = -maxRunSpeed;
+				}
+			}
+			else if (!_keys[SDL_SCANCODE_RIGHT] && !_keys[SDL_SCANCODE_LEFT])
+			{
+				if (velocity.x > 0)
+				{
+					velocity.x -= normalFriction * deltaTime;
+					if (velocity.x < 0)
+					{
+						velocity.x = 0;
+					}
+				}
+				else if (velocity.x < 0)
+				{
+					velocity.x += normalFriction * deltaTime;
+					if (velocity.x > 0)
+					{
+						velocity.x = 0;
+					}
+				}
+			}
 		}
+		break;
+	case PlayerState::FlagAnimation:
+		if (isGrounded)
+		{
+			velocity.x = minRunSpeedThreshold;
+		}
+		break;
+	default:
+		break;
 	}
 	flip = facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 }
@@ -566,23 +612,37 @@ void Player::horizontalMovement(float deltaTime)
 void Player::verticalMovement(float deltaTime)
 {
 	bool isFast = abs(velocity.x) > minRunSpeedThreshold;
-	initialJumpForce = isFast ? maxJumpForce : minJumpForce;
-	isFalling = velocity.y > 0 || !_keys[SDL_SCANCODE_Z];
-	if (velocity.y < 0 && canSustainJump)
+	switch (currentState)
 	{
-		gravity = isFast ? fastJumpGravity : slowJumpGravity;
+	case PlayerState::Alive:
+		initialJumpForce = isFast ? maxJumpForce : minJumpForce;
+		isFalling = velocity.y > 0 || !_keys[SDL_SCANCODE_Z];
+		if (velocity.y < 0 && canSustainJump)
+		{
+			gravity = isFast ? fastJumpGravity : slowJumpGravity;
+		}
+		if (isFalling)
+		{
+			gravity = isFast ? fastFallGravity : slowFallGravity;
+		}
+		if (!previousJumpKeyState && _keys[SDL_SCANCODE_Z] && isGrounded)
+		{
+			jump(initialJumpForce);
+			canSustainJump = true;
+		}
+		if (isFalling && canSustainJump)
+		{
+			canSustainJump = false;
+		}
+		break;
+	case PlayerState::FlagAnimation:
+		if (!isGrounded)
+		{
+			gravity = flagPoleGravity;
+		}
+		break;
+	default:
+		break;
 	}
-	if (isFalling)
-	{
-		gravity = isFast ? fastFallGravity : slowFallGravity;
-	}
-	if (!previousJumpKeyState && _keys[SDL_SCANCODE_Z] && isGrounded)
-	{
-		jump(initialJumpForce);
-		canSustainJump = true;
-	}
-	if (isFalling && canSustainJump)
-	{
-		canSustainJump = false;
-	}
+	
 }

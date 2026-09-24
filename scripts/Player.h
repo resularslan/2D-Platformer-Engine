@@ -9,6 +9,7 @@ enum class PlayerState
 	Growing,
 	Shrinking,
 	Dying,
+	FlagAnimation
 };
 
 struct TransformationAnimationInfo
@@ -37,6 +38,7 @@ public:
 	void addLife();
 	void addCoin();
 	void starMode();
+	void flagAnimation();
 	void jump(float force);
 	bool getStarModeState();
 	bool getBigState();
@@ -90,6 +92,7 @@ private:
 	const float maxJumpForce = 560;
 	const float dieForce = 390;
 	const float deathGravity = 900;
+	const float flagPoleGravity = 500;
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	float invincibleTimer = 0;

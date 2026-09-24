@@ -20,6 +20,7 @@
 #include "Brick.h"
 #include "BrickPiece.h"
 #include "QuestionBlock.h"
+#include "FlagPole.h"
 #include "Camera.h"
 #include "TileMap.h"
 #include "CollisionManager.h"
@@ -79,6 +80,7 @@ private:
     std::unique_ptr<Brick> bricks[brickCount];
     std::unique_ptr<BrickPiece> brickPieces[brickPieceCount];
     std::unique_ptr<QuestionBlock> questionBlocks[questionBlockCount];
+    std::unique_ptr<FlagPole> flagPole;
     std::vector<BrickPiece*> brickPiecesOriginals;
     std::vector<InteractableType*> interactableTypes;
 };

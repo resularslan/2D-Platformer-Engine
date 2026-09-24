@@ -127,6 +127,8 @@ void Game::init()
 		questionBlocks[i] = std::make_unique<QuestionBlock>(questionBlockInfos[i].xPos, questionBlockInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, *collisionManager, commonFrameIndex, questionBlockInfos[i].item, questionBlockInfos[i].initialState, questionBlockInfos[i].itemCount, interactableTypes);
 		entities.push_back(std::move(questionBlocks[i]));
 	}
+	flagPole = std::make_unique<FlagPole>((MAP_WIDTH_TILE - 26) * CELL_SIZE, WINDOW_HEIGHT - 18 * CELL_SIZE, CELL_SIZE * 4, CELL_SIZE * 20, renderer, *camera, entityCount++, *collisionManager);
+	entities.push_back(std::move(flagPole));
 	entities.push_back(std::move(player));
 	camera->init();
 	tileMap->init(renderer);

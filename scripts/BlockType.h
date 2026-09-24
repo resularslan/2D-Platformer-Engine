@@ -8,7 +8,7 @@ public:
 	void init() override;
 	void restart() override;
 protected:
-	virtual void move() = 0;
+	virtual void move();
 	CollisionManager& _collisionManager;
 	vector2 blockCollisionMargin = { 0, 0 };
 	float originalY;
