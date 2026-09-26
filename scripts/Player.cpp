@@ -1,6 +1,7 @@
 #include "Player.h"
+#include <iostream>
 
-Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id)
+Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, bool& flagGroundedState)
 	:
 	Entity(xPos, yPos, width, height, renderer, camera, id),
 	_keys(keys),
@@ -17,7 +18,8 @@ Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, flo
 	bigSlideFrame(nullptr),
 	bigFlag(nullptr),
 	bigShrink(nullptr),
-	middleFrame(nullptr)
+	middleFrame(nullptr),
+	isFlagGrounded(flagGroundedState)
 {}
 
 Player::~Player()
@@ -228,6 +230,18 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			float frameDelay = runAnimationSpeed / abs(velocity.x);
 			animation(3, frameDelay, deltaTime);
 		}
+		std::cout << isFlagGrounded << std::endl;
+		if (isFlagGrounded && !flagAnimationFinished)
+		{
+			flagAnimationTimer += deltaTime;
+			if (flagAnimationTimer > flagAnimationTime)
+			{
+				rect.x += CELL_SIZE;
+				flip = SDL_FLIP_HORIZONTAL;
+				flagAnimationFinished = true;
+			}
+		}
+		break;
 	default:
 		break;
 	}
@@ -248,6 +262,7 @@ void Player::lateUpdate(float deltaTime, CollisionManager& collisionManager)
 		break;
 	case PlayerState::FlagAnimation:
 		Entity::lateUpdate(deltaTime, collisionManager);
+		break;
 	default:
 		break;
 	}
@@ -329,26 +344,27 @@ void Player::draw()
 	case PlayerState::FlagAnimation:
 		if (isBig)
 		{
-			if (isGrounded)
+			if (velocity.x > 0)
 			{
 				SDL_RenderTextureRotated(_renderer, bigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 			}
-			else
+			else if (!flagAnimationFinished)
 			{
 				SDL_RenderTextureRotated(_renderer, bigFlag, NULL, &newRect, 0, &center, flip);
 			}
 		}
 		else
 		{
-			if (isGrounded)
+			if (velocity.x > 0)
 			{
 				SDL_RenderTextureRotated(_renderer, smallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 			}
-			else
+			else if (!flagAnimationFinished)
 			{
 				SDL_RenderTextureRotated(_renderer, smallFlag, NULL, &newRect, 0, &center, flip);
 			}
 		}
+		break;
 	default:
 		break;
 	}
@@ -441,6 +457,11 @@ void Player::starMode()
 void Player::flagAnimation()
 {
 	currentState = PlayerState::FlagAnimation;
+	velocity.x = 0;
+	velocity.y = 0;
+	flip = SDL_FLIP_NONE;
+	gravity = 0;
+	flagAnimationTimer = 0;
 }
 
 void Player::jump(float force)
@@ -595,18 +616,20 @@ void Player::horizontalMovement(float deltaTime)
 					}
 				}
 			}
+			flip = facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 		}
 		break;
 	case PlayerState::FlagAnimation:
-		if (isGrounded)
+		if (flagAnimationFinished)
 		{
 			velocity.x = minRunSpeedThreshold;
+			flip = SDL_FLIP_NONE;
 		}
 		break;
 	default:
 		break;
 	}
-	flip = facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+	
 }
 
 void Player::verticalMovement(float deltaTime)
@@ -638,7 +661,7 @@ void Player::verticalMovement(float deltaTime)
 	case PlayerState::FlagAnimation:
 		if (!isGrounded)
 		{
-			gravity = flagPoleGravity;
+			velocity.y = flagAnimationVerticalSpeed;
 		}
 		break;
 	default:

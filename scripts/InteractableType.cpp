@@ -33,6 +33,7 @@ void InteractableType::update(float deltaTime, CollisionManager& collisionManage
 		break;
 	case InteractableTypeState::Alive:
 		Entity::update(deltaTime, collisionManager);
+		animation(frameCount, frameDelay, deltaTime);
 		break;
 	default:
 		break;

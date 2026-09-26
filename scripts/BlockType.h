@@ -10,7 +10,7 @@ public:
 protected:
 	virtual void move();
 	CollisionManager& _collisionManager;
-	vector2 blockCollisionMargin = { 0, 0 };
+	vector2 thisCollisionMargin = { 0, 0 };
 	float originalY;
 	float moveTimer = 0;
 	const float moveTime = 0.3f;

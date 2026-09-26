@@ -9,7 +9,7 @@ BlockType::BlockType(float xPos, float yPos, float width, float height, SDL_Rend
 
 void BlockType::init()
 {
-	collisionMargin = blockCollisionMargin;
+	collisionMargin = thisCollisionMargin;
 	Entity::init();
 	type = EntityType::BlockType;
 	originalY = rect.y;

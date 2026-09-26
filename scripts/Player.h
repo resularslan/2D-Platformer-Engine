@@ -24,7 +24,7 @@ struct TransformationAnimationInfo
 class Player : public Entity
 {
 public:
-	Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id);
+	Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, bool& flagGroundedState);
 	~Player();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
@@ -92,7 +92,11 @@ private:
 	const float maxJumpForce = 560;
 	const float dieForce = 390;
 	const float deathGravity = 900;
-	const float flagPoleGravity = 500;
+	const float flagAnimationVerticalSpeed = 150;
+	bool& isFlagGrounded;
+	float flagAnimationTimer = 0;
+	const float flagAnimationTime = 1;
+	bool flagAnimationFinished = false;
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	float invincibleTimer = 0;

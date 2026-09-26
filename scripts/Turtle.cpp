@@ -137,6 +137,15 @@ void Turtle::die()
 
 void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 {
+	switch (entity->getType())
+	{
+		case EntityType::PlayerType:
+			if (dynamic_cast<Player*>(entity)->getStarModeState())
+			{
+				die();
+				return;
+			}
+	}
 	switch (currentState)
 	{
 	case TurtleState::Alive:
@@ -146,25 +155,11 @@ void Turtle::onCollisionWithEntity(Entity* entity, Direction direction)
 			switch (direction)
 			{
 			case Direction::Up:
-				if (dynamic_cast<Player*>(entity)->getStarModeState())
-				{
-					die();
-				}
-				else
-				{
-					sleep();
-					dynamic_cast<Player*>(entity)->jump(350);
-				}
+				sleep();
+				dynamic_cast<Player*>(entity)->jump(350);
 				break;
 			default:
-				if (dynamic_cast<Player*>(entity)->getStarModeState())
-				{
-					die();
-				}
-				else
-				{
-					dynamic_cast<Player*>(entity)->takeDamage();
-				}
+				dynamic_cast<Player*>(entity)->takeDamage();
 				break;
 			}
 			break;

@@ -10,7 +10,7 @@ public:
 	void init();
 	bool inCamera(SDL_FRect& other);
 	SDL_FRect adjustToCamera(SDL_FRect& other);
-	void update(SDL_FRect& player);
+	void update(SDL_FRect player);
 	SDL_FRect getRect();
 private:
 	SDL_FRect rect;

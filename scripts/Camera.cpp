@@ -28,7 +28,7 @@ SDL_FRect Camera::adjustToCamera(SDL_FRect& other)
 	};
 }
 
-void Camera::update(SDL_FRect& player)
+void Camera::update(SDL_FRect player)
 {
 	if (player.x > rect.x + (rect.w / 10 * 4))
 	{

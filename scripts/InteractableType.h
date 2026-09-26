@@ -24,6 +24,8 @@ protected:
 	ItemType itemType;
 	InteractableTypeState currentState = InteractableTypeState::Spawning;
 	vector2 moveDirection = vector2::right;
+	float frameCount = 1;
+	float frameDelay = 0.08f;
 	const float speed = 100;
 	const float jumpForce = 250;
 	float spawnTimer = 0;

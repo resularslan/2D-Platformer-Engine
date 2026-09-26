@@ -79,7 +79,8 @@ void Game::init()
 	camera = new Camera();
 	tileMap = new TileMap();
 	collisionManager = new CollisionManager(entities);
-	player = std::make_unique<Player>(keys, CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
+	flag = std::make_unique<Flag>((MAP_WIDTH_TILE - 29) * CELL_SIZE, WINDOW_HEIGHT - 24 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
+	player = std::make_unique<Player>(keys, (MAP_WIDTH_TILE - 32) * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, flag.get()->getGroundedState());
 	for (int i = 0; i < insectCount; i++)
 	{
 		insects[i] = std::make_unique<Insect>(insectInfos[i].xPos, insectInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
@@ -127,8 +128,11 @@ void Game::init()
 		questionBlocks[i] = std::make_unique<QuestionBlock>(questionBlockInfos[i].xPos, questionBlockInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, *collisionManager, commonFrameIndex, questionBlockInfos[i].item, questionBlockInfos[i].initialState, questionBlockInfos[i].itemCount, interactableTypes);
 		entities.push_back(std::move(questionBlocks[i]));
 	}
-	flagPole = std::make_unique<FlagPole>((MAP_WIDTH_TILE - 26) * CELL_SIZE, WINDOW_HEIGHT - 18 * CELL_SIZE, CELL_SIZE * 4, CELL_SIZE * 20, renderer, *camera, entityCount++, *collisionManager);
+	flagPole = std::make_unique<FlagPole>((MAP_WIDTH_TILE - 28) * CELL_SIZE, WINDOW_HEIGHT - 26 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 20, renderer, *camera, entityCount++, *collisionManager, *flag.get());
 	entities.push_back(std::move(flagPole));
+	entities.push_back(std::move(flag));
+	finishDoor = std::make_unique<FinishDoor>((MAP_WIDTH_TILE - 14) * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, *collisionManager);
+	entities.push_back(std::move(finishDoor));
 	entities.push_back(std::move(player));
 	camera->init();
 	tileMap->init(renderer);
@@ -185,12 +189,11 @@ void Game::update(float deltaTime)
 		{
 			continue;
 		}
-		entity->update(deltaTime, *collisionManager);
 		if (entity->getType() == EntityType::PlayerType)
 		{
-			SDL_FRect playerRect = entity->getRect();
-			camera->update(playerRect);
+			camera->update(entity->getRect());
 		}
+		entity->update(deltaTime, *collisionManager);
 	}
 	for (const auto& entity : entities)
 	{

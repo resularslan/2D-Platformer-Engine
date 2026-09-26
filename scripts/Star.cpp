@@ -19,6 +19,7 @@ void Star::init()
 	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 	gravity = starGravity;
 	itemType = ItemType::Star;
+	frameCount = 4;
 }
 
 void Star::draw()

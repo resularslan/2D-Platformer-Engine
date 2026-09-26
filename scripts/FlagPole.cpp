@@ -1,11 +1,13 @@
 #include "FlagPole.h"
 #include "Player.h"
+#include "Flag.h"
 #include "CollisionManager.h"
 
-FlagPole::FlagPole(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager)
+FlagPole::FlagPole(float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, CollisionManager& collisionManager, Flag& flag)
 	:
 	BlockType(xPos, yPos, width, height, renderer, camera, id, collisionManager),
-	texture(nullptr)
+	texture(nullptr),
+	_flag(flag)
 {}
 
 FlagPole::~FlagPole()
@@ -15,6 +17,7 @@ FlagPole::~FlagPole()
 
 void FlagPole::init()
 {
+	thisCollisionMargin = { _width / 2 ,0 };
 	BlockType::init();
 	texture = IMG_LoadTexture(_renderer, "assets/TileMap/FlagPole.png");
 	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
@@ -47,6 +50,7 @@ void FlagPole::onCollisionWithEntity(Entity* entity, Direction direction)
 	{
 	case EntityType::PlayerType:
 		dynamic_cast<Player*>(entity)->flagAnimation();
+		_flag.flagAnimation();
 		break;
 	default:
 		break;
