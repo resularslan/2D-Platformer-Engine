@@ -15,5 +15,6 @@ protected:
 	void horizontalMovement(float deltaTime) override;
 private:
 	SDL_Texture* texture;
+	float flagVerticalSpeed = 0;
 	const float flagDownSpeed = 150;
 };

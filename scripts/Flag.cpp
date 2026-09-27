@@ -23,13 +23,14 @@ void Flag::init()
 
 void Flag::update(float deltaTime, CollisionManager& collisionManager)
 {
+	velocity.y = flagVerticalSpeed;
 	Entity::update(deltaTime, collisionManager);
 }
 
 void Flag::flagAnimation()
 {
 	velocity.x = 0;
-	velocity.y = flagDownSpeed;
+	flagVerticalSpeed = flagDownSpeed;
 }
 
 void Flag::draw()

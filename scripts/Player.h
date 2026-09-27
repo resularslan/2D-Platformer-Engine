@@ -97,6 +97,7 @@ private:
 	float flagAnimationTimer = 0;
 	const float flagAnimationTime = 1;
 	bool flagAnimationFinished = false;
+	bool marioCanRunToFinishDoor = false;
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	float invincibleTimer = 0;

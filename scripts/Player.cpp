@@ -1,5 +1,5 @@
 #include "Player.h"
-#include <iostream>
+
 
 Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, bool& flagGroundedState)
 	:
@@ -230,15 +230,18 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			float frameDelay = runAnimationSpeed / abs(velocity.x);
 			animation(3, frameDelay, deltaTime);
 		}
-		std::cout << isFlagGrounded << std::endl;
 		if (isFlagGrounded && !flagAnimationFinished)
 		{
+			rect.x += CELL_SIZE * 2;
+			flip = SDL_FLIP_HORIZONTAL;
+			flagAnimationFinished = true;
+		}
+		if (flagAnimationFinished)
+		{
 			flagAnimationTimer += deltaTime;
-			if (flagAnimationTimer > flagAnimationTime)
+			if (flagAnimationTimer > flagAnimationTime && !marioCanRunToFinishDoor)
 			{
-				rect.x += CELL_SIZE;
-				flip = SDL_FLIP_HORIZONTAL;
-				flagAnimationFinished = true;
+				marioCanRunToFinishDoor = true;
 			}
 		}
 		break;
@@ -344,22 +347,22 @@ void Player::draw()
 	case PlayerState::FlagAnimation:
 		if (isBig)
 		{
-			if (velocity.x > 0)
+			if (marioCanRunToFinishDoor)
 			{
 				SDL_RenderTextureRotated(_renderer, bigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 			}
-			else if (!flagAnimationFinished)
+			else
 			{
 				SDL_RenderTextureRotated(_renderer, bigFlag, NULL, &newRect, 0, &center, flip);
 			}
 		}
 		else
 		{
-			if (velocity.x > 0)
+			if (marioCanRunToFinishDoor)
 			{
 				SDL_RenderTextureRotated(_renderer, smallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 			}
-			else if (!flagAnimationFinished)
+			else
 			{
 				SDL_RenderTextureRotated(_renderer, smallFlag, NULL, &newRect, 0, &center, flip);
 			}
@@ -620,7 +623,7 @@ void Player::horizontalMovement(float deltaTime)
 		}
 		break;
 	case PlayerState::FlagAnimation:
-		if (flagAnimationFinished)
+		if (marioCanRunToFinishDoor)
 		{
 			velocity.x = minRunSpeedThreshold;
 			flip = SDL_FLIP_NONE;

@@ -80,7 +80,7 @@ void Game::init()
 	tileMap = new TileMap();
 	collisionManager = new CollisionManager(entities);
 	flag = std::make_unique<Flag>((MAP_WIDTH_TILE - 29) * CELL_SIZE, WINDOW_HEIGHT - 24 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
-	player = std::make_unique<Player>(keys, (MAP_WIDTH_TILE - 32) * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, flag.get()->getGroundedState());
+	player = std::make_unique<Player>(keys, 6 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, flag.get()->getGroundedState());
 	for (int i = 0; i < insectCount; i++)
 	{
 		insects[i] = std::make_unique<Insect>(insectInfos[i].xPos, insectInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
