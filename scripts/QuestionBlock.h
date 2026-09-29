@@ -29,6 +29,7 @@ private:
 	QuestionBlockState _initialState;
 	QuestionBlockState currentState;
 	ItemType _item;
+	int initialItemCount;
 	int _itemCount;
 	SDL_Texture* lastTexture;
 	SDL_Texture* textures[4];

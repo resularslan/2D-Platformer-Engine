@@ -1,7 +1,7 @@
 #include "Player.h"
 
 
-Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, bool& flagGroundedState)
+Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, bool& flagGroundedState, bool& restartTheGame, bool& stopTheGame)
 	:
 	Entity(xPos, yPos, width, height, renderer, camera, id),
 	_keys(keys),
@@ -19,7 +19,9 @@ Player::Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, flo
 	bigFlag(nullptr),
 	bigShrink(nullptr),
 	middleFrame(nullptr),
-	isFlagGrounded(flagGroundedState)
+	isFlagGrounded(flagGroundedState),
+	_restartTheGame(restartTheGame),
+	_stopTheGame(stopTheGame)
 {}
 
 Player::~Player()
@@ -119,6 +121,31 @@ void Player::init()
 	shrinkInfos[26] = { 27 * shrinkAnimationFrameSeconds , 28 * shrinkAnimationFrameSeconds, CELL_SIZE * 2, CELL_SIZE * 2, smallShrink };
 	type = EntityType::PlayerType;
 	currentState = PlayerState::Alive;
+	maxRunSpeed = minRunSpeedThreshold;
+	runAcceleration = minRunAccelerationThreshold;
+	previousJumpKeyState = false;
+	isFalling = false;
+	isJumping = false;
+	canSustainJump = false;
+	isSliding = false;
+	canDie = true;
+	isStarMode = false;
+	facingRight = true;
+	initialJumpForce = minJumpForce;
+	flagAnimationTimer = 0;
+	flagAnimationFinished = false;
+	playerCanRunToFinishDoor = false;
+	isBig = false;
+	deathWaitTimer = 0;
+	invincibleTimer = 0;
+	invincibleFinishSeconds = 0;
+	invincibleSlowingSeconds = 0;
+	invincibleFrameSeconds = 0;
+	growTimer = 0;
+	shrinkTimer = 0;
+	originalY = 0;
+	life = 3;
+	coin = 0;
 }
 
 void Player::update(float deltaTime, CollisionManager& collisionManager)
@@ -185,6 +212,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			updateCollisionRect();
 			oldCollisionPos = { collisionRect.x, collisionRect.y };
 			canCollide = true;
+			_stopTheGame = false;
 		}
 		break;
 	case PlayerState::Shrinking:
@@ -210,6 +238,7 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			updateCollisionRect();
 			oldCollisionPos = { collisionRect.x, collisionRect.y };
 			canCollide = true;
+			_stopTheGame = false;
 		}
 		break;
 	case PlayerState::Dying:
@@ -219,6 +248,17 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 			if(_camera.inCamera(rect))
 			{
 				velocity.y += deathGravity * deltaTime;
+			}
+			else
+			{
+				if (life >= 0)
+				{
+					_restartTheGame = true;
+				}
+				else
+				{
+					SDL_Quit();
+				}
 			}
 			rect.y += velocity.y * deltaTime;
 		}
@@ -239,9 +279,9 @@ void Player::update(float deltaTime, CollisionManager& collisionManager)
 		if (flagAnimationFinished)
 		{
 			flagAnimationTimer += deltaTime;
-			if (flagAnimationTimer > flagAnimationTime && !marioCanRunToFinishDoor)
+			if (flagAnimationTimer > flagAnimationTime && !playerCanRunToFinishDoor)
 			{
-				marioCanRunToFinishDoor = true;
+				playerCanRunToFinishDoor = true;
 			}
 		}
 		break;
@@ -347,7 +387,7 @@ void Player::draw()
 	case PlayerState::FlagAnimation:
 		if (isBig)
 		{
-			if (marioCanRunToFinishDoor)
+			if (playerCanRunToFinishDoor)
 			{
 				SDL_RenderTextureRotated(_renderer, bigRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 			}
@@ -358,7 +398,7 @@ void Player::draw()
 		}
 		else
 		{
-			if (marioCanRunToFinishDoor)
+			if (playerCanRunToFinishDoor)
 			{
 				SDL_RenderTextureRotated(_renderer, smallRunFrames[frameIndex], NULL, &newRect, 0, &center, flip);
 			}
@@ -375,14 +415,41 @@ void Player::draw()
 
 void Player::restart()
 {
-	rect = { CELL_SIZE * 5, WINDOW_HEIGHT - 6 * CELL_SIZE , CELL_SIZE * 2, CELL_SIZE * 2 };
-	life--;
+	Entity::init();
+	canCollide = true;
+	isBig = false;
+	currentState = PlayerState::Alive;
+	maxRunSpeed = minRunSpeedThreshold;
+	runAcceleration = minRunAccelerationThreshold;
+	previousJumpKeyState = false;
+	isFalling = false;
+	isJumping = false;
+	canSustainJump = false;
+	isSliding = false;
+	canDie = true;
+	isStarMode = false;
+	facingRight = true;
+	initialJumpForce = minJumpForce;
+	flagAnimationTimer = 0;
+	flagAnimationFinished = false;
+	playerCanRunToFinishDoor = false;
+	isBig = false;
+	deathWaitTimer = 0;
+	invincibleTimer = 0;
+	invincibleFinishSeconds = 0;
+	invincibleSlowingSeconds = 0;
+	invincibleFrameSeconds = 0;
+	growTimer = 0;
+	shrinkTimer = 0;
+	originalY = 0;
+	coin = 0;
 }
 
 void Player::die()
 {
 	if (canDie)
 	{
+		life--;
 		if (isBig)
 		{
 			rect.h = CELL_SIZE * 2;
@@ -427,6 +494,7 @@ void Player::grow()
 	currentState = PlayerState::Growing;
 	originalY = rect.y;
 	canCollide = false;
+	_stopTheGame = true;
 }
 
 void Player::shrink()
@@ -435,6 +503,7 @@ void Player::shrink()
 	currentState = PlayerState::Shrinking;
 	originalY = rect.y;
 	canCollide = false;
+	_stopTheGame = true;
 }
 
 void Player::addLife()
@@ -623,7 +692,7 @@ void Player::horizontalMovement(float deltaTime)
 		}
 		break;
 	case PlayerState::FlagAnimation:
-		if (marioCanRunToFinishDoor)
+		if (playerCanRunToFinishDoor)
 		{
 			velocity.x = minRunSpeedThreshold;
 			flip = SDL_FLIP_NONE;

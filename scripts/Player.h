@@ -24,7 +24,7 @@ struct TransformationAnimationInfo
 class Player : public Entity
 {
 public:
-	Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, bool& flagGroundedState);
+	Player(const std::array<bool, SDL_SCANCODE_COUNT>& keys, float xPos, float yPos, float width, float height, SDL_Renderer* renderer, Camera& camera, int id, bool& flagGroundedState, bool& restartTheGame, bool& stopTheGame);
 	~Player();
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
@@ -97,13 +97,15 @@ private:
 	float flagAnimationTimer = 0;
 	const float flagAnimationTime = 1;
 	bool flagAnimationFinished = false;
-	bool marioCanRunToFinishDoor = false;
+	bool playerCanRunToFinishDoor = false;
 	bool isBig = false;
 	float deathWaitTimer = 0;
 	float invincibleTimer = 0;
 	float invincibleFinishSeconds = 0;
 	float invincibleSlowingSeconds = 0;
 	float invincibleFrameSeconds = 0;
+	bool& _restartTheGame;
+	bool& _stopTheGame;
 	TransformationAnimationInfo growInfos[8];
 	float growTimer = 0;
 	TransformationAnimationInfo shrinkInfos[27];

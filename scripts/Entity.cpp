@@ -14,6 +14,15 @@ Entity::Entity(float xPos, float yPos, float width, float height, SDL_Renderer* 
 
 void Entity::init()
 {
+	lastAnimTimer = 0;
+	animTimer = 0;
+	frameIndex = 0;
+	maxVelocityY = 600;
+	gravity = 1500;
+	isGrounded = false;
+	isActive = true;
+	canCollide = true;
+	velocity = vector2::zero;
 	rect = { _xPos, _yPos , _width, _height };
 	updateCollisionRect();
 	center = { rect.w / 2, rect.h / 2 };

@@ -41,7 +41,8 @@ void FlagPole::draw()
 
 void FlagPole::restart()
 {
-	return;
+	thisCollisionMargin = { _width / 2 ,0 };
+	BlockType::init();
 }
 
 void FlagPole::onCollisionWithEntity(Entity* entity, Direction direction)

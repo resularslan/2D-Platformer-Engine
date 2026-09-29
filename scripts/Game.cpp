@@ -80,7 +80,7 @@ void Game::init()
 	tileMap = new TileMap();
 	collisionManager = new CollisionManager(entities);
 	flag = std::make_unique<Flag>((MAP_WIDTH_TILE - 29) * CELL_SIZE, WINDOW_HEIGHT - 24 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
-	player = std::make_unique<Player>(keys, 6 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, flag.get()->getGroundedState());
+	player = std::make_unique<Player>(keys, 6 * CELL_SIZE, WINDOW_HEIGHT - 6 * CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++, flag.get()->getGroundedState(), restartTheGame, stopTheGame);
 	for (int i = 0; i < insectCount; i++)
 	{
 		insects[i] = std::make_unique<Insect>(insectInfos[i].xPos, insectInfos[i].yPos, CELL_SIZE * 2, CELL_SIZE * 2, renderer, *camera, entityCount++);
@@ -165,6 +165,7 @@ void Game::handleEvents()
 
 void Game::update(float deltaTime)
 {
+	restart();
 	commonAnimTimer += deltaTime;
 	if (commonFrameIndex == 0)
 	{
@@ -192,8 +193,15 @@ void Game::update(float deltaTime)
 		if (entity->getType() == EntityType::PlayerType)
 		{
 			camera->update(entity->getRect());
+			if (stopTheGame)
+			{
+				entity->update(deltaTime, *collisionManager);
+			}
 		}
-		entity->update(deltaTime, *collisionManager);
+		if (!stopTheGame)
+		{
+			entity->update(deltaTime, *collisionManager);
+		}
 	}
 	for (const auto& entity : entities)
 	{
@@ -221,6 +229,21 @@ void Game::render()
 		entity->draw();
 	}
 	SDL_RenderPresent(renderer);
+}
+
+void Game::restart()
+{
+	if (restartTheGame)
+	{
+		tileMap->restart();
+		collisionManager->restart();
+		camera->restart();
+		for (const auto& entity : entities)
+		{
+			entity->restart();
+		}
+		restartTheGame = false;
+	}
 }
 
 void Game::clean()

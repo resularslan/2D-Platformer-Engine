@@ -19,7 +19,6 @@ protected:
 	void horizontalMovement(float deltaTime) override;
 private:
 	SDL_Texture* textures[2];
-	vector2 brickCollisionMargin = { 0, 0 };
 	vector2 direction = { 1, 0 };
 	const float speed = 100;
 };

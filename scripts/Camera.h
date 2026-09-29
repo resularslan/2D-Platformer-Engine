@@ -8,6 +8,7 @@ class Camera
 {
 public:
 	void init();
+	void restart();
 	bool inCamera(SDL_FRect& other);
 	SDL_FRect adjustToCamera(SDL_FRect& other);
 	void update(SDL_FRect player);

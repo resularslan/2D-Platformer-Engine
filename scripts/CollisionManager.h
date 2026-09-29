@@ -29,6 +29,7 @@ class CollisionManager
 public:
 	CollisionManager(std::vector<std::unique_ptr<Entity>>& entities);
 	void init();
+	void restart();
 	TileCollisionInfo tileCollision(Entity& entity);
 	std::vector<Entity*> entityCollision(Entity& entity);
 	void setCollisionType(int row, int col, CollisionType type);

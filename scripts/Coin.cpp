@@ -55,6 +55,12 @@ void Coin::draw()
 	SDL_RenderTextureRotated(_renderer, texture, &srcRect, &newRect, 0, &center, flip);
 }
 
+void Coin::restart()
+{
+	InteractableType::init();
+	canCollide = false;
+}
+
 void Coin::spawn(float xPos, float yPos)
 {
 	InteractableType::spawn(xPos, yPos);

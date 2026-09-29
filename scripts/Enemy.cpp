@@ -8,12 +8,16 @@ Enemy::Enemy(float xPos, float yPos, float width, float height, SDL_Renderer* re
 void Enemy::init()
 {
 	Entity::init();
+	walkDirection = vector2::left;
+	speed = walkSpeed;
 	type = EntityType::EnemyType;
 }
 
 void Enemy::restart()
 {
-	return;
+	Entity::init();
+	walkDirection = vector2::left;
+	speed = walkSpeed;
 }
 
 void Enemy::die()

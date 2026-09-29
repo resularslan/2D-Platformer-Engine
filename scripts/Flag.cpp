@@ -19,6 +19,7 @@ void Flag::init()
 	texture = IMG_LoadTexture(_renderer, "assets/TileMap/Flag.png");
 	SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 	gravity = 0;
+	flagVerticalSpeed = 0;
 }
 
 void Flag::update(float deltaTime, CollisionManager& collisionManager)
@@ -27,21 +28,29 @@ void Flag::update(float deltaTime, CollisionManager& collisionManager)
 	Entity::update(deltaTime, collisionManager);
 }
 
-void Flag::flagAnimation()
-{
-	velocity.x = 0;
-	flagVerticalSpeed = flagDownSpeed;
-}
-
 void Flag::draw()
 {
 	SDL_FRect newRect = _camera.adjustToCamera(rect);
 	SDL_RenderTextureRotated(_renderer, texture, NULL, &newRect, 0, &center, flip);
 }
 
+void Flag::restart()
+{
+	InteractableType::init();
+	isActive = true;
+	gravity = 0;
+	flagVerticalSpeed = 0;
+}
+
 bool& Flag::getGroundedState()
 {
 	return isGrounded;
+}
+
+void Flag::flagAnimation()
+{
+	velocity.x = 0;
+	flagVerticalSpeed = flagDownSpeed;
 }
 
 void Flag::horizontalMovement(float deltaTime)

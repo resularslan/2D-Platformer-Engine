@@ -11,6 +11,11 @@ void CollisionManager::init()
 	loadCollisionTypes();
 }
 
+void CollisionManager::restart()
+{
+	loadCollisionTypes();
+}
+
 TileCollisionInfo CollisionManager::tileCollision(Entity& entity)
 {
 	float errorMargin = 0.001f;

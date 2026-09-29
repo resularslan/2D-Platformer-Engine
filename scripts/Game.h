@@ -49,6 +49,7 @@ public:
     void handleEvents();
     void update(float deltaTime);
     void render();
+    void restart();
     void clean();
     void quit();
     bool running();
@@ -72,6 +73,8 @@ private:
     const int commonFrameCount = 4;
     const float commonFirstFrameDelay = 0.39f;
     const float commonFrameDelay = 0.13f;
+    bool restartTheGame;
+    bool stopTheGame;
     std::unique_ptr<Player> player;
     std::unique_ptr<Insect> insects[insectCount];
     std::unique_ptr<Turtle> turtle;

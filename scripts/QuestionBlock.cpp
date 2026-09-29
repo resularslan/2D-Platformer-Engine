@@ -12,7 +12,7 @@ QuestionBlock::QuestionBlock(float xPos, float yPos, float width, float height, 
 	brickTexture(nullptr),
 	_commonFrameIndex(commonFrameIndex),
 	_item(item),
-	_itemCount(itemCount),
+	initialItemCount(itemCount),
 	_initialState(initialState),
 	_interactableTypes(interactableTypes)
 {}
@@ -44,6 +44,7 @@ void QuestionBlock::init()
 	SDL_SetTextureScaleMode(brickTexture, SDL_SCALEMODE_NEAREST);
 	SDL_SetTextureScaleMode(emptyTexture, SDL_SCALEMODE_NEAREST);
 	currentState = _initialState;
+	_itemCount = initialItemCount;
 }
 
 void QuestionBlock::update(float deltaTime, CollisionManager& collisionManager)
@@ -133,7 +134,18 @@ void QuestionBlock::draw()
 
 void QuestionBlock::restart()
 {
-	return;
+	if (_initialState == QuestionBlockState::Invisible)
+	{
+		int row = rect.y / (CELL_SIZE * 2);
+		int col = rect.x / (CELL_SIZE * 2);
+		isActive = false;
+		_collisionManager.setCollisionType(row, col, CollisionType::None);
+		return;
+	}
+	BlockType::restart();
+	currentState = _initialState;
+	isActive = true;
+	_itemCount = initialItemCount;
 }
 
 void QuestionBlock::onCollisionWithEntity(Entity* entity, Direction direction)

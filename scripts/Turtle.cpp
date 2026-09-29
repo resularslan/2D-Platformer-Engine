@@ -120,7 +120,10 @@ void Turtle::draw()
 
 void Turtle::restart()
 {
-	return;
+	Enemy::restart();
+	currentState = TurtleState::Alive;
+	speed = walkSpeed;
+	isActive = true;
 }
 
 void Turtle::die()

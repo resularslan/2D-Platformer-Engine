@@ -8,6 +8,11 @@ void TileMap::init(SDL_Renderer* renderer)
 	loadTileMap();
 }
 
+void TileMap::restart()
+{
+	loadTileMap();
+}
+
 void TileMap::render(SDL_Renderer* renderer, Camera* camera)
 {
 	int firstCol = (int) camera->getRect().x / CELL_SIZE;

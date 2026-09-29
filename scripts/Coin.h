@@ -11,6 +11,7 @@ public:
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
 	void draw() override;
+	void restart() override;
 	void spawn(float xPos, float yPos) override;
 protected:
 

@@ -9,6 +9,7 @@ public:
 	void init() override;
 	void update(float deltaTime, CollisionManager& collisionManager) override;
 	void draw() override;
+	void restart() override;
 	bool& getGroundedState();
 	void flagAnimation();
 protected:

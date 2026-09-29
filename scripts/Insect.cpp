@@ -99,7 +99,10 @@ void Insect::draw()
 
 void Insect::restart()
 {
-	return;
+	Enemy::restart();
+	currentState = InsectState::Alive;
+	speed = walkSpeed;
+	isActive = true;
 }
 
 void Insect::die()

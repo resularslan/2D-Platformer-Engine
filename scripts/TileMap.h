@@ -18,6 +18,7 @@ class TileMap
 {
 public:
 	void init(SDL_Renderer* renderer);
+	void restart();
 	void render(SDL_Renderer* renderer, Camera* camera);
 	void setTile(int row, int col, int tileID);
 private:

@@ -8,6 +8,11 @@ InteractableType::InteractableType(float xPos, float yPos, float width, float he
 void InteractableType::init()
 {
 	Entity::init();
+	moveDirection = vector2::right;
+	frameCount = 1;
+	frameDelay = 0.08f;
+	spawnTimer = 0;
+	oldCollidedBlockPosX = -999;
 	type = EntityType::InteractableType;
 	currentState = InteractableTypeState::Spawning;
 	isActive = false;
@@ -56,7 +61,7 @@ void InteractableType::lateUpdate(float deltaTime, CollisionManager& collisionMa
 
 void InteractableType::restart()
 {
-	return;
+	InteractableType::init();
 }
 
 ItemType InteractableType::getItemType()

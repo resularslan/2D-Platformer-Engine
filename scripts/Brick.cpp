@@ -86,7 +86,9 @@ void Brick::draw()
 
 void Brick::restart()
 {
-	return;
+	BlockType::restart();
+	currentState = BrickState::Static;
+	isActive = true;
 }
 
 void Brick::onCollisionWithEntity(Entity* entity, Direction direction)

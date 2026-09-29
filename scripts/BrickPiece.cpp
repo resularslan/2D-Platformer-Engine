@@ -58,7 +58,9 @@ void BrickPiece::draw()
 
 void BrickPiece::restart()
 {
-	return;
+	Entity::init();
+	canCollide = false;
+	isActive = false;
 }
 
 void BrickPiece::setDirectionX(float x)

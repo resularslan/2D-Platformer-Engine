@@ -8,6 +8,11 @@ void Camera::init()
 	rect.h = WINDOW_HEIGHT;
 }
 
+void Camera::restart()
+{
+	init();
+}
+
 bool Camera::inCamera(SDL_FRect& other)
 {
 	if (other.x <= rect.x + rect.w && other.x + other.w >= rect.x &&
