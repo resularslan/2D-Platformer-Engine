@@ -9,7 +9,7 @@ BlockType::BlockType(float xPos, float yPos, float width, float height, SDL_Rend
 
 void BlockType::init()
 {
-	thisCollisionMargin = { 0, 0 };
+	thisCollisionMargin = { 8, 0 };
 	moveTimer = 0;
 	destroyTimer = 0;
 	collisionMargin = thisCollisionMargin;

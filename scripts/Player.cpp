@@ -442,7 +442,6 @@ void Player::restart()
 	growTimer = 0;
 	shrinkTimer = 0;
 	originalY = 0;
-	coin = 0;
 }
 
 void Player::die()
@@ -514,6 +513,11 @@ void Player::addLife()
 void Player::addCoin()
 {
 	coin++;
+	if (coin >= 100)
+	{
+		life++;
+		coin = 0;
+	}
 }
 
 void Player::starMode()

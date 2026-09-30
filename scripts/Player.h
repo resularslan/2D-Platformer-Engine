@@ -89,7 +89,7 @@ private:
 	const float fastFallGravity = 3063;
 	float initialJumpForce = 470;
 	const float minJumpForce = 470;
-	const float maxJumpForce = 560;
+	const float maxJumpForce = 539;
 	const float dieForce = 390;
 	const float deathGravity = 900;
 	const float flagAnimationVerticalSpeed = 150;
@@ -109,7 +109,7 @@ private:
 	TransformationAnimationInfo growInfos[8];
 	float growTimer = 0;
 	TransformationAnimationInfo shrinkInfos[27];
-	const float shrinkAnimationFrameSeconds = 0.016f;
+	const float shrinkAnimationFrameSeconds = 0.024f;
 	float shrinkTimer = 0;
 	float originalY = 0;
 	int life = 3;
