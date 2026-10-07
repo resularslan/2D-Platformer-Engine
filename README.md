@@ -1,19 +1,17 @@
 # 2D Platformer Engine built with C++ and SDL3
 
-This project is a custom-built 2D platformer engine developed from scratch using C++ and SDL3. It demonstrates core game engine mechanics such as physics, rigid collision detection, entity state machines, and dynamic rendering.
-
-### Video Demonstration
-[![Watch the Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=zmvuWbD1urQ)
+This project is a custom-built 2D platformer engine developed from scratch using C++ and SDL3. Originally written with a procedural approach, **the entire codebase was recently refactored into an object-oriented architecture**. This migration significantly improved the engine's readability, maintainability, and extensibility while faithfully recreating classic 8-bit game mechanics.
 
 ### Quick Preview
-<img width="640" height="600" alt="ezgif-30c199806ebf3800" src="https://github.com/user-attachments/assets/50957eaf-c1e3-4c42-a7e8-24ec7592bf32" />
+https://github.com/user-attachments/assets/886cc959-e684-48ce-a138-c66571f8e062
 
-## 🎮 Features
 
-* Custom AABB collision detection.
-* Frame-independent physics and gravity calculations.
-* Entity states (walking, jumping, sliding, power-ups).
-* Memory-efficient texture rendering using SDL3.
+## 🎮 Engine Features & Architecture
+
+* **Object-Oriented Architecture:** Transitioned from a procedural codebase to a modular OOP design, enabling easier implementation of new entities and game states.
+* **Physics & Collision:** Custom AABB collision detection and frame-independent physics (gravity, acceleration) calculations.
+* **State Management:** Robust entity state machines handling logic for walking, jumping, sliding, and power-up transitions.
+* **Rendering:** Memory-efficient texture rendering and sprite management using SDL3.
 
 ## ⚙️ Prerequisites
 
