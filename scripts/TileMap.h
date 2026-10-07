@@ -1,0 +1,29 @@
+#pragma once
+
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+#include <iostream>
+#include <fstream>
+#include "Constants.h"
+
+struct Tile
+{
+	int tileID;
+	SDL_FRect rect;
+};
+
+class Camera;
+
+class TileMap
+{
+public:
+	void init(SDL_Renderer* renderer);
+	void restart();
+	void render(SDL_Renderer* renderer, Camera* camera);
+	void setTile(int row, int col, int tileID);
+private:
+	Tile tiles[MAP_HEIGHT_TILE][MAP_WIDTH_TILE];
+	SDL_FPoint center = { TILE_SIZE, TILE_SIZE };
+	SDL_Texture* tileSetTexture;
+	void loadTileMap();
+};

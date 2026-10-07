@@ -1,0 +1,100 @@
+#include "CollisionManager.h"
+#include "Entity.h"
+#include <cmath>
+
+CollisionManager::CollisionManager(std::vector<std::unique_ptr<Entity>>& entities)
+	: _entities(entities)
+{ }
+
+void CollisionManager::init()
+{
+	loadCollisionTypes();
+}
+
+void CollisionManager::restart()
+{
+	loadCollisionTypes();
+}
+
+TileCollisionInfo CollisionManager::tileCollision(Entity& entity)
+{
+	float errorMargin = 0.001f;
+	int minX = entity.getCollisionRect().x / (CELL_SIZE * 2);
+	int maxX = (entity.getCollisionRect().x + entity.getCollisionRect().w - errorMargin) / (CELL_SIZE * 2);
+	int minY = entity.getCollisionRect().y / (CELL_SIZE * 2);
+	int maxY = (entity.getCollisionRect().y + entity.getCollisionRect().h - errorMargin) / (CELL_SIZE * 2);
+	float entityCenter = entity.getCollisionRect().x + (entity.getCollisionRect().w / 2);
+	float minimumDistance = maxX * CELL_SIZE;
+	TileCollisionInfo bestInfo;
+	int tileCount = 0;
+	for (int i = minY; i <= maxY; i++)
+	{
+		for (int j = minX; j <= maxX; j++)
+		{
+			if (collisionTypes[i][j] != CollisionType::None)
+			{
+				TileCollisionInfo info;
+				info.tileRect = { (float)j * CELL_SIZE * 2, (float)i * CELL_SIZE * 2, (float)CELL_SIZE * 2, (float)CELL_SIZE * 2 };
+				info.collisionType = collisionTypes[i][j];
+				tileCount++;
+				float tileCenter = j * CELL_SIZE * 2 + CELL_SIZE;
+				float distance = std::abs(entityCenter - tileCenter);
+				if (distance < minimumDistance)
+				{
+					bestInfo = info;
+					minimumDistance = distance;
+				}
+			}
+		}
+	}
+	bestInfo.collidedTileCount = tileCount;
+	return bestInfo;
+}
+
+std::vector<Entity*> CollisionManager::entityCollision(Entity& entity)
+{
+	std::vector<Entity*> entityList;
+	for (auto& otherEntity : _entities)
+	{
+		if (otherEntity->getActiveState() == false) continue;
+		if (otherEntity->getID() == entity.getID()) continue;
+		if (entity.getCollisionRect().x + entity.getCollisionRect().w >= otherEntity->getCollisionRect().x &&
+			otherEntity->getCollisionRect().x + otherEntity->getCollisionRect().w >= entity.getCollisionRect().x &&
+			entity.getCollisionRect().y + entity.getCollisionRect().h >= otherEntity->getCollisionRect().y &&
+			otherEntity->getCollisionRect().y + otherEntity->getCollisionRect().h >= entity.getCollisionRect().y)
+		{
+			entityList.push_back(otherEntity.get());
+		}
+	}
+	return entityList;
+}
+
+void CollisionManager::setCollisionType(int row, int col, CollisionType type)
+{
+	if (row >= 0 && row < MAP_HEIGHT_TILE / 2 && col >= 0 && col < MAP_WIDTH_TILE / 2)
+	{
+		collisionTypes[row][col] = type;
+	}
+}
+
+void CollisionManager::loadCollisionTypes()
+{
+	std::ifstream file("assets/TileMap/collisions.map");
+	if (!file) {
+		std::cerr << "Failed to open file: " << "collisions.map" << std::endl;
+		return;
+	}
+
+	for (int row = 0; row < MAP_HEIGHT_TILE / 2; row++) {
+		for (int col = 0; col < MAP_WIDTH_TILE / 2; col++) {
+			int collisionNumber;
+			file >> collisionNumber;
+			if (collisionNumber >= 0 && collisionNumber <= 2)
+			{
+				collisionTypes[row][col] = (CollisionType)collisionNumber;
+			}
+		}
+	}
+
+	file.close();
+}
